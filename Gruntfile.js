@@ -12,7 +12,6 @@ module.exports = function(grunt) {
 			},
 			bin: {
 				coverage: 'bin/coverage',
-				temporary: 'bin/temporary',
 				plato: 'bin/plato'
 			},
 			doc: 'doc',
@@ -68,8 +67,8 @@ module.exports = function(grunt) {
 				vendor: [
 					'node_modules/angular/angular.js',
 					'node_modules/angular-mocks/angular-mocks.js',
-					'node_modules/ch.maenulabs.type/ch.maenulabs.type-0.1.0.js',
-					'node_modules/ch.maenulabs.validation/ch.maenulabs.validation-0.1.0.js'
+					'node_modules/ch.maenulabs.type/ch.maenulabs.type.js',
+					'node_modules/ch.maenulabs.validation/ch.maenulabs.validation.js'
 				]
 			}
 		},
@@ -79,7 +78,7 @@ module.exports = function(grunt) {
 					'<%= meta.src.main %>/js/**/module.js',
 					'<%= meta.src.main %>/js/**/AbstractModel.js'
 				],
-				dest: '<%= meta.bin.temporary %>/<%= meta.package.name %>-<%= meta.package.version %>.js'
+				dest: '<%= meta.package.name %>.js'
 			}
 		},
 		uglify: {
@@ -88,7 +87,7 @@ module.exports = function(grunt) {
 			},
 			model: {
 				files: {
-					'<%= meta.bin.temporary %>/<%= meta.package.name %>-<%= meta.package.version %>.min.js': '<%= meta.bin.temporary %>/<%= meta.package.name %>-<%= meta.package.version %>.js'
+					'<%= meta.package.name %>.min.js': '<%= meta.package.name %>.js'
 				}
 			}
 		},
@@ -181,4 +180,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('build-check', ['plato:src', 'plato:test', 'jshint:main', 'jshint:test']);
 	grunt.registerTask('build-documentation', 'yuidoc:model');
 	grunt.registerTask('build-module', ['concat:model', 'uglify:model']);
+	
+	grunt.registerTask('build', ['clean:bin', 'clean:doc', 'build-check', 'build-documentation', 'build-module']);
 };
