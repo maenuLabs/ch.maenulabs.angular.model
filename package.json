@@ -11,6 +11,7 @@
   "author": {
     "name": "Manuel Leuenberger"
   },
+  "repository": "https://github.com/maenuLabs/ch.maenulabs.angular.model",
   "dependencies": {
     "angular": "^1.3.0",
     "ch.maenulabs.type": "~0.1.0",
