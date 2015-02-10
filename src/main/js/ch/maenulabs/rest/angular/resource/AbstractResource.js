@@ -102,8 +102,8 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				url: this.getBaseUri(),
 				method: 'POST',
 				data: this.toJson()
-			}).success(angular.bind(this, function (json) {
-				this.fromJson(json);
+			}).success(angular.bind(this, function (json, status, headers) {
+				this.uri = headers('location')
 				success.apply(this, arguments);
 			})).error(error);
 			return this;

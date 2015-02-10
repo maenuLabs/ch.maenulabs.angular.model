@@ -1,9 +1,8 @@
 /* global ch, angular, i18n:true, describe, it, beforeEach, expect, jasmine */
 describe('AbstractResource', function () {
 
-	var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.rest.angular']);
+	var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.rest.angular.resource']);
 	var AbstractResource = $injector.get('ch.maenulabs.rest.angular.resource.AbstractResource');
-	var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 	var $httpBackend = $injector.get('$httpBackend');
 
 	var resource = null;
@@ -16,16 +15,16 @@ describe('AbstractResource', function () {
 
 		it('should create statically with fromSerializable', function () {
 			resource = AbstractResource.fromSerializable({
-				uri: 1
+				uri: '/resource/1'
 			});
 			expect(resource instanceof AbstractResource).toBeTruthy();
-			expect(resource.uri).toEqual(1);
+			expect(resource.uri).toEqual('/resource/1');
 		});
 
 		it('should create statically with fromJson', function () {
-			resource = AbstractResource.fromJson('{"uri":1}');
+			resource = AbstractResource.fromJson('{"uri":"/resource/1"}');
 			expect(resource instanceof AbstractResource).toBeTruthy();
-			expect(resource.uri).toEqual(1);
+			expect(resource.uri).toEqual('/resource/1');
 		});
 
 	});
@@ -47,7 +46,7 @@ describe('AbstractResource', function () {
 	describe('serializable', function () {
 
 		it('should implement toSerializable', function () {
-			var uri = 1;
+			var uri = '/resource/1';
 			resource.uri = uri;
 			var serializable = resource.toSerializable();
 			expect(serializable.uri).toEqual(uri);
@@ -55,7 +54,7 @@ describe('AbstractResource', function () {
 
 		it('should implement fromSerializable', function () {
 			var serializable = {
-				uri: 1
+				uri: '/resource/1'
 			};
 			resource.fromSerializable(serializable);
 			expect(resource.uri).toEqual(serializable.uri);
@@ -77,17 +76,19 @@ describe('AbstractResource', function () {
 
 		it('should override the intial values', function () {
 			var values = {
-				uri: 1,
+				uri: '/resource/1',
 				validation: 2
 			};
 			resource = new AbstractResource(values);
-			expect(resource.uri).toEqual(1);
+			expect(resource.uri).toEqual('/resource/1');
 			expect(resource.validation).toEqual(2);
 		});
 
 	});
 
 	describe('validation', function () {
+
+		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 
 		it('should have no errors', function () {
 			expect(resource.hasErrors()).toBeFalsy();
@@ -157,7 +158,7 @@ describe('AbstractResource', function () {
 		beforeEach(function () {
 			baseUri = 'resource';
 			serializable = {
-				uri: 1,
+				uri: '/resource/1',
 				message: 'hello'
 			};
 			resource.getBaseUri = jasmine.createSpy().andReturn(baseUri);
@@ -182,9 +183,8 @@ describe('AbstractResource', function () {
 			});
 
 			it('should create without callbacks', function () {
-				$httpBackend.expect('POST', baseUri).respond({
-					uri: serializable.uri,
-					message: serializable.message
+				$httpBackend.expect('POST', baseUri).respond(201, '', {
+					'location': '/resource/1'
 				});
 				expect(resource.create()).toBe(resource);
 				$httpBackend.flush();
@@ -193,9 +193,8 @@ describe('AbstractResource', function () {
 			});
 
 			it('should create with success', function () {
-				$httpBackend.expect('POST', baseUri).respond({
-					uri: serializable.uri,
-					message: serializable.message
+				$httpBackend.expect('POST', baseUri).respond(201, '', {
+					'location': '/resource/1'
 				});
 				expect(resource.create(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
@@ -228,7 +227,7 @@ describe('AbstractResource', function () {
 			});
 
 			it('should read without callbacks', function () {
-				$httpBackend.expect('GET', resource.uri).respond({
+				$httpBackend.expect('GET', resource.uri).respond(200, {
 					uri: serializable.uri,
 					message: serializable.message
 				});
@@ -239,7 +238,7 @@ describe('AbstractResource', function () {
 			});
 
 			it('should read with success', function () {
-				$httpBackend.expect('GET', resource.uri).respond({
+				$httpBackend.expect('GET', resource.uri).respond(200, {
 					uri: serializable.uri,
 					message: serializable.message
 				});
@@ -277,10 +276,7 @@ describe('AbstractResource', function () {
 			});
 
 			it('should update without callbacks', function () {
-				$httpBackend.expect('PUT', resource.uri).respond({
-					uri: serializable.uri,
-					message: serializable.message
-				});
+				$httpBackend.expect('PUT', resource.uri).respond(202, '');
 				expect(resource.update()).toBe(resource);
 				$httpBackend.flush();
 				expect(resource.uri).toEqual(serializable.uri);
@@ -288,10 +284,7 @@ describe('AbstractResource', function () {
 			});
 
 			it('should update with success', function () {
-				$httpBackend.expect('PUT', resource.uri).respond({
-					uri: resource.uri,
-					message: resource.message
-				});
+				$httpBackend.expect('PUT', resource.uri).respond(202, '');
 				expect(resource.update(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
@@ -323,14 +316,14 @@ describe('AbstractResource', function () {
 			});
 
 			it('should remove without callbacks', function () {
-				$httpBackend.expect('DELETE', resource.uri).respond(200, '');
+				$httpBackend.expect('DELETE', resource.uri).respond(202, '');
 				expect(resource.remove()).toBe(resource);
 				$httpBackend.flush();
 				expect(resource.uri).toBeNull();
 			});
 
 			it('should remove with success', function () {
-				$httpBackend.expect('DELETE', resource.uri).respond(200, '');
+				$httpBackend.expect('DELETE', resource.uri).respond(202, '');
 				expect(resource.remove(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
@@ -367,19 +360,19 @@ describe('AbstractResource', function () {
 
 			it('should search without callbacks', function () {
 				$httpBackend.expect('GET', resource.getBaseUri()).respond(200, [{
-					uri: 1
+					uri: '/resource/1'
 				}]);
 				var results = resource.search();
 				expect(results).toEqual([]);
 				$httpBackend.flush();
 				expect(results.length).toEqual(1);
 				expect(results[0] instanceof AbstractResource).toBeTruthy();
-				expect(results[0].uri).toEqual(1);
+				expect(results[0].uri).toEqual('/resource/1');
 			});
 
 			it('should search with success', function () {
 				$httpBackend.expect('GET', resource.getBaseUri()).respond(200, [{
-					uri: 1
+					uri: '/resource/1'
 				}]);
 				var results = resource.search(success, error);
 				expect(results).toEqual([]);
@@ -388,7 +381,7 @@ describe('AbstractResource', function () {
 				$httpBackend.flush();
 				expect(results.length).toEqual(1);
 				expect(results[0] instanceof AbstractResource).toBeTruthy();
-				expect(results[0].uri).toEqual(1);
+				expect(results[0].uri).toEqual('/resource/1');
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 			});
