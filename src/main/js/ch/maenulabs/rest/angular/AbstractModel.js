@@ -10,11 +10,11 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 	var Validation = ch.maenulabs.validation.Validation;
 	return new ch.maenulabs.type.Type(Object, {
 		/**
-		 * The id.
+		 * The URI.
 		 *
 		 * @public
-		 * @property id
-		 * @type Number
+		 * @property uri
+		 * @type String
 		 */
 		/**
 		 * The validation.
@@ -84,51 +84,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 			return this.validation.getErrors(this)[property] || [];
 		},
 		/**
-		 * Checks whether it can be created.
-		 *
-		 * @public
-		 * @method canBeCreated
-		 *
-		 * @return Boolean true if it can, false otherwise
-		 */
-		canBeCreated: function () {
-			throw new Error('not implemented');
-		},
-		/**
-		 * Checks whether it can be read.
-		 *
-		 * @public
-		 * @method canBeRead
-		 *
-		 * @return Boolean true if it can, false otherwise
-		 */
-		canBeRead: function () {
-			throw new Error('not implemented');
-		},
-		/**
-		 * Checks whether it can be updated.
-		 *
-		 * @public
-		 * @method canBeUpdated
-		 *
-		 * @return Boolean true if it can, false otherwise
-		 */
-		canBeUpdated: function () {
-			throw new Error('not implemented');
-		},
-		/**
-		 * Checks whether it can be removed.
-		 *
-		 * @public
-		 * @method canBeRemoved
-		 *
-		 * @return Boolean true if it can, false otherwise
-		 */
-		canBeRemoved: function () {
-			throw new Error('not implemented');
-		},
-		/**
-		 * Creates it. After that, it will have an id.
+		 * Creates it. After that, it will have an URI.
 		 *
 		 * @public
 		 * @method create
@@ -136,13 +92,13 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return AbstractModel itself
+		 * @return IModel itself
 		 */
 		create: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
 			$http({
-				url: this.getBasePath(),
+				url: this.getBaseUri(),
 				method: 'POST',
 				data: this.toJson()
 			}).success(angular.bind(this, function (json) {
@@ -152,7 +108,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 			return this;
 		},
 		/**
-		 * Reads it. Only the id needs to be set and the rest will be populated.
+		 * Reads it. Only the URI needs to be set and the rest will be populated.
 		 *
 		 * @public
 		 * @method read
@@ -160,13 +116,13 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return AbstractModel itself
+		 * @return IModel itself
 		 */
 		read: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
 			$http({
-				url: this.getBasePath() + '/' + this.id,
+				url: this.uri,
 				method: 'GET'
 			}).success(angular.bind(this, function (json) {
 				this.fromJson(json);
@@ -183,13 +139,13 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return AbstractModel itself
+		 * @return IModel itself
 		 */
 		update: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
 			$http({
-				url: this.getBasePath() + '/' + this.id,
+				url: this.uri,
 				method: 'PUT',
 				data: this.toJson()
 			}).success(success).error(error);
@@ -204,16 +160,16 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return AbstractModel itself
+		 * @return IModel itself
 		 */
 		remove: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
 			$http({
-				url: this.getBasePath() + '/' + this.id,
+				url: this.uri,
 				method: 'DELETE'
 			}).success(angular.bind(this, function () {
-				this.id = null;
+				this.uri = null;
 				success.apply(this, arguments);
 			})).error(error);
 			return this;
@@ -234,7 +190,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 			error = error || angular.noop;
 			var results = [];
 			$http({
-				url: this.getSearchPath(),
+				url: this.getBaseUri(),
 				method: 'GET'
 			}).success(angular.bind(this, function (json) {
 				var jsons = angular.fromJson(json);
@@ -274,11 +230,11 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @method toSerializable
 		 *
 		 * @return Object A simple object with the properties:
-		 *     id, a Number
+		 *     uri, a String
 		 */
 		toSerializable: function () {
 			return {
-				id: this.id
+				uri: this.uri
 			};
 		},
 		/**
@@ -288,32 +244,21 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @method fromSerializable
 		 *
 		 * @param Object serializable A simple object with the properties:
-		 *     id, a Number
+		 *     uri, a String
 		 */
 		fromSerializable: function (serializable) {
-			this.id = serializable.id;
+			this.uri = serializable.uri;
 		},
 		/**
-		 * Gets the base path to make request to, without an ending slash. Must
-		 * be overriden in subclass.
+		 * Gets the base URI to make request to, without an ending slash. Must
+		 * be overwritten in subclass.
 		 *
 		 * @public
-		 * @method getBasePath
+		 * @method getBaseUri
 		 *
-		 * @return String The base path
+		 * @return String The base URI
 		 */
-		getBasePath: function () {
-			throw new Error('not implemented');
-		},
-		/**
-		 * Gets the search path.
-		 *
-		 * @public
-		 * @method getSearchPath
-		 *
-		 * @return String The search path
-		 */
-		getSearchPath: function () {
+		getBaseUri: function () {
 			throw new Error('not implemented');
 		}
 	}, {
@@ -327,7 +272,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param String json A JSON string, see fromSerializable for
 		 *     properties
 		 *
-		 * @return AbstractModel The model that was created from the specified JSON
+		 * @return IModel The model that was created from the specified JSON
 		 */
 		fromJson: function (json) {
 			var model = new this();
@@ -344,7 +289,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Object serializable A serializable object, see
 		 *     fromSerializable for properties
 		 *
-		 * @return AbstractModel The model that was created from the specified
+		 * @return IModel The model that was created from the specified
 		 *     serializable
 		 */
 		fromSerializable: function (serializable) {

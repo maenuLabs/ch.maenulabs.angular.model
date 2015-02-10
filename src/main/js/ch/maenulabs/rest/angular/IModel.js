@@ -41,39 +41,7 @@
  * @return Array The error messages
  */
 /**
- * Checks whether it can be created.
- *
- * @public
- * @method canBeCreated
- *
- * @return Boolean true if it can, false otherwise
- */
-/**
- * Checks whether it can be read.
- *
- * @public
- * @method canBeRead
- *
- * @return Boolean true if it can, false otherwise
- */
-/**
- * Checks whether it can be updated.
- *
- * @public
- * @method canBeUpdated
- *
- * @return Boolean true if it can, false otherwise
- */
-/**
- * Checks whether it can be removed.
- *
- * @public
- * @method canBeRemoved
- *
- * @return Boolean true if it can, false otherwise
- */
-/**
- * Creates it. After that, it will have an id.
+ * Creates it. After that, it will have an URI.
  *
  * @public
  * @method create
@@ -81,10 +49,10 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return AbstractModel itself
+ * @return IModel itself
  */
 /**
- * Reads it. Only the id needs to be set and the rest will be populated.
+ * Reads it. Only the URI needs to be set and the rest will be populated.
  *
  * @public
  * @method read
@@ -92,7 +60,7 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return AbstractModel itself
+ * @return IModel itself
  */
 /**
  * Updates it.
@@ -103,7 +71,7 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return AbstractModel itself
+ * @return IModel itself
  */
 /**
  * Removes it.
@@ -114,7 +82,7 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return AbstractModel itself
+ * @return IModel itself
  */
 /**
  * Searches for similar models.
@@ -150,7 +118,7 @@
  * @method toSerializable
  *
  * @return Object A simple object with the properties:
- *     id, a Number
+ *     uri, a String
  */
 /**
  * Deserializes it from a simple serializable object.
@@ -159,5 +127,5 @@
  * @method fromSerializable
  *
  * @param Object serializable A simple object with the properties:
- *     id, a Number
+ *     uri, a String
  */

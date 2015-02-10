@@ -16,84 +16,49 @@ describe('AbstractModel', function () {
 
 		it('should create statically with fromSerializable', function () {
 			model = AbstractModel.fromSerializable({
-				id: 1
+				uri: 1
 			});
 			expect(model instanceof AbstractModel).toBeTruthy();
-			expect(model.id).toEqual(1);
+			expect(model.uri).toEqual(1);
 		});
 
 		it('should create statically with fromJson', function () {
-			model = AbstractModel.fromJson('{"id":1}');
+			model = AbstractModel.fromJson('{"uri":1}');
 			expect(model instanceof AbstractModel).toBeTruthy();
-			expect(model.id).toEqual(1);
+			expect(model.uri).toEqual(1);
 		});
 
 	});
 
-	it('should have a validation and a nulled id', function () {
-		expect(model.id).not.toBeDefined();
+	it('should have a validation and a nulled uri', function () {
+		expect(model.uri).not.toBeDefined();
 		expect(model.validation).toBeDefined();
 	});
 
-	describe('paths', function () {
+	describe('URIs', function () {
 
-		it('should not implement getBasePath', function () {
+		it('should not implement getBaseUri', function () {
 			expect(function () {
-				model.getBasePath();
+				model.getBaseUri();
 			}).toThrow('not implemented');
 		});
-
-		it('should not implement getSearchPath', function () {
-			expect(function () {
-				model.getSearchPath();
-			}).toThrow('not implemented');
-		});
-
-	});
-
-	describe('permissions', function () {
-
-		it('should not implement canBeCreated', function () {
-			expect(function () {
-				model.canBeCreated();
-			}).toThrow('not implemented');
-		});
-
-		it('should not implement canBeRead', function () {
-			expect(function () {
-				model.canBeRead();
-			}).toThrow('not implemented');
-		});
-
-		it('should not implement canBeUpdated', function () {
-			expect(function () {
-				model.canBeUpdated();
-			}).toThrow('not implemented');
-		});
-
-		it('should not implement canBeRemoved', function () {
-			expect(function () {
-				model.canBeRemoved();
-			}).toThrow('not implemented');
-		});
-
 	});
 
 	describe('serializable', function () {
 
 		it('should implement toSerializable', function () {
-			var id = 1;
-			model.id = id;
+			var uri = 1;
+			model.uri = uri;
 			var serializable = model.toSerializable();
-			expect(serializable.id).toEqual(id);
+			expect(serializable.uri).toEqual(uri);
 		});
 
 		it('should implement fromSerializable', function () {
 			var serializable = {
-				id: 1
+				uri: 1
 			};
 			model.fromSerializable(serializable);
-			expect(model.id).toEqual(serializable.id);
+			expect(model.uri).toEqual(serializable.uri);
 		});
 
 	});
@@ -112,11 +77,11 @@ describe('AbstractModel', function () {
 
 		it('should override the intial values', function () {
 			var values = {
-				id: 1,
+				uri: 1,
 				validation: 2
 			};
 			model = new AbstractModel(values);
-			expect(model.id).toEqual(1);
+			expect(model.uri).toEqual(1);
 			expect(model.validation).toEqual(2);
 		});
 
@@ -184,25 +149,25 @@ describe('AbstractModel', function () {
 
 	describe('crud', function () {
 
-		var basePath = null;
+		var baseUri = null;
 		var serializable = null;
 		var success = null;
 		var error = null;
 
 		beforeEach(function () {
-			basePath = 'model';
+			baseUri = 'model';
 			serializable = {
-				id: 1,
+				uri: 1,
 				message: 'hello'
 			};
-			model.getBasePath = jasmine.createSpy().andReturn(basePath);
+			model.getBaseUri = jasmine.createSpy().andReturn(baseUri);
 			model.fromSerializable = function (serializable) {
-				this.id = serializable.id;
+				this.uri = serializable.uri;
 				this.message = serializable.message;
 			};
 			model.toSerializable = function () {
 				return {
-					id: this.id,
+					uri: this.uri,
 					message: this.message
 				};
 			};
@@ -217,19 +182,19 @@ describe('AbstractModel', function () {
 			});
 
 			it('should create without callbacks', function () {
-				$httpBackend.expect('POST', basePath).respond({
-					id: serializable.id,
+				$httpBackend.expect('POST', baseUri).respond({
+					uri: serializable.uri,
 					message: serializable.message
 				});
 				expect(model.create()).toBe(model);
 				$httpBackend.flush();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).toEqual(serializable.message);
 			});
 
 			it('should create with success', function () {
-				$httpBackend.expect('POST', basePath).respond({
-					id: serializable.id,
+				$httpBackend.expect('POST', baseUri).respond({
+					uri: serializable.uri,
 					message: serializable.message
 				});
 				expect(model.create(success, error)).toBe(model);
@@ -238,19 +203,19 @@ describe('AbstractModel', function () {
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).toEqual(serializable.message);
 			});
 
 			it('should create with error', function () {
-				$httpBackend.expect('POST', basePath).respond(403, '');
+				$httpBackend.expect('POST', baseUri).respond(403, '');
 				expect(model.create(success, error)).toBe(model);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.id).not.toBeDefined();
+				expect(model.uri).not.toBeDefined();
 				expect(model.message).toEqual(serializable.message);
 			});
 
@@ -259,23 +224,23 @@ describe('AbstractModel', function () {
 		describe('read', function () {
 
 			beforeEach(function () {
-				model.id = serializable.id;
+				model.uri = serializable.uri;
 			});
 
 			it('should read without callbacks', function () {
-				$httpBackend.expect('GET', basePath + '/' + model.id).respond({
-					id: serializable.id,
+				$httpBackend.expect('GET', model.uri).respond({
+					uri: serializable.uri,
 					message: serializable.message
 				});
 				expect(model.read()).toBe(model);
 				$httpBackend.flush();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).toEqual(serializable.message);
 			});
 
 			it('should read with success', function () {
-				$httpBackend.expect('GET', basePath + '/' + model.id).respond({
-					id: serializable.id,
+				$httpBackend.expect('GET', model.uri).respond({
+					uri: serializable.uri,
 					message: serializable.message
 				});
 				expect(model.read(success, error)).toBe(model);
@@ -284,19 +249,19 @@ describe('AbstractModel', function () {
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).toEqual(serializable.message);
 			});
 
 			it('should read with error', function () {
-				$httpBackend.expect('GET', basePath + '/' + model.id).respond(404, '');
+				$httpBackend.expect('GET', model.uri).respond(404, '');
 				expect(model.read(success, error)).toBe(model);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).not.toBeDefined();
 			});
 
@@ -307,24 +272,24 @@ describe('AbstractModel', function () {
 			var message = 'hello hello';
 
 			beforeEach(function () {
-				model.id = serializable.id;
+				model.uri = serializable.uri;
 				model.message = message;
 			});
 
 			it('should update without callbacks', function () {
-				$httpBackend.expect('PUT', basePath + '/' + model.id).respond({
-					id: serializable.id,
+				$httpBackend.expect('PUT', model.uri).respond({
+					uri: serializable.uri,
 					message: serializable.message
 				});
 				expect(model.update()).toBe(model);
 				$httpBackend.flush();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).toEqual(message);
 			});
 
 			it('should update with success', function () {
-				$httpBackend.expect('PUT', basePath + '/' + model.id).respond({
-					id: model.id,
+				$httpBackend.expect('PUT', model.uri).respond({
+					uri: model.uri,
 					message: model.message
 				});
 				expect(model.update(success, error)).toBe(model);
@@ -333,19 +298,19 @@ describe('AbstractModel', function () {
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).toEqual(message);
 			});
 
 			it('should update with error', function () {
-				$httpBackend.expect('PUT', basePath + '/' + serializable.id).respond(403, '');
+				$httpBackend.expect('PUT', serializable.uri).respond(403, '');
 				expect(model.update(success, error)).toBe(model);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).toEqual(message);
 			});
 
@@ -354,36 +319,36 @@ describe('AbstractModel', function () {
 		describe('remove', function () {
 
 			beforeEach(function () {
-				model.id = serializable.id;
+				model.uri = serializable.uri;
 			});
 
 			it('should remove without callbacks', function () {
-				$httpBackend.expect('DELETE', basePath + '/' + model.id).respond(200, '');
+				$httpBackend.expect('DELETE', model.uri).respond(200, '');
 				expect(model.remove()).toBe(model);
 				$httpBackend.flush();
-				expect(model.id).toBeNull();
+				expect(model.uri).toBeNull();
 			});
 
 			it('should remove with success', function () {
-				$httpBackend.expect('DELETE', basePath + '/' + model.id).respond(200, '');
+				$httpBackend.expect('DELETE', model.uri).respond(200, '');
 				expect(model.remove(success, error)).toBe(model);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.id).toBeNull();
+				expect(model.uri).toBeNull();
 			});
 
 			it('should remove with error', function () {
-				$httpBackend.expect('DELETE', basePath + '/' + model.id).respond(404, '');
+				$httpBackend.expect('DELETE', model.uri).respond(404, '');
 				expect(model.remove(success, error)).toBe(model);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.id).toEqual(serializable.id);
+				expect(model.uri).toEqual(serializable.uri);
 				expect(model.message).not.toBeDefined();
 			});
 
@@ -392,29 +357,29 @@ describe('AbstractModel', function () {
 		describe('search', function () {
 
 			beforeEach(function () {
-				model.getSearchPath = function () {
-					return this.getBasePath() + '/search';
+				model.getBaseUri = function () {
+					return '/model';
 				};
 				AbstractModel.prototype.fromSerializable = function (serializable) {
-					this.id = serializable.id;
+					this.uri = serializable.uri;
 				};
 			});
 
 			it('should search without callbacks', function () {
-				$httpBackend.expect('GET', model.getBasePath() + '/search').respond(200, [{
-					id:1
+				$httpBackend.expect('GET', model.getBaseUri()).respond(200, [{
+					uri: 1
 				}]);
 				var results = model.search();
 				expect(results).toEqual([]);
 				$httpBackend.flush();
 				expect(results.length).toEqual(1);
 				expect(results[0] instanceof AbstractModel).toBeTruthy();
-				expect(results[0].id).toEqual(1);
+				expect(results[0].uri).toEqual(1);
 			});
 
 			it('should search with success', function () {
-				$httpBackend.expect('GET', model.getBasePath() + '/search').respond(200, [{
-					id:1
+				$httpBackend.expect('GET', model.getBaseUri()).respond(200, [{
+					uri: 1
 				}]);
 				var results = model.search(success, error);
 				expect(results).toEqual([]);
@@ -423,13 +388,13 @@ describe('AbstractModel', function () {
 				$httpBackend.flush();
 				expect(results.length).toEqual(1);
 				expect(results[0] instanceof AbstractModel).toBeTruthy();
-				expect(results[0].id).toEqual(1);
+				expect(results[0].uri).toEqual(1);
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 			});
 
 			it('should search with error', function () {
-				$httpBackend.expect('GET', model.getBasePath() + '/search').respond(403, '');
+				$httpBackend.expect('GET', model.getBaseUri()).respond(403, '');
 				var results = model.search(success, error);
 				expect(results).toEqual([]);
 				expect(success).not.toHaveBeenCalled();
