@@ -5,6 +5,7 @@
  * @module ch.maenulabs.rest.angular
  */
 angular.module('ch.maenulabs.rest.angular', []);
+
 /* globals angular, ch */
 /**
  * A basic RESTful model with CRUD methods.
