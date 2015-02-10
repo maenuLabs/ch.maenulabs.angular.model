@@ -1,11 +1,18 @@
+/* globals angular */
+/**
+ * The model.
+ *
+ * @module ch.maenulabs.rest.angular
+ */
+angular.module('ch.maenulabs.rest.angular', []);
 /* globals angular, ch */
 /**
  * A basic RESTful model with CRUD methods.
  *
- * @module ch.maenulabs.angular.model
+ * @module ch.maenulabs.rest.angular
  * @class AbstractModel
  */
-angular.module('ch.maenulabs.angular.model').factory('ch.maenulabs.angular.model.AbstractModel',
+angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.AbstractModel',
 		['$http', function ($http) {
 	var Validation = ch.maenulabs.validation.Validation;
 	return new ch.maenulabs.type.Type(Object, {

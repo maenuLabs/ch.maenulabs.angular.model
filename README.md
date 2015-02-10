@@ -1,3 +1,3 @@
-# ch.maenulabs.angular.model
+# ch.maenulabs.rest.angular
 
 Model for AngularJS.

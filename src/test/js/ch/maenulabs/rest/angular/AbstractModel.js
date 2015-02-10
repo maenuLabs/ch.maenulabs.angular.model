@@ -1,8 +1,8 @@
 /* global ch, angular, i18n:true, describe, it, beforeEach, expect, jasmine */
 describe('AbstractModel', function () {
 
-	var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.angular.model']);
-	var AbstractModel = $injector.get('ch.maenulabs.angular.model.AbstractModel');
+	var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.rest.angular']);
+	var AbstractModel = $injector.get('ch.maenulabs.rest.angular.AbstractModel');
 	var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 	var $httpBackend = $injector.get('$httpBackend');
 
