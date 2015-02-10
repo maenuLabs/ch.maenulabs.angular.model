@@ -36,13 +36,13 @@ module.exports = function(grunt) {
 			normal: {
 				src: [
 					'<%= meta.src.main %>/js/**/module.js',
-					'<%= meta.src.main %>/js/**/AbstractModel.js'
+					'<%= meta.src.main %>/js/**/!(module).js'
 				]
 			},
 			coverage: {
 				src: [
 					'<%= meta.src.main %>/js/**/module.js',
-					'<%= meta.src.main %>/js/**/AbstractModel.js'
+					'<%= meta.src.main %>/js/**/!(module).js'
 				],
 				options: {
 					template: require('grunt-template-jasmine-istanbul'),
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
 			options: {
 				specs: '<%= meta.src.test %>/js/**/*.js',
 				helpers: [
-					'<%= meta.src.test %>/js/ch/maenulabs/angular/model/helper.js'
+					'<%= meta.src.test %>/js/ch/maenulabs/rest/angular/helper.js'
 				],
 				vendor: [
 					'node_modules/angular/angular.js',

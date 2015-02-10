@@ -1,45 +1,45 @@
 /* global ch, angular, i18n:true, describe, it, beforeEach, expect, jasmine */
-describe('AbstractModel', function () {
+describe('AbstractResource', function () {
 
 	var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.rest.angular']);
-	var AbstractModel = $injector.get('ch.maenulabs.rest.angular.AbstractModel');
+	var AbstractResource = $injector.get('ch.maenulabs.rest.angular.resource.AbstractResource');
 	var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 	var $httpBackend = $injector.get('$httpBackend');
 
-	var model = null;
+	var resource = null;
 
 	beforeEach(function () {
-		model = new AbstractModel();
+		resource = new AbstractResource();
 	});
 
 	describe('static', function () {
 
 		it('should create statically with fromSerializable', function () {
-			model = AbstractModel.fromSerializable({
+			resource = AbstractResource.fromSerializable({
 				uri: 1
 			});
-			expect(model instanceof AbstractModel).toBeTruthy();
-			expect(model.uri).toEqual(1);
+			expect(resource instanceof AbstractResource).toBeTruthy();
+			expect(resource.uri).toEqual(1);
 		});
 
 		it('should create statically with fromJson', function () {
-			model = AbstractModel.fromJson('{"uri":1}');
-			expect(model instanceof AbstractModel).toBeTruthy();
-			expect(model.uri).toEqual(1);
+			resource = AbstractResource.fromJson('{"uri":1}');
+			expect(resource instanceof AbstractResource).toBeTruthy();
+			expect(resource.uri).toEqual(1);
 		});
 
 	});
 
 	it('should have a validation and a nulled uri', function () {
-		expect(model.uri).not.toBeDefined();
-		expect(model.validation).toBeDefined();
+		expect(resource.uri).not.toBeDefined();
+		expect(resource.validation).toBeDefined();
 	});
 
 	describe('URIs', function () {
 
 		it('should not implement getBaseUri', function () {
 			expect(function () {
-				model.getBaseUri();
+				resource.getBaseUri();
 			}).toThrow('not implemented');
 		});
 	});
@@ -48,8 +48,8 @@ describe('AbstractModel', function () {
 
 		it('should implement toSerializable', function () {
 			var uri = 1;
-			model.uri = uri;
-			var serializable = model.toSerializable();
+			resource.uri = uri;
+			var serializable = resource.toSerializable();
 			expect(serializable.uri).toEqual(uri);
 		});
 
@@ -57,8 +57,8 @@ describe('AbstractModel', function () {
 			var serializable = {
 				uri: 1
 			};
-			model.fromSerializable(serializable);
-			expect(model.uri).toEqual(serializable.uri);
+			resource.fromSerializable(serializable);
+			expect(resource.uri).toEqual(serializable.uri);
 		});
 
 	});
@@ -70,9 +70,9 @@ describe('AbstractModel', function () {
 				a: 1,
 				b: 2
 			};
-			model = new AbstractModel(values);
-			expect(model.a).toEqual(1);
-			expect(model.b).toEqual(2);
+			resource = new AbstractResource(values);
+			expect(resource.a).toEqual(1);
+			expect(resource.b).toEqual(2);
 		});
 
 		it('should override the intial values', function () {
@@ -80,9 +80,9 @@ describe('AbstractModel', function () {
 				uri: 1,
 				validation: 2
 			};
-			model = new AbstractModel(values);
-			expect(model.uri).toEqual(1);
-			expect(model.validation).toEqual(2);
+			resource = new AbstractResource(values);
+			expect(resource.uri).toEqual(1);
+			expect(resource.validation).toEqual(2);
 		});
 
 	});
@@ -90,10 +90,10 @@ describe('AbstractModel', function () {
 	describe('validation', function () {
 
 		it('should have no errors', function () {
-			expect(model.hasErrors()).toBeFalsy();
-			expect(model.getErrors()).toEqual({});
-			expect(model.hasError('a')).toBeFalsy();
-			expect(model.getError('a')).toEqual([]);
+			expect(resource.hasErrors()).toBeFalsy();
+			expect(resource.getErrors()).toEqual({});
+			expect(resource.hasError('a')).toBeFalsy();
+			expect(resource.getError('a')).toEqual([]);
 		});
 
 		it('should have errors', function () {
@@ -105,19 +105,19 @@ describe('AbstractModel', function () {
 					}
 				}
 			};
-			model = new AbstractModel({
+			resource = new AbstractResource({
 				a: null,
 				b: 1
 			});
-			model.validation.add(new ExistenceCheck('a'));
-			expect(model.hasErrors()).toBeTruthy();
-			expect(model.getErrors()).toEqual({
+			resource.validation.add(new ExistenceCheck('a'));
+			expect(resource.hasErrors()).toBeTruthy();
+			expect(resource.getErrors()).toEqual({
 				a: [message]
 			});
-			expect(model.hasError('a')).toBeTruthy();
-			expect(model.getError('a')).toEqual([message]);
-			expect(model.hasError('b')).toBeFalsy();
-			expect(model.getError('b')).toEqual([]);
+			expect(resource.hasError('a')).toBeTruthy();
+			expect(resource.getError('a')).toEqual([message]);
+			expect(resource.hasError('b')).toBeFalsy();
+			expect(resource.getError('b')).toEqual([]);
 		});
 
 	});
@@ -133,16 +133,16 @@ describe('AbstractModel', function () {
 		});
 
 		it('should serialize the serializable from toJson', function () {
-			model.toSerializable = jasmine.createSpy().andReturn(serializable);
-			var json = model.toJson();
-			expect(model.toSerializable).toHaveBeenCalled();
+			resource.toSerializable = jasmine.createSpy().andReturn(serializable);
+			var json = resource.toJson();
+			expect(resource.toSerializable).toHaveBeenCalled();
 			expect(json).toEqual(angular.toJson(serializable));
 		});
 
 		it('should deserialize the serializable from fromJson', function () {
-			model.fromSerializable = jasmine.createSpy();
-			model.fromJson(angular.toJson(serializable));
-			expect(model.fromSerializable).toHaveBeenCalledWith(serializable);
+			resource.fromSerializable = jasmine.createSpy();
+			resource.fromJson(angular.toJson(serializable));
+			expect(resource.fromSerializable).toHaveBeenCalledWith(serializable);
 		});
 
 	});
@@ -155,17 +155,17 @@ describe('AbstractModel', function () {
 		var error = null;
 
 		beforeEach(function () {
-			baseUri = 'model';
+			baseUri = 'resource';
 			serializable = {
 				uri: 1,
 				message: 'hello'
 			};
-			model.getBaseUri = jasmine.createSpy().andReturn(baseUri);
-			model.fromSerializable = function (serializable) {
+			resource.getBaseUri = jasmine.createSpy().andReturn(baseUri);
+			resource.fromSerializable = function (serializable) {
 				this.uri = serializable.uri;
 				this.message = serializable.message;
 			};
-			model.toSerializable = function () {
+			resource.toSerializable = function () {
 				return {
 					uri: this.uri,
 					message: this.message
@@ -178,7 +178,7 @@ describe('AbstractModel', function () {
 		describe('create', function () {
 
 			beforeEach(function () {
-				model.message = serializable.message;
+				resource.message = serializable.message;
 			});
 
 			it('should create without callbacks', function () {
@@ -186,10 +186,10 @@ describe('AbstractModel', function () {
 					uri: serializable.uri,
 					message: serializable.message
 				});
-				expect(model.create()).toBe(model);
+				expect(resource.create()).toBe(resource);
 				$httpBackend.flush();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).toEqual(serializable.message);
 			});
 
 			it('should create with success', function () {
@@ -197,26 +197,26 @@ describe('AbstractModel', function () {
 					uri: serializable.uri,
 					message: serializable.message
 				});
-				expect(model.create(success, error)).toBe(model);
+				expect(resource.create(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).toEqual(serializable.message);
 			});
 
 			it('should create with error', function () {
 				$httpBackend.expect('POST', baseUri).respond(403, '');
-				expect(model.create(success, error)).toBe(model);
+				expect(resource.create(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.uri).not.toBeDefined();
-				expect(model.message).toEqual(serializable.message);
+				expect(resource.uri).not.toBeDefined();
+				expect(resource.message).toEqual(serializable.message);
 			});
 
 		});
@@ -224,45 +224,45 @@ describe('AbstractModel', function () {
 		describe('read', function () {
 
 			beforeEach(function () {
-				model.uri = serializable.uri;
+				resource.uri = serializable.uri;
 			});
 
 			it('should read without callbacks', function () {
-				$httpBackend.expect('GET', model.uri).respond({
+				$httpBackend.expect('GET', resource.uri).respond({
 					uri: serializable.uri,
 					message: serializable.message
 				});
-				expect(model.read()).toBe(model);
+				expect(resource.read()).toBe(resource);
 				$httpBackend.flush();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).toEqual(serializable.message);
 			});
 
 			it('should read with success', function () {
-				$httpBackend.expect('GET', model.uri).respond({
+				$httpBackend.expect('GET', resource.uri).respond({
 					uri: serializable.uri,
 					message: serializable.message
 				});
-				expect(model.read(success, error)).toBe(model);
+				expect(resource.read(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).toEqual(serializable.message);
 			});
 
 			it('should read with error', function () {
-				$httpBackend.expect('GET', model.uri).respond(404, '');
-				expect(model.read(success, error)).toBe(model);
+				$httpBackend.expect('GET', resource.uri).respond(404, '');
+				expect(resource.read(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).not.toBeDefined();
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).not.toBeDefined();
 			});
 
 		});
@@ -272,46 +272,46 @@ describe('AbstractModel', function () {
 			var message = 'hello hello';
 
 			beforeEach(function () {
-				model.uri = serializable.uri;
-				model.message = message;
+				resource.uri = serializable.uri;
+				resource.message = message;
 			});
 
 			it('should update without callbacks', function () {
-				$httpBackend.expect('PUT', model.uri).respond({
+				$httpBackend.expect('PUT', resource.uri).respond({
 					uri: serializable.uri,
 					message: serializable.message
 				});
-				expect(model.update()).toBe(model);
+				expect(resource.update()).toBe(resource);
 				$httpBackend.flush();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).toEqual(message);
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).toEqual(message);
 			});
 
 			it('should update with success', function () {
-				$httpBackend.expect('PUT', model.uri).respond({
-					uri: model.uri,
-					message: model.message
+				$httpBackend.expect('PUT', resource.uri).respond({
+					uri: resource.uri,
+					message: resource.message
 				});
-				expect(model.update(success, error)).toBe(model);
+				expect(resource.update(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).toEqual(message);
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).toEqual(message);
 			});
 
 			it('should update with error', function () {
 				$httpBackend.expect('PUT', serializable.uri).respond(403, '');
-				expect(model.update(success, error)).toBe(model);
+				expect(resource.update(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).toEqual(message);
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).toEqual(message);
 			});
 
 		});
@@ -319,37 +319,37 @@ describe('AbstractModel', function () {
 		describe('remove', function () {
 
 			beforeEach(function () {
-				model.uri = serializable.uri;
+				resource.uri = serializable.uri;
 			});
 
 			it('should remove without callbacks', function () {
-				$httpBackend.expect('DELETE', model.uri).respond(200, '');
-				expect(model.remove()).toBe(model);
+				$httpBackend.expect('DELETE', resource.uri).respond(200, '');
+				expect(resource.remove()).toBe(resource);
 				$httpBackend.flush();
-				expect(model.uri).toBeNull();
+				expect(resource.uri).toBeNull();
 			});
 
 			it('should remove with success', function () {
-				$httpBackend.expect('DELETE', model.uri).respond(200, '');
-				expect(model.remove(success, error)).toBe(model);
+				$httpBackend.expect('DELETE', resource.uri).respond(200, '');
+				expect(resource.remove(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(model.uri).toBeNull();
+				expect(resource.uri).toBeNull();
 			});
 
 			it('should remove with error', function () {
-				$httpBackend.expect('DELETE', model.uri).respond(404, '');
-				expect(model.remove(success, error)).toBe(model);
+				$httpBackend.expect('DELETE', resource.uri).respond(404, '');
+				expect(resource.remove(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(model.uri).toEqual(serializable.uri);
-				expect(model.message).not.toBeDefined();
+				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.message).not.toBeDefined();
 			});
 
 		});
@@ -357,45 +357,45 @@ describe('AbstractModel', function () {
 		describe('search', function () {
 
 			beforeEach(function () {
-				model.getBaseUri = function () {
-					return '/model';
+				resource.getBaseUri = function () {
+					return '/resource';
 				};
-				AbstractModel.prototype.fromSerializable = function (serializable) {
+				AbstractResource.prototype.fromSerializable = function (serializable) {
 					this.uri = serializable.uri;
 				};
 			});
 
 			it('should search without callbacks', function () {
-				$httpBackend.expect('GET', model.getBaseUri()).respond(200, [{
+				$httpBackend.expect('GET', resource.getBaseUri()).respond(200, [{
 					uri: 1
 				}]);
-				var results = model.search();
+				var results = resource.search();
 				expect(results).toEqual([]);
 				$httpBackend.flush();
 				expect(results.length).toEqual(1);
-				expect(results[0] instanceof AbstractModel).toBeTruthy();
+				expect(results[0] instanceof AbstractResource).toBeTruthy();
 				expect(results[0].uri).toEqual(1);
 			});
 
 			it('should search with success', function () {
-				$httpBackend.expect('GET', model.getBaseUri()).respond(200, [{
+				$httpBackend.expect('GET', resource.getBaseUri()).respond(200, [{
 					uri: 1
 				}]);
-				var results = model.search(success, error);
+				var results = resource.search(success, error);
 				expect(results).toEqual([]);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(results.length).toEqual(1);
-				expect(results[0] instanceof AbstractModel).toBeTruthy();
+				expect(results[0] instanceof AbstractResource).toBeTruthy();
 				expect(results[0].uri).toEqual(1);
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 			});
 
 			it('should search with error', function () {
-				$httpBackend.expect('GET', model.getBaseUri()).respond(403, '');
-				var results = model.search(success, error);
+				$httpBackend.expect('GET', resource.getBaseUri()).respond(403, '');
+				var results = resource.search(success, error);
 				expect(results).toEqual([]);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();

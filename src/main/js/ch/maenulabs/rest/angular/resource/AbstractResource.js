@@ -1,11 +1,12 @@
 /* globals angular, ch */
 /**
- * A basic RESTful model with CRUD methods.
+ * A basic RESTful resource with CRUD methods.
  *
- * @module ch.maenulabs.rest.angular
- * @class AbstractModel
+ * @module ch.maenulabs.rest.angular.resource
+ * @class AbstractResource
+ * @extends IResource
  */
-angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.AbstractModel',
+angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.angular.resource.AbstractResource',
 		['$http', function ($http) {
 	var Validation = ch.maenulabs.validation.Validation;
 	return new ch.maenulabs.type.Type(Object, {
@@ -24,7 +25,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @type Validation
 		 */
 		/**
-		 * Creates a model.
+		 * Creates a resource.
 		 *
 		 * @constructor
 		 *
@@ -92,7 +93,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return IModel itself
+		 * @return IResource itself
 		 */
 		create: function (success, error) {
 			success = success || angular.noop;
@@ -116,7 +117,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return IModel itself
+		 * @return IResource itself
 		 */
 		read: function (success, error) {
 			success = success || angular.noop;
@@ -139,7 +140,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return IModel itself
+		 * @return IResource itself
 		 */
 		update: function (success, error) {
 			success = success || angular.noop;
@@ -160,7 +161,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return IModel itself
+		 * @return IResource itself
 		 */
 		remove: function (success, error) {
 			success = success || angular.noop;
@@ -175,7 +176,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 			return this;
 		},
 		/**
-		 * Searches for similar models.
+		 * Searches for similar resources.
 		 *
 		 * @public
 		 * @method search
@@ -183,7 +184,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Function [success] Called when successful
 		 * @param Function [error] Called when unsuccessful
 		 *
-		 * @return Array The resulting models
+		 * @return Array The resulting resources
 		 */
 		search: function (success, error) {
 			success = success || angular.noop;
@@ -263,7 +264,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		}
 	}, {
 		/**
-		 * Creates a model from a JSON.
+		 * Creates a resource from a JSON.
 		 *
 		 * @public
 		 * @static
@@ -272,15 +273,15 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param String json A JSON string, see fromSerializable for
 		 *     properties
 		 *
-		 * @return IModel The model that was created from the specified JSON
+		 * @return IResource The resource that was created from the specified JSON
 		 */
 		fromJson: function (json) {
-			var model = new this();
-			model.fromJson(json);
-			return model;
+			var resource = new this();
+			resource.fromJson(json);
+			return resource;
 		},
 		/**
-		 * Creates a model from a serializable object.
+		 * Creates a resource from a serializable object.
 		 *
 		 * @public
 		 * @static
@@ -289,13 +290,13 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.A
 		 * @param Object serializable A serializable object, see
 		 *     fromSerializable for properties
 		 *
-		 * @return IModel The model that was created from the specified
+		 * @return IResource The resource that was created from the specified
 		 *     serializable
 		 */
 		fromSerializable: function (serializable) {
-			var model = new this();
-			model.fromSerializable(serializable);
-			return model;
+			var resource = new this();
+			resource.fromSerializable(serializable);
+			return resource;
 		}
 	});
 }]);

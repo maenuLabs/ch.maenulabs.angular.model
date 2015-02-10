@@ -1,8 +1,8 @@
 /**
- * A basic RESTful model with CRUD methods.
+ * A basic RESTful resource with CRUD methods.
  *
- * @module ch.maenulabs.angular.model
- * @class IModel
+ * @module ch.maenulabs.rest.angular.resource
+ * @class IResource
  */
 /**
  * Checks whether it has errors or not.
@@ -49,7 +49,7 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return IModel itself
+ * @return IResource itself
  */
 /**
  * Reads it. Only the URI needs to be set and the rest will be populated.
@@ -60,7 +60,7 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return IModel itself
+ * @return IResource itself
  */
 /**
  * Updates it.
@@ -71,7 +71,7 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return IModel itself
+ * @return IResource itself
  */
 /**
  * Removes it.
@@ -82,10 +82,10 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return IModel itself
+ * @return IResource itself
  */
 /**
- * Searches for similar models.
+ * Searches for similar resources.
  *
  * @public
  * @method search
@@ -93,7 +93,7 @@
  * @param Function [success] Called when successful
  * @param Function [error] Called when unsuccessful
  *
- * @return Array The resulting models
+ * @return Array The resulting resources
  */
 /**
  * Serializes it to a JSON string.
