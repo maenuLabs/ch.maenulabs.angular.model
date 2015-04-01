@@ -6,10 +6,6 @@ module.exports = function(grunt) {
 				main: 'src/main',
 				test: 'src/test',
 			},
-			lib: {
-				main: 'lib/main',
-				test: 'lib/test',
-			},
 			bin: {
 				coverage: 'bin/coverage',
 				plato: 'bin/plato'
@@ -76,7 +72,7 @@ module.exports = function(grunt) {
 			model: {
 				src: [
 					'<%= meta.src.main %>/js/**/module.js',
-					'<%= meta.src.main %>/js/**/AbstractModel.js'
+					'<%= meta.src.main %>/js/**/!(module).js'
 				],
 				dest: '<%= meta.package.name %>.js'
 			}
