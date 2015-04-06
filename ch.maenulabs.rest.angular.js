@@ -22,7 +22,7 @@ angular.module('ch.maenulabs.rest.angular.resource', []);
  *
  * @module ch.maenulabs.rest.angular.resource
  * @class AbstractResource
- * @extends IResource
+ * @extends ch.maenulabs.rest.angular.resource.IResource
  */
 angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.angular.resource.AbstractResource',
 		['$http', function ($http) {
@@ -53,90 +53,32 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			angular.extend(this, values || {});
 			this.validation = this.validation || new Validation();
 		},
-		/**
-		 * Checks whether it has errors or not.
-		 *
-		 * @public
-		 * @method hasErrors
-		 *
-		 * @return Boolean true if it has, false otherwise
-		 */
 		hasErrors: function () {
 			return this.validation.hasErrors(this);
 		},
-		/**
-		 * Gets the validation errors.
-		 *
-		 * @public
-		 * @method getErrors
-		 *
-		 * @return Object The errors object
-		 */
 		getErrors: function () {
 			return this.validation.getErrors(this);
 		},
-		/**
-		 * Checks whether or not there is an error with the specified property.
-		 *
-		 * @public
-		 * @method hasError
-		 *
-		 * @param String property The property to check
-		 *
-		 * @return Boolean true if it has, false otherwise
-		 */
 		hasError: function (property) {
 			var errors = this.validation.getErrors(this);
 			return errors[property] && errors[property].length > 0;
 		},
-		/**
-		 * Gets the validation error for the specified property.
-		 *
-		 * @public
-		 * @method getError
-		 *
-		 * @param String property The property to check
-		 *
-		 * @return Array The error messages
-		 */
 		getError: function (property) {
 			return this.validation.getErrors(this)[property] || [];
 		},
-		/**
-		 * Creates it. After that, it will have an URI.
-		 *
-		 * @public
-		 * @method create
-		 *
-		 * @param Function [success] Called when successful
-		 * @param Function [error] Called when unsuccessful
-		 *
-		 * @return IResource itself
-		 */
 		create: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
 			$http({
 				url: this.getBaseUri(),
 				method: 'POST',
-				data: this.toJson()
+				data: this.serialize()
 			}).success(angular.bind(this, function (json, status, headers) {
 				this.uri = headers('location')
 				success.apply(this, arguments);
 			})).error(error);
 			return this;
 		},
-		/**
-		 * Reads it. Only the URI needs to be set and the rest will be populated.
-		 *
-		 * @public
-		 * @method read
-		 *
-		 * @param Function [success] Called when successful
-		 * @param Function [error] Called when unsuccessful
-		 *
-		 * @return IResource itself
-		 */
 		read: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
@@ -144,43 +86,21 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				url: this.uri,
 				method: 'GET'
 			}).success(angular.bind(this, function (json) {
-				this.fromJson(json);
+				this.deserialize(json);
 				success.apply(this, arguments);
 			})).error(error);
 			return this;
 		},
-		/**
-		 * Updates it.
-		 *
-		 * @public
-		 * @method update
-		 *
-		 * @param Function [success] Called when successful
-		 * @param Function [error] Called when unsuccessful
-		 *
-		 * @return IResource itself
-		 */
 		update: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
 			$http({
 				url: this.uri,
 				method: 'PUT',
-				data: this.toJson()
+				data: this.serialize()
 			}).success(success).error(error);
 			return this;
 		},
-		/**
-		 * Removes it.
-		 *
-		 * @public
-		 * @method remove
-		 *
-		 * @param Function [success] Called when successful
-		 * @param Function [error] Called when unsuccessful
-		 *
-		 * @return IResource itself
-		 */
 		remove: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
@@ -193,17 +113,6 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			})).error(error);
 			return this;
 		},
-		/**
-		 * Searches for similar resources.
-		 *
-		 * @public
-		 * @method search
-		 *
-		 * @param Function [success] Called when successful
-		 * @param Function [error] Called when unsuccessful
-		 *
-		 * @return Array The resulting resources
-		 */
 		search: function (success, error) {
 			success = success || angular.noop;
 			error = error || angular.noop;
@@ -212,61 +121,27 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				url: this.getBaseUri(),
 				method: 'GET'
 			}).success(angular.bind(this, function (json) {
-				var jsons = angular.fromJson(json);
-				for (var i = 0; i < jsons.length; i = i + 1) {
-					results.push(this.type.fromJson(jsons[i]));
+				var simplifications = angular.fromJson(json);
+				for (var i = 0; i < simplifications.length; i = i + 1) {
+					results.push(this.type.desimplify(simplifications[i]));
 				}
 				success.apply(this, arguments);
 			})).error(error);
 			return results;
 		},
-		/**
-		 * Serializes it to a JSON string.
-		 *
-		 * @public
-		 * @method toJson
-		 *
-		 * @return String A JSON string
-		 */
-		toJson: function () {
-			return angular.toJson(this.toSerializable());
+		serialize: function () {
+			return angular.toJson(this.simplify());
 		},
-		/**
-		 * Deserializes it from a JSON string.
-		 *
-		 * @public
-		 * @method fromJson
-		 *
-		 * @param String json A JSON string
-		 */
-		fromJson: function (json) {
-			this.fromSerializable(angular.fromJson(json));
+		deserialize: function (serialization) {
+			this.desimplify(angular.fromJson(serialization));
 		},
-		/**
-		 * Serializes it to a simple serializable object.
-		 *
-		 * @public
-		 * @method toSerializable
-		 *
-		 * @return Object A simple object with the properties:
-		 *     uri, a String
-		 */
-		toSerializable: function () {
+		simplify: function () {
 			return {
 				uri: this.uri
 			};
 		},
-		/**
-		 * Deserializes it from a simple serializable object.
-		 *
-		 * @public
-		 * @method fromSerializable
-		 *
-		 * @param Object serializable A simple object with the properties:
-		 *     uri, a String
-		 */
-		fromSerializable: function (serializable) {
-			this.uri = serializable.uri;
+		desimplify: function (simplification) {
+			this.uri = simplification.uri;
 		},
 		/**
 		 * Gets the base URI to make request to, without an ending slash. Must
@@ -282,38 +157,38 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 		}
 	}, {
 		/**
-		 * Creates a resource from a JSON.
+		 * Creates a resource from a serialization.
 		 *
 		 * @public
 		 * @static
-		 * @method fromJson
+		 * @method deserialize
 		 *
-		 * @param String json A JSON string, see fromSerializable for
+		 * @param String serialization A serialization, see desimplify for
 		 *     properties
 		 *
-		 * @return IResource The resource that was created from the specified JSON
+		 * @return IResource The resource that was created from the specified serialization
 		 */
-		fromJson: function (json) {
+		deserialize: function (serialization) {
 			var resource = new this();
-			resource.fromJson(json);
+			resource.deserialize(serialization);
 			return resource;
 		},
 		/**
-		 * Creates a resource from a serializable object.
+		 * Creates a resource from a simplification.
 		 *
 		 * @public
 		 * @static
-		 * @method fromSerializable
+		 * @method desimplify
 		 *
-		 * @param Object serializable A serializable object, see
-		 *     fromSerializable for properties
+		 * @param Object simplification A simplification, see desimplify for
+		 *     properties
 		 *
 		 * @return IResource The resource that was created from the specified
-		 *     serializable
+		 *     simplification
 		 */
-		fromSerializable: function (serializable) {
+		desimplify: function (simplification) {
 			var resource = new this();
-			resource.fromSerializable(serializable);
+			resource.desimplify(simplification);
 			return resource;
 		}
 	});
@@ -417,36 +292,36 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
  * @return Array The resulting resources
  */
 /**
- * Serializes it to a JSON string.
+ * Serializes it to a serialization.
  *
  * @public
- * @method toJson
+ * @method serialize
  *
- * @return String A JSON string
+ * @return String A serialization
  */
 /**
- * Deserializes it from a JSON string.
+ * Deserializes it from a serialization.
  *
  * @public
- * @method fromJson
+ * @method 
  *
- * @param String json A JSON string
+ * @param String serialization A serialization
  */
 /**
- * Serializes it to a simple serializable object.
+ * Serializes it to a simple simplification.
  *
  * @public
- * @method toSerializable
+ * @method simplify
  *
  * @return Object A simple object with the properties:
  *     uri, a String
  */
 /**
- * Deserializes it from a simple serializable object.
+ * Deserializes it from a simple simplification.
  *
  * @public
- * @method fromSerializable
+ * @method desimplify
  *
- * @param Object serializable A simple object with the properties:
+ * @param Object simplification A simple object with the properties:
  *     uri, a String
  */
