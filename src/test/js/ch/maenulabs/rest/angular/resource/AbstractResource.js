@@ -13,16 +13,16 @@ describe('AbstractResource', function () {
 
 	describe('static', function () {
 
-		it('should create statically with fromSerializable', function () {
-			resource = AbstractResource.fromSerializable({
+		it('should create statically with desimplify', function () {
+			resource = AbstractResource.desimplify({
 				uri: '/resource/1'
 			});
 			expect(resource instanceof AbstractResource).toBeTruthy();
 			expect(resource.uri).toEqual('/resource/1');
 		});
 
-		it('should create statically with fromJson', function () {
-			resource = AbstractResource.fromJson('{"uri":"/resource/1"}');
+		it('should create statically with deserialize', function () {
+			resource = AbstractResource.deserialize('{"uri":"/resource/1"}');
 			expect(resource instanceof AbstractResource).toBeTruthy();
 			expect(resource.uri).toEqual('/resource/1');
 		});
@@ -43,21 +43,21 @@ describe('AbstractResource', function () {
 		});
 	});
 
-	describe('serializable', function () {
+	describe('simplification', function () {
 
-		it('should implement toSerializable', function () {
+		it('should implement simplify', function () {
 			var uri = '/resource/1';
 			resource.uri = uri;
-			var serializable = resource.toSerializable();
-			expect(serializable.uri).toEqual(uri);
+			var simplification = resource.simplify();
+			expect(simplification.uri).toEqual(uri);
 		});
 
-		it('should implement fromSerializable', function () {
-			var serializable = {
+		it('should implement desimplify', function () {
+			var simplification = {
 				uri: '/resource/1'
 			};
-			resource.fromSerializable(serializable);
-			expect(resource.uri).toEqual(serializable.uri);
+			resource.desimplify(simplification);
+			expect(resource.uri).toEqual(simplification.uri);
 		});
 
 	});
@@ -123,27 +123,27 @@ describe('AbstractResource', function () {
 
 	});
 
-	describe('json', function () {
+	describe('serialization', function () {
 
-		var serializable = null;
+		var simplification = null;
 
 		beforeEach(function () {
-			serializable = {
+			simplification = {
 				a: 1
 			};
 		});
 
-		it('should serialize the serializable from toJson', function () {
-			resource.toSerializable = jasmine.createSpy().andReturn(serializable);
-			var json = resource.toJson();
-			expect(resource.toSerializable).toHaveBeenCalled();
-			expect(json).toEqual(angular.toJson(serializable));
+		it('should serialize the simplification from serialize', function () {
+			resource.simplify = jasmine.createSpy().andReturn(simplification);
+			var serialization = resource.serialize();
+			expect(resource.simplify).toHaveBeenCalled();
+			expect(serialization).toEqual(angular.toJson(simplification));
 		});
 
-		it('should deserialize the serializable from fromJson', function () {
-			resource.fromSerializable = jasmine.createSpy();
-			resource.fromJson(angular.toJson(serializable));
-			expect(resource.fromSerializable).toHaveBeenCalledWith(serializable);
+		it('should deserialize the simplification from deserialize', function () {
+			resource.desimplify = jasmine.createSpy();
+			resource.deserialize(angular.toJson(simplification));
+			expect(resource.desimplify).toHaveBeenCalledWith(simplification);
 		});
 
 	});
@@ -151,22 +151,22 @@ describe('AbstractResource', function () {
 	describe('crud', function () {
 
 		var baseUri = null;
-		var serializable = null;
+		var simplification = null;
 		var success = null;
 		var error = null;
 
 		beforeEach(function () {
 			baseUri = 'resource';
-			serializable = {
+			simplification = {
 				uri: '/resource/1',
 				message: 'hello'
 			};
 			resource.getBaseUri = jasmine.createSpy().andReturn(baseUri);
-			resource.fromSerializable = function (serializable) {
-				this.uri = serializable.uri;
-				this.message = serializable.message;
+			resource.desimplify = function (simplification) {
+				this.uri = simplification.uri;
+				this.message = simplification.message;
 			};
-			resource.toSerializable = function () {
+			resource.simplify = function () {
 				return {
 					uri: this.uri,
 					message: this.message
@@ -179,7 +179,7 @@ describe('AbstractResource', function () {
 		describe('create', function () {
 
 			beforeEach(function () {
-				resource.message = serializable.message;
+				resource.message = simplification.message;
 			});
 
 			it('should create without callbacks', function () {
@@ -188,8 +188,8 @@ describe('AbstractResource', function () {
 				});
 				expect(resource.create()).toBe(resource);
 				$httpBackend.flush();
-				expect(resource.uri).toEqual(serializable.uri);
-				expect(resource.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should create with success', function () {
@@ -202,8 +202,8 @@ describe('AbstractResource', function () {
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.uri).toEqual(serializable.uri);
-				expect(resource.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should create with error', function () {
@@ -215,7 +215,7 @@ describe('AbstractResource', function () {
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
 				expect(resource.uri).not.toBeDefined();
-				expect(resource.message).toEqual(serializable.message);
+				expect(resource.message).toEqual(simplification.message);
 			});
 
 		});
@@ -223,24 +223,24 @@ describe('AbstractResource', function () {
 		describe('read', function () {
 
 			beforeEach(function () {
-				resource.uri = serializable.uri;
+				resource.uri = simplification.uri;
 			});
 
 			it('should read without callbacks', function () {
 				$httpBackend.expect('GET', resource.uri).respond(200, {
-					uri: serializable.uri,
-					message: serializable.message
+					uri: simplification.uri,
+					message: simplification.message
 				});
 				expect(resource.read()).toBe(resource);
 				$httpBackend.flush();
-				expect(resource.uri).toEqual(serializable.uri);
-				expect(resource.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should read with success', function () {
 				$httpBackend.expect('GET', resource.uri).respond(200, {
-					uri: serializable.uri,
-					message: serializable.message
+					uri: simplification.uri,
+					message: simplification.message
 				});
 				expect(resource.read(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
@@ -248,8 +248,8 @@ describe('AbstractResource', function () {
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.uri).toEqual(serializable.uri);
-				expect(resource.message).toEqual(serializable.message);
+				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should read with error', function () {
@@ -260,7 +260,7 @@ describe('AbstractResource', function () {
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).not.toBeDefined();
 			});
 
@@ -271,7 +271,7 @@ describe('AbstractResource', function () {
 			var message = 'hello hello';
 
 			beforeEach(function () {
-				resource.uri = serializable.uri;
+				resource.uri = simplification.uri;
 				resource.message = message;
 			});
 
@@ -279,7 +279,7 @@ describe('AbstractResource', function () {
 				$httpBackend.expect('PUT', resource.uri).respond(202, '');
 				expect(resource.update()).toBe(resource);
 				$httpBackend.flush();
-				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).toEqual(message);
 			});
 
@@ -291,19 +291,19 @@ describe('AbstractResource', function () {
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).toEqual(message);
 			});
 
 			it('should update with error', function () {
-				$httpBackend.expect('PUT', serializable.uri).respond(403, '');
+				$httpBackend.expect('PUT', simplification.uri).respond(403, '');
 				expect(resource.update(success, error)).toBe(resource);
 				expect(success).not.toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).toEqual(message);
 			});
 
@@ -312,7 +312,7 @@ describe('AbstractResource', function () {
 		describe('remove', function () {
 
 			beforeEach(function () {
-				resource.uri = serializable.uri;
+				resource.uri = simplification.uri;
 			});
 
 			it('should remove without callbacks', function () {
@@ -341,7 +341,7 @@ describe('AbstractResource', function () {
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.uri).toEqual(serializable.uri);
+				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).not.toBeDefined();
 			});
 
@@ -353,8 +353,8 @@ describe('AbstractResource', function () {
 				resource.getBaseUri = function () {
 					return '/resource';
 				};
-				AbstractResource.prototype.fromSerializable = function (serializable) {
-					this.uri = serializable.uri;
+				AbstractResource.prototype.desimplify = function (simplification) {
+					this.uri = simplification.uri;
 				};
 			});
 

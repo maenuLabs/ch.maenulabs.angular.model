@@ -96,36 +96,36 @@
  * @return Array The resulting resources
  */
 /**
- * Serializes it to a JSON string.
+ * Serializes it to a serialization.
  *
  * @public
- * @method toJson
+ * @method serialize
  *
- * @return String A JSON string
+ * @return String A serialization
  */
 /**
- * Deserializes it from a JSON string.
+ * Deserializes it from a serialization.
  *
  * @public
- * @method fromJson
+ * @method 
  *
- * @param String json A JSON string
+ * @param String serialization A serialization
  */
 /**
- * Serializes it to a simple serializable object.
+ * Serializes it to a simple simplification.
  *
  * @public
- * @method toSerializable
+ * @method simplify
  *
  * @return Object A simple object with the properties:
  *     uri, a String
  */
 /**
- * Deserializes it from a simple serializable object.
+ * Deserializes it from a simple simplification.
  *
  * @public
- * @method fromSerializable
+ * @method desimplify
  *
- * @param Object serializable A simple object with the properties:
+ * @param Object simplification A simple object with the properties:
  *     uri, a String
  */
