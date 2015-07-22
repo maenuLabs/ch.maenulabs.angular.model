@@ -46,10 +46,7 @@
  * @public
  * @method create
  *
- * @param Function [success] Called when successful
- * @param Function [error] Called when unsuccessful
- *
- * @return IResource itself
+ * @return HttpPromise The request promise
  */
 /**
  * Reads it. Only the URI needs to be set and the rest will be populated.
@@ -57,10 +54,7 @@
  * @public
  * @method read
  *
- * @param Function [success] Called when successful
- * @param Function [error] Called when unsuccessful
- *
- * @return IResource itself
+ * @return HttpPromise The request promise
  */
 /**
  * Updates it.
@@ -68,10 +62,7 @@
  * @public
  * @method update
  *
- * @param Function [success] Called when successful
- * @param Function [error] Called when unsuccessful
- *
- * @return IResource itself
+ * @return HttpPromise The request promise
  */
 /**
  * Removes it.
@@ -79,10 +70,7 @@
  * @public
  * @method remove
  *
- * @param Function [success] Called when successful
- * @param Function [error] Called when unsuccessful
- *
- * @return IResource itself
+ * @return HttpPromise The request promise
  */
 /**
  * Searches for similar resources.
@@ -90,10 +78,7 @@
  * @public
  * @method search
  *
- * @param Function [success] Called when successful
- * @param Function [error] Called when unsuccessful
- *
- * @return Array The resulting resources
+ * @return HttpPromise The request promise with a results array on it
  */
 /**
  * Serializes it to a serialization.
@@ -112,20 +97,20 @@
  * @param String serialization A serialization
  */
 /**
- * Serializes it to a simple simplification.
+ * Simplifies it to a simple object.
  *
  * @public
  * @method simplify
  *
  * @return Object A simple object with the properties:
- *     uri, a String
+ *     uri, a String, the URI
  */
 /**
- * Deserializes it from a simple simplification.
+ * Desimplifies it from a simple object.
  *
  * @public
  * @method desimplify
  *
  * @param Object simplification A simple object with the properties:
- *     uri, a String
+ *     uri, a String, the URI
  */
