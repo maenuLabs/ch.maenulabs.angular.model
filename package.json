@@ -1,6 +1,6 @@
 {
   "name": "ch.maenulabs.rest.angular",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "RESTful JSON model for AngularJS",
   "keywords": [
     "REST",

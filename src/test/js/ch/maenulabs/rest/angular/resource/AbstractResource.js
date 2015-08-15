@@ -58,7 +58,7 @@ describe('AbstractResource', function () {
 					f: 4
 				};
 			};
-			expect(resource.getSearchUri()).toEqual('/resource?a.0=1&a.1=2&a.2.b=3&c.d=asdf&e=null&f=4');
+			expect(resource.getSearchUri()).toEqual('/resource?a.0=1&a.1=2&a.2.b=3&c.d=asdf&f=4');
 		});
 
 	});

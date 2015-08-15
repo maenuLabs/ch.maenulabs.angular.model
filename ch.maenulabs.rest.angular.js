@@ -181,7 +181,11 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			var items = [];
 			var flattened = flatten(this.simplify());
 			for (var key in flattened) {
-				var item = encodeURIComponent(key) + '=' + encodeURIComponent(flattened[key]);
+				var value = flattened[key];
+				if (value == null) {
+					continue;
+				}
+				var item = encodeURIComponent(key) + '=' + encodeURIComponent(value);
 				items.push(item);
 			}
 			return items.join('&');
