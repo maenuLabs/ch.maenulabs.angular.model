@@ -43,9 +43,22 @@ describe('AbstractResource', function () {
 		});
 
 		it('should not implement getSearchUri', function () {
-			expect(function () {
-				resource.getSearchUri();
-			}).toThrow('not implemented');
+			resource.getBaseUri = function () {
+				return '/resource';
+			};
+			resource.simplify = function () {
+				return {
+					a: [1, 2, {
+						b: 3
+					}],
+					c: {
+						d: 'asdf'
+					},
+					e: null,
+					f: 4
+				};
+			};
+			expect(resource.getSearchUri()).toEqual('/resource?a.0=1&a.1=2&a.2.b=3&c.d=asdf&e=null&f=4');
 		});
 
 	});

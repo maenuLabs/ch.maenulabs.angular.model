@@ -8,6 +8,27 @@
  */
 angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.angular.resource.AbstractResource',
 		['$http', function ($http) {
+	var flatten = function (object) {
+		var flattened = {};
+		for (var key in object) {
+			if (!object.hasOwnProperty(key)) {
+				continue;
+			}
+			var value = object[key];
+			if (!(value instanceof Object)) {
+				flattened[key] = value;
+				continue;
+			}
+			value = flatten(value);
+			for (var subKey in value) {
+				if (!value.hasOwnProperty(subKey)) {
+					continue;
+				}
+				flattened[key + '.' + subKey] = value[subKey];
+			}
+		}
+		return flattened;
+	};
 	var Validation = ch.maenulabs.validation.Validation;
 	return new ch.maenulabs.type.Type(Object, {
 		/**
@@ -120,8 +141,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			throw new Error('not implemented');
 		},
 		/**
-		 * Gets the search URI to make request to, without an ending slash. Must
-		 * be overwritten in subclass.
+		 * Gets the search URI to make request to, without an ending slash.
 		 *
 		 * @public
 		 * @method getSearchUri
@@ -129,7 +149,24 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 		 * @return String The search URI
 		 */
 		getSearchUri: function () {
-			throw new Error('not implemented');
+			return this.getBaseUri() + '?' + this.toSearchParameters();
+		},
+		/**
+		 * Encodes itself as search parameters.
+		 *
+		 * @protected
+		 * @method toSearchParameters
+		 *
+		 * @return String The search parameters
+		 */
+		toSearchParameters: function () {
+			var items = [];
+			var flattened = flatten(this.simplify());
+			for (var key in flattened) {
+				var item = encodeURIComponent(key) + '=' + encodeURIComponent(flattened[key]);
+				items.push(item);
+			}
+			return items.join('&');
 		}
 	}, {
 		/**
