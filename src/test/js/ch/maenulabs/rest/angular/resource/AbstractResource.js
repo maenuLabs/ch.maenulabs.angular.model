@@ -1,13 +1,14 @@
 /* global ch, angular, i18n:true, describe, it, beforeEach, expect, jasmine */
 describe('AbstractResource', function () {
 
-	var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.rest.angular.resource']);
-	var AbstractResource = $injector.get('ch.maenulabs.rest.angular.resource.AbstractResource');
-	var $httpBackend = $injector.get('$httpBackend');
-
-	var resource = null;
+	var AbstractResource;
+	var $httpBackend;
+	var resource;
 
 	beforeEach(function () {
+		var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.rest.angular.resource']);
+		AbstractResource = $injector.get('ch.maenulabs.rest.angular.resource.AbstractResource');
+		$httpBackend = $injector.get('$httpBackend');
 		resource = new AbstractResource();
 	});
 
@@ -29,6 +30,12 @@ describe('AbstractResource', function () {
 
 	});
 
+	it('should not implement getChangeables', function () {
+		expect(function () {
+			resource.getChangeables();
+		}).toThrow(new Error('not implemented'));
+	});
+
 	it('should have a validation and a nulled uri', function () {
 		expect(resource.uri).not.toBeDefined();
 		expect(resource.validation).toBeDefined();
@@ -39,7 +46,7 @@ describe('AbstractResource', function () {
 		it('should not implement getBaseUri', function () {
 			expect(function () {
 				resource.getBaseUri();
-			}).toThrow('not implemented');
+			}).toThrow(new Error('not implemented'));
 		});
 
 		it('should not implement getSearchUri', function () {
@@ -108,7 +115,11 @@ describe('AbstractResource', function () {
 
 	describe('validation', function () {
 
-		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
+		var ExistenceCheck;
+		
+		beforeEach(function () {
+			ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
+		});
 
 		it('should have no errors', function () {
 			expect(resource.hasErrors()).toBeFalsy();
@@ -145,7 +156,7 @@ describe('AbstractResource', function () {
 
 	describe('serialization', function () {
 
-		var simplification = null;
+		var simplification;
 
 		beforeEach(function () {
 			simplification = {
@@ -154,7 +165,7 @@ describe('AbstractResource', function () {
 		});
 
 		it('should serialize the simplification from serialize', function () {
-			resource.simplify = jasmine.createSpy().andReturn(simplification);
+			resource.simplify = jasmine.createSpy().and.returnValue(simplification);
 			var serialization = resource.serialize();
 			expect(resource.simplify).toHaveBeenCalled();
 			expect(serialization).toEqual(angular.toJson(simplification));
@@ -170,9 +181,9 @@ describe('AbstractResource', function () {
 
 	describe('crud', function () {
 
-		var baseUri = null;
-		var searchUri = null;
-		var simplification = null;
+		var baseUri;
+		var searchUri;
+		var simplification;
 
 		beforeEach(function () {
 			baseUri = '/resource';
@@ -181,8 +192,8 @@ describe('AbstractResource', function () {
 				uri: '/resource/1',
 				message: 'hello'
 			};
-			resource.getBaseUri = jasmine.createSpy().andReturn(baseUri);
-			resource.getSearchUri = jasmine.createSpy().andReturn(searchUri);
+			resource.getBaseUri = jasmine.createSpy().and.returnValue(baseUri);
+			resource.getSearchUri = jasmine.createSpy().and.returnValue(searchUri);
 			resource.desimplify = function (simplification) {
 				this.uri = simplification.uri;
 				this.message = simplification.message;
@@ -250,9 +261,10 @@ describe('AbstractResource', function () {
 
 		describe('update', function () {
 
-			var message = 'hello hello';
+			var message;
 
 			beforeEach(function () {
+				message = 'hello hello';
 				resource.uri = simplification.uri;
 				resource.message = message;
 			});
@@ -310,20 +322,24 @@ describe('AbstractResource', function () {
 				$httpBackend.expect('GET', searchUri).respond(200, [{
 					uri: '/resource/1'
 				}]);
-				var promise = resource.search();
-				expect(promise.results).toEqual([]);
+				var results = null;
+				var promise = resource.search().then(function (response) {
+					results = response.results;
+				});
 				$httpBackend.flush();
-				expect(promise.results.length).toEqual(1);
-				expect(promise.results[0] instanceof AbstractResource).toBeTruthy();
-				expect(promise.results[0].uri).toEqual('/resource/1');
+				expect(results.length).toEqual(1);
+				expect(results[0] instanceof AbstractResource).toBeTruthy();
+				expect(results[0].uri).toEqual('/resource/1');
 			});
 
 			it('should search with error', function () {
 				$httpBackend.expect('GET', searchUri).respond(403, '');
-				var promise = resource.search();
-				expect(promise.results).toEqual([]);
+				var results = null;
+				var promise = resource.search().then(function (response) {
+					results = response.results;
+				});
 				$httpBackend.flush();
-				expect(promise.results).toEqual([]);
+				expect(promise.results).toBeUndefined();
 			});
 
 		});

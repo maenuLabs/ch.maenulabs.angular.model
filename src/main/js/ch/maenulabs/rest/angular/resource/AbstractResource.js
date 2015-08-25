@@ -69,21 +69,26 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 		getError: function (property) {
 			return this.validation.getErrors(this)[property] || [];
 		},
+		getChangeables: function () {
+			throw new Error('not implemented');
+		},
 		create: function () {
 			return $http({
 				url: this.getBaseUri(),
 				method: 'POST',
 				data: this.serialize()
-			}).success(angular.bind(this, function (json, status, headers) {
-				this.uri = headers('location');
+			}).then(angular.bind(this, function (response) {
+				this.uri = response.headers('location');
+				return response;
 			}));
 		},
 		read: function () {
 			return $http({
 				url: this.uri,
 				method: 'GET'
-			}).success(angular.bind(this, function (json) {
-				this.deserialize(json);
+			}).then(angular.bind(this, function (response) {
+				this.deserialize(response.data);
+				return response;
 			}));
 		},
 		update: function () {
@@ -97,8 +102,9 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			$http({
 				url: this.uri,
 				method: 'DELETE'
-			}).success(angular.bind(this, function () {
+			}).then(angular.bind(this, function (response) {
 				this.uri = null;
+				return response;
 			}));
 		},
 		search: function () {
@@ -106,12 +112,13 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				url: this.getSearchUri(),
 				method: 'GET'
 			});
-			promise.results = [];
-			return promise.success(angular.bind(this, function (json) {
-				var simplifications = angular.fromJson(json);
+			return promise.then(angular.bind(this, function (response) {
+				var simplifications = angular.fromJson(response.data);
+				response.results = [];
 				for (var i = 0; i < simplifications.length; i = i + 1) {
-					promise.results.push(this.type.desimplify(simplifications[i]));
+					response.results.push(this.type.desimplify(simplifications[i]));
 				}
+				return response;
 			}));
 		},
 		serialize: function () {

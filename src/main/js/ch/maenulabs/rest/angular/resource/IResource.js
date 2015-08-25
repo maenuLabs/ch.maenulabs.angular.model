@@ -41,12 +41,20 @@
  * @return Array The error messages
  */
 /**
+ * Gets the names of the properties that can change.
+ *
+ * @public
+ * @method getChangeables
+ *
+ * @return Array The property names
+ */
+/**
  * Creates it. After that, it will have an URI.
  *
  * @public
  * @method create
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Reads it. Only the URI needs to be set and the rest will be populated.
@@ -54,7 +62,7 @@
  * @public
  * @method read
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Updates it.
@@ -62,7 +70,7 @@
  * @public
  * @method update
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Removes it.
@@ -70,7 +78,7 @@
  * @public
  * @method remove
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Searches for similar resources.
@@ -78,7 +86,7 @@
  * @public
  * @method search
  *
- * @return HttpPromise The request promise with a results array on it
+ * @return Promise The request promise with a results array on it
  */
 /**
  * Serializes it to a serialization.
@@ -92,7 +100,7 @@
  * Deserializes it from a serialization.
  *
  * @public
- * @method 
+ * @method deserialize
  *
  * @param String serialization A serialization
  */
