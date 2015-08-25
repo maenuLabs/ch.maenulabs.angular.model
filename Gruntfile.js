@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 			doc: 'doc'
 		},
 		watch: {
-			test: {
+			'test-coverage': {
 				files: ['<%= meta.src.main %>/js/**/*.js', '<%= meta.src.test %>/js/**/*.js'],
 				tasks: ['test-coverage']
 			}
@@ -57,9 +57,6 @@ module.exports = function(grunt) {
 			},
 			options: {
 				specs: '<%= meta.src.test %>/js/**/*.js',
-				helpers: [
-					'<%= meta.src.test %>/js/ch/maenulabs/rest/angular/helper.js'
-				],
 				vendor: [
 					'node_modules/angular/angular.js',
 					'node_modules/angular-mocks/angular-mocks.js',

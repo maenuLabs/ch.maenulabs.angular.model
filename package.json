@@ -13,22 +13,22 @@
   },
   "repository": "https://github.com/maenuLabs/ch.maenulabs.rest.angular",
   "dependencies": {
-    "angular": "^1.3.0",
+    "angular": "^1.4.4",
     "ch.maenulabs.type": "^0.1.3",
     "ch.maenulabs.validation": "^0.1.2"
   },
   "devDependencies": {
-    "grunt": "^0.4.0",
-    "grunt-contrib-clean": "^0.4.0",
-    "grunt-contrib-concat": "^0.1.3",
-    "grunt-contrib-connect": "^0.1.2",
-    "grunt-contrib-jasmine": "^0.4.2",
-    "grunt-contrib-jshint": "^0.2.0",
-    "grunt-contrib-uglify": "^0.1.2",
-    "grunt-contrib-watch": "^0.3.1",
-    "grunt-contrib-yuidoc": "^0.4.0",
-    "grunt-plato": "^0.1.5",
-    "grunt-template-jasmine-istanbul": "^0.2.6",
-    "angular-mocks": "^1.3.0"
+    "angular-mocks": "^1.4.4",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-connect": "^0.11.2",
+    "grunt-contrib-jasmine": "^0.9.1",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-yuidoc": "^0.9.0",
+    "grunt-plato": "^1.3.0",
+    "grunt-template-jasmine-istanbul": "^0.3.4"
   }
 }
