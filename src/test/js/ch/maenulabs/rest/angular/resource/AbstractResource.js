@@ -1,16 +1,18 @@
-/* global ch, angular, i18n:true, describe, it, beforeEach, expect, jasmine */
+/* global ch, angular, i18n:true, describe, it, beforeEach, expect, jasmine, module, inject */
 describe('AbstractResource', function () {
 
 	var AbstractResource;
 	var $httpBackend;
 	var resource;
+	
+	beforeEach(module('ng', 'ngMockE2E', 'ch.maenulabs.rest.angular.resource'));
 
-	beforeEach(function () {
-		var $injector = angular.injector(['ng', 'ngMockE2E', 'ch.maenulabs.rest.angular.resource']);
-		AbstractResource = $injector.get('ch.maenulabs.rest.angular.resource.AbstractResource');
-		$httpBackend = $injector.get('$httpBackend');
+	beforeEach(inject(['$httpBackend', 'ch.maenulabs.rest.angular.resource.AbstractResource', function (_$httpBackend_, _AbstractResource_) {
+		AbstractResource = _AbstractResource_;
+		$httpBackend = _$httpBackend_;
 		resource = new AbstractResource();
-	});
+		
+	}]));
 
 	describe('static', function () {
 
@@ -323,7 +325,7 @@ describe('AbstractResource', function () {
 					uri: '/resource/1'
 				}]);
 				var results = null;
-				var promise = resource.search().then(function (response) {
+				resource.search().then(function (response) {
 					results = response.results;
 				});
 				$httpBackend.flush();

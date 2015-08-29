@@ -1,20 +1,177 @@
 /* globals angular */
 /**
- * The model.
+ * The controller.
  *
- * @module ch.maenulabs.rest.angular
+ * @module ch.maenulabs.rest.angular.controller
  */
-angular.module('ch.maenulabs.rest.angular', [
-	'ch.maenulabs.rest.angular.resource'
-]);
+angular.module('ch.maenulabs.rest.angular.controller', []);
 
 /* globals angular */
 /**
  * The model.
  *
+ * @module ch.maenulabs.rest.angular
+ */
+angular.module('ch.maenulabs.rest.angular', [
+	'ch.maenulabs.rest.angular.resource',
+	'ch.maenulabs.rest.angular.controller'
+]);
+
+/* globals angular */
+/**
+ * The resource model.
+ *
  * @module ch.maenulabs.rest.angular.resource
  */
 angular.module('ch.maenulabs.rest.angular.resource', []);
+
+/* globals angular */
+/**
+ * Controls the resource create.
+ *
+ * @module ch.maenulabs.rest.angular.controller
+ * @class CreateFactory
+ */
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.CreateFactory', function () {
+	return [
+		'$scope', 'resource', function ($scope, resource) {
+			$scope.resource = resource;
+			$scope.$watch('resource.hasErrors()', function (hasErrors) {
+				if (!hasErrors) {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.validation.Success', $scope.resource);
+				} else {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.validation.Error', $scope.resource);
+				}
+			});
+			$scope.create = function () {
+				$scope.resource.create().then(function (response) {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.create.Success', $scope.resource, response);
+				}).catch(function (response) {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.create.Error', $scope.resource, response);
+				});
+			};
+		}
+	];
+});
+
+/* globals angular */
+/**
+ * Controls the resource read.
+ *
+ * @module ch.maenulabs.rest.angular.controller
+ * @class ReadFactory
+ */
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.ReadFactory', function () {
+	return [
+		'$scope', 'resource', function ($scope, resource) {
+			$scope.resource = resource;
+		}
+	];
+});
+
+/* globals angular, ch */
+/**
+ * Controls the resource search.
+ *
+ * @module ch.maenulabs.rest.angular.controller
+ * @class SearchFactory
+ */
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.SearchFactory', [
+	'$timeout', '$q', function ($timeout, $q) {
+		var SearchEvent = ch.maenulabs.type.Type(Object, {
+			delay: null,
+			state: null,
+			promise: null,
+			initialize: function (delay) {
+				this.delay = delay;
+				this.state = this.type.INITIALIZED;
+				this.promise = $q.defer().promise;
+			},
+			schedule: function (search) {
+				this.state = this.type.SCHEDULED;
+				var deferred = $q.defer();
+				this.promise = $timeout(angular.bind(this, function () {
+					return search().then(angular.bind(this, function (response) {
+						this.state = this.type.SUCCESS;
+						deferred.resolve(response);
+						return response;
+					})).catch(angular.bind(this, function (response) {
+						this.state = this.type.ERROR;
+						deferred.reject(response);
+						return response;
+					}));
+				}), this.delay);
+				this.promise.catch(angular.bind(this, function (response) {
+					this.state = this.type.CANCELLED;
+					deferred.reject(response);
+					return response;
+				}));
+				return deferred.promise;
+			},
+			cancel: function () {
+				$timeout.cancel(this.promise);
+			}
+		}, {
+			INITIALIZED: 1,
+			SCHEDULED: 2,
+			CANCELLED: 3,
+			SUCCESS: 4,
+			ERROR: 5
+		});
+		var DELAY = 1000;
+		return [
+			'$scope', 'resource', function ($scope, resource) {
+				$scope.resource = resource;
+				$scope.currentSearchEvent = new SearchEvent(DELAY);
+				$scope.search = function () {
+					$scope.currentSearchEvent.cancel();
+					$scope.currentSearchEvent = new SearchEvent(DELAY);
+					$scope.currentSearchEvent.schedule($scope.resource.search).then(function (response) {
+						$scope.$emit('ch.maenulabs.rest.angular.controller.search.Success', $scope.currentSearchEvent, $scope.resource, response);
+						return response;
+					}).catch(function (response) {
+						$scope.$emit('ch.maenulabs.rest.angular.controller.search.Error', $scope.currentSearchEvent, $scope.resource, response);
+						return response;
+					});
+					$scope.$emit('ch.maenulabs.rest.angular.controller.search.Pending', $scope.currentSearchEvent, $scope.resource);
+				};
+				$scope.$watchGroup($scope.resource.getChangeables(), $scope.search);
+			}
+		];
+	}
+]);
+
+/* globals angular */
+/**
+ * Controls the resource update.
+ *
+ * @module ch.maenulabs.rest.angular.controller
+ * @class UpdateFactory
+ */
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.UpdateFactory', function () {
+	return [
+		'$scope', 'resource', function ($scope, resource) {
+			$scope.resource = resource;
+			$scope.$watchGroup($scope.resource.getChangeables(), function () {
+				$scope.$emit('ch.maenulabs.rest.angular.controller.Change', $scope.resource);
+			});
+			$scope.$watch('resource.hasErrors()', function (hasErrors) {
+				if (hasErrors) {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.validation.Error', $scope.resource);
+				} else {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.validation.Success', $scope.resource);
+				}
+			});
+			$scope.update = function () {
+				$scope.resource.update().then(function (response) {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.update.Success', $scope.resource, response);
+				}).catch(function (response) {
+					$scope.$emit('ch.maenulabs.rest.angular.controller.update.Error', $scope.resource, response);
+				});
+			};
+		}
+	];
+});
 
 /* globals angular, ch */
 /**
@@ -87,21 +244,26 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 		getError: function (property) {
 			return this.validation.getErrors(this)[property] || [];
 		},
+		getChangeables: function () {
+			throw new Error('not implemented');
+		},
 		create: function () {
 			return $http({
 				url: this.getBaseUri(),
 				method: 'POST',
 				data: this.serialize()
-			}).success(angular.bind(this, function (json, status, headers) {
-				this.uri = headers('location');
+			}).then(angular.bind(this, function (response) {
+				this.uri = response.headers('location');
+				return response;
 			}));
 		},
 		read: function () {
 			return $http({
 				url: this.uri,
 				method: 'GET'
-			}).success(angular.bind(this, function (json) {
-				this.deserialize(json);
+			}).then(angular.bind(this, function (response) {
+				this.deserialize(response.data);
+				return response;
 			}));
 		},
 		update: function () {
@@ -115,8 +277,9 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			$http({
 				url: this.uri,
 				method: 'DELETE'
-			}).success(angular.bind(this, function () {
+			}).then(angular.bind(this, function (response) {
 				this.uri = null;
+				return response;
 			}));
 		},
 		search: function () {
@@ -124,12 +287,13 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				url: this.getSearchUri(),
 				method: 'GET'
 			});
-			promise.results = [];
-			return promise.success(angular.bind(this, function (json) {
-				var simplifications = angular.fromJson(json);
+			return promise.then(angular.bind(this, function (response) {
+				var simplifications = angular.fromJson(response.data);
+				response.results = [];
 				for (var i = 0; i < simplifications.length; i = i + 1) {
-					promise.results.push(this.type.desimplify(simplifications[i]));
+					response.results.push(this.type.desimplify(simplifications[i]));
 				}
+				return response;
 			}));
 		},
 		serialize: function () {
@@ -272,12 +436,20 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
  * @return Array The error messages
  */
 /**
+ * Gets the names of the properties that can change.
+ *
+ * @public
+ * @method getChangeables
+ *
+ * @return Array The property names
+ */
+/**
  * Creates it. After that, it will have an URI.
  *
  * @public
  * @method create
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Reads it. Only the URI needs to be set and the rest will be populated.
@@ -285,7 +457,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
  * @public
  * @method read
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Updates it.
@@ -293,7 +465,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
  * @public
  * @method update
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Removes it.
@@ -301,7 +473,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
  * @public
  * @method remove
  *
- * @return HttpPromise The request promise
+ * @return Promise The request promise
  */
 /**
  * Searches for similar resources.
@@ -309,7 +481,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
  * @public
  * @method search
  *
- * @return HttpPromise The request promise with a results array on it
+ * @return Promise The request promise with a results array on it
  */
 /**
  * Serializes it to a serialization.
@@ -323,7 +495,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
  * Deserializes it from a serialization.
  *
  * @public
- * @method 
+ * @method deserialize
  *
  * @param String serialization A serialization
  */

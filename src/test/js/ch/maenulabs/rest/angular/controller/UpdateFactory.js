@@ -1,3 +1,4 @@
+/* global describe, it, beforeEach, expect, jasmine, module, inject */
 describe('UpdateFactory', function () {
 
 	var $scope;

@@ -1,3 +1,4 @@
+/* global describe, it, beforeEach, expect, module, inject */
 describe('ReadFactory', function () {
 
 	var $scope;

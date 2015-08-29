@@ -1,3 +1,4 @@
+/* global describe, it, beforeEach, expect, jasmine, module, inject */
 describe('SearchFactory', function () {
 
 	var $scope;
@@ -29,7 +30,7 @@ describe('SearchFactory', function () {
 	
 	describe('search', function () {
 		
-		var deffered;
+		var deferred;
 		
 		beforeEach(function () {
 			deferred = $q.defer();
@@ -84,7 +85,7 @@ describe('SearchFactory', function () {
 			var listener = jasmine.createSpy();
 			$scope.$on('ch.maenulabs.rest.angular.controller.search.Error', listener);
 			$scope.search();
-			currentSearchEvent = $scope.currentSearchEvent;
+			var currentSearchEvent = $scope.currentSearchEvent;
 			currentSearchEvent.cancel();
 			$scope.$apply();
 			expect(listener.calls.mostRecent().args[1]).toBe(currentSearchEvent);
