@@ -1,11 +1,11 @@
 /* globals angular */
 /**
- * Controls the resource read.
+ * Controls the resource delete.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class ReadFactory
+ * @class DeleteFactory
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.ReadFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.DeleteFactory', [
 	'ch.maenulabs.rest.angular.service.eventifyAction',
 	function (eventifyAction) {
 		return [
@@ -13,7 +13,7 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'resource',
 			function ($scope, resource) {
 				$scope.resource = resource;
-				$scope.read = eventifyAction($scope, $scope.resource, 'read');
+				$scope.delete = eventifyAction($scope, $scope.resource, 'delete');
 			}
 		];
 	}

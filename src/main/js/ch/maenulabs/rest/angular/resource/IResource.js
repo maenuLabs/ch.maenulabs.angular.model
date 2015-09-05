@@ -26,7 +26,7 @@
  * @public
  * @method hasError
  *
- * @param String property The property to check
+ * @param {String} property The property to check
  *
  * @return Boolean true if it has, false otherwise
  */
@@ -36,7 +36,7 @@
  * @public
  * @method getError
  *
- * @param String property The property to check
+ * @param {String} property The property to check
  *
  * @return Array The error messages
  */
@@ -73,10 +73,10 @@
  * @return Promise The request promise
  */
 /**
- * Removes it.
+ * Deletes it.
  *
  * @public
- * @method remove
+ * @method delete
  *
  * @return Promise The request promise
  */
@@ -102,7 +102,7 @@
  * @public
  * @method deserialize
  *
- * @param String serialization A serialization
+ * @param {String} serialization A serialization
  */
 /**
  * Simplifies it to a simple object.
@@ -119,6 +119,6 @@
  * @public
  * @method desimplify
  *
- * @param Object simplification A simple object with the properties:
+ * @param {Object} simplification A simple object with the properties:
  *     uri, a String, the URI
  */

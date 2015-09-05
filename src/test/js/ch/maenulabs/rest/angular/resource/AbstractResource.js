@@ -289,22 +289,22 @@ describe('AbstractResource', function () {
 
 		});
 
-		describe('remove', function () {
+		describe('delete', function () {
 
 			beforeEach(function () {
 				resource.uri = simplification.uri;
 			});
 
-			it('should remove with success', function () {
+			it('should delete with success', function () {
 				$httpBackend.expect('DELETE', resource.uri).respond(202, '');
-				resource.remove();
+				resource.delete();
 				$httpBackend.flush();
 				expect(resource.uri).toBeNull();
 			});
 
-			it('should remove with error', function () {
+			it('should delete with error', function () {
 				$httpBackend.expect('DELETE', resource.uri).respond(404, '');
-				resource.remove();
+				resource.delete();
 				$httpBackend.flush();
 				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).not.toBeDefined();
@@ -337,11 +337,11 @@ describe('AbstractResource', function () {
 			it('should search with error', function () {
 				$httpBackend.expect('GET', searchUri).respond(403, '');
 				var results = null;
-				var promise = resource.search().then(function (response) {
+				resource.search().then(function (response) {
 					results = response.results;
 				});
 				$httpBackend.flush();
-				expect(promise.results).toBeUndefined();
+				expect(results).toBeNull();
 			});
 
 		});

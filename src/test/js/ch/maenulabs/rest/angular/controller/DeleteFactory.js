@@ -1,11 +1,11 @@
 /* global describe, it, beforeEach, expect, jasmine, module, inject */
-describe('ReadFactory', function () {
+describe('DeleteFactory', function () {
 
 	var $scope;
 	var eventifyAction;
 	var eventifiedAction;
 	var resource;
-	var Read;
+	var Delete;
 	
 	beforeEach(module('ng', 'ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
@@ -13,10 +13,10 @@ describe('ReadFactory', function () {
 		$provide.value('ch.maenulabs.rest.angular.service.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.ReadFactory', function (_$controller_, _$rootScope_, _ReadFactory_) {
+	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.DeleteFactory', function (_$controller_, _$rootScope_, _DeleteFactory_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		Read = _$controller_(_ReadFactory_, {
+		Delete = _$controller_(_DeleteFactory_, {
 			'$scope': $scope,
 			'resource': resource
 		});
@@ -26,9 +26,9 @@ describe('ReadFactory', function () {
 		expect($scope.resource).toBe(resource);
 	});
 
-	it('should eventify the resource\'s read', function () {
-		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'read');
-		expect($scope.read).toBe(eventifiedAction);
+	it('should eventify the resource\'s delete', function () {
+		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'delete');
+		expect($scope.delete).toBe(eventifiedAction);
 	});
 
 });

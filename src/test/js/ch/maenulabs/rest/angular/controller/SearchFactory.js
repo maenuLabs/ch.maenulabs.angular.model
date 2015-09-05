@@ -2,22 +2,32 @@
 describe('SearchFactory', function () {
 
 	var $scope;
-	var $timeout;
-	var $q;
+	var eventifySchedule;
+	var eventifyChange;
+	var eventifyAction;
+	var eventifiedAction;
+	var delay;
 	var changeables;
 	var resource;
 	var Search;
 	
-	beforeEach(module('ng', 'ngMock', 'ch.maenulabs.rest.angular.controller'));
+	beforeEach(module('ng', 'ch.maenulabs.rest.angular.controller', function($provide) {
+		eventifiedAction = jasmine.createSpy();
+		eventifySchedule = jasmine.createSpy();
+		eventifyChange = jasmine.createSpy();
+		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);
+		$provide.value('ch.maenulabs.rest.angular.service.eventifySchedule', eventifySchedule);
+		$provide.value('ch.maenulabs.rest.angular.service.eventifyChange', eventifyChange);
+		$provide.value('ch.maenulabs.rest.angular.service.eventifyAction', eventifyAction);
+    }));
 
-	beforeEach(inject(['$controller', '$rootScope', '$timeout', '$q', 'ch.maenulabs.rest.angular.controller.SearchFactory', function (_$controller_, _$rootScope_, _$timeout_, _$q_, _SearchFactory_) {
-		changeables = ['key'];
+	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.SearchFactory', function (_$controller_, _$rootScope_, _SearchFactory_) {
+		delay = 300;
+		changeables = [];
 		resource = {
 			getChangeables: jasmine.createSpy().and.returnValue(changeables)
 		};
 		$scope = _$rootScope_.$new();
-		$timeout = _$timeout_;
-		$q = _$q_;
 		Search = _$controller_(_SearchFactory_, {
 			'$scope': $scope,
 			'resource': resource
@@ -27,71 +37,28 @@ describe('SearchFactory', function () {
 	it('should set the resource on the scope', function () {
 		expect($scope.resource).toBe(resource);
 	});
-	
-	describe('search', function () {
-		
-		var deferred;
-		
-		beforeEach(function () {
-			deferred = $q.defer();
-			resource.search = jasmine.createSpy().and.returnValue(deferred.promise);
-		});
-		
-		it('should search on change', function () {
-			var listener = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.controller.search.Pending', listener);
-			$scope.$apply();
-			expect(listener.calls.mostRecent().args[1]).toBe($scope.currentSearchEvent);
-			expect(listener.calls.mostRecent().args[2]).toBe(resource);
-		});
-		
-		it('should call resource\'s search and register listeners', function () {
-			var listener = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.controller.search.Pending', listener);
-			$scope.search();
-			$timeout.flush();
-			expect(resource.search).toHaveBeenCalled();
-			expect(listener.calls.mostRecent().args[1]).toBe($scope.currentSearchEvent);
-			expect(listener.calls.mostRecent().args[2]).toBe(resource);
-		});
-		
-		it('should emit event on success', function () {
-			var listener = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.controller.search.Success', listener);
-			$scope.search();
-			$timeout.flush();
-			var response = {};
-			deferred.resolve(response);
-			$scope.$apply();
-			expect(listener.calls.mostRecent().args[1]).toBe($scope.currentSearchEvent);
-			expect(listener.calls.mostRecent().args[2]).toBe(resource);
-			expect(listener.calls.mostRecent().args[3]).toBe(response);
-		});
-		
-		it('should emit event on error', function () {
-			var listener = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.controller.search.Error', listener);
-			$scope.search();
-			$timeout.flush();
-			var response = {};
-			deferred.reject(response);
-			$scope.$apply();
-			expect(listener.calls.mostRecent().args[1]).toBe($scope.currentSearchEvent);
-			expect(listener.calls.mostRecent().args[2]).toBe(resource);
-			expect(listener.calls.mostRecent().args[3]).toBe(response);
-		});
-		
-		it('should emit event on cancel', function () {
-			var listener = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.controller.search.Error', listener);
-			$scope.search();
-			var currentSearchEvent = $scope.currentSearchEvent;
-			currentSearchEvent.cancel();
-			$scope.$apply();
-			expect(listener.calls.mostRecent().args[1]).toBe(currentSearchEvent);
-			expect(listener.calls.mostRecent().args[2]).toBe(resource);
-		});
-		
+
+	it('should eventify the schedule on the resource\'s change', function () {
+		expect(eventifySchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
+		$scope.$digest();
+		expect(eventifySchedule).toHaveBeenCalledWith($scope, delay);
+	});
+
+	it('should search when schedule is done', function () {
+		expect(eventifiedAction).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Done');
+		$scope.$digest();
+		expect(eventifiedAction).toHaveBeenCalled();
+	});
+
+	it('should eventify the resource\'s change', function () {
+		expect(eventifyChange).toHaveBeenCalledWith($scope, $scope.resource);
+	});
+
+	it('should eventify the resource\'s search', function () {
+		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'search');
+		expect($scope.search).toBe(eventifiedAction);
 	});
 
 });
