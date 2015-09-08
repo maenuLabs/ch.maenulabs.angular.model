@@ -7,7 +7,7 @@ describe('ReadFactory', function () {
 	var resource;
 	var Read;
 	
-	beforeEach(module('ng', 'ch.maenulabs.rest.angular.controller', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
 		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);
 		$provide.value('ch.maenulabs.rest.angular.service.eventifyAction', eventifyAction);

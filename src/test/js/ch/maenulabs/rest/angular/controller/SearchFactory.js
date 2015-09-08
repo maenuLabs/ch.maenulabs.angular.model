@@ -11,7 +11,7 @@ describe('SearchFactory', function () {
 	var resource;
 	var Search;
 	
-	beforeEach(module('ng', 'ch.maenulabs.rest.angular.controller', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
 		eventifySchedule = jasmine.createSpy();
 		eventifyChange = jasmine.createSpy();

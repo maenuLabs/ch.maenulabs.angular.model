@@ -5,7 +5,7 @@ describe('AbstractResource', function () {
 	var $httpBackend;
 	var resource;
 	
-	beforeEach(module('ng', 'ngMockE2E', 'ch.maenulabs.rest.angular.resource'));
+	beforeEach(module('ngMockE2E', 'ch.maenulabs.rest.angular.resource'));
 
 	beforeEach(inject(['$httpBackend', 'ch.maenulabs.rest.angular.resource.AbstractResource', function (_$httpBackend_, _AbstractResource_) {
 		AbstractResource = _AbstractResource_;

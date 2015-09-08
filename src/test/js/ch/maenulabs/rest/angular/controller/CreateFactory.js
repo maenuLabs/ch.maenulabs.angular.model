@@ -8,7 +8,7 @@ describe('CreateFactory', function () {
 	var resource;
 	var Create;
 	
-	beforeEach(module('ng', 'ch.maenulabs.rest.angular.controller', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
 		eventifyValidation = jasmine.createSpy();
 		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);

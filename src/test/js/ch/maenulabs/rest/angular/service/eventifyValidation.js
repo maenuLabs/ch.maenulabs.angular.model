@@ -5,7 +5,7 @@ describe('eventifyValidation', function () {
 	var errors;
 	var eventifyedValidation;
 	
-	beforeEach(module('ng', 'ch.maenulabs.rest.angular.service'));
+	beforeEach(module('ch.maenulabs.rest.angular.service'));
 
 	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.service.eventifyValidation', function (_$rootScope_, _eventifyValidation_) {
 		$scope = _$rootScope_.$new();

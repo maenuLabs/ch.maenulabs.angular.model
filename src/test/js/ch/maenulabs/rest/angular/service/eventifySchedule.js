@@ -7,7 +7,7 @@ describe('eventifySchedule', function () {
 	var eventifySchedule;
 	var eventifyedSchedule;
 	
-	beforeEach(module('ng', 'ngMock', 'ch.maenulabs.rest.angular.service'));
+	beforeEach(module('ch.maenulabs.rest.angular.service'));
 
 	beforeEach(inject(['$timeout', '$rootScope', 'ch.maenulabs.rest.angular.service.eventifySchedule', function (_$timeout_, _$rootScope_, _eventifySchedule_) {
 		$timeout = _$timeout_;

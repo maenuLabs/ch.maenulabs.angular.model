@@ -6,7 +6,7 @@ describe('eventifyAction', function () {
 	var promise;
 	var eventifiedAction;
 	
-	beforeEach(module('ng', 'ch.maenulabs.rest.angular.service'));
+	beforeEach(module('ch.maenulabs.rest.angular.service'));
 
 	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.service.eventifyAction', function (_$controller_, _$rootScope_, _eventifyAction_) {
 		$scope = _$rootScope_.$new();

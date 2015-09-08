@@ -5,7 +5,7 @@ describe('eventifyChange', function () {
 	var changedables;
 	var eventifyedChange;
 	
-	beforeEach(module('ng', 'ch.maenulabs.rest.angular.service'));
+	beforeEach(module('ch.maenulabs.rest.angular.service'));
 
 	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.service.eventifyChange', function (_$rootScope_, _eventifyChange_) {
 		$scope = _$rootScope_.$new();

@@ -10,7 +10,7 @@ describe('UpdateFactory', function () {
 	var resource;
 	var Update;
 	
-	beforeEach(module('ng', 'ch.maenulabs.rest.angular.controller', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
 		eventifyValidation = jasmine.createSpy();
 		eventifyChange = jasmine.createSpy();
