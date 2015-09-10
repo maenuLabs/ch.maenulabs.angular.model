@@ -37,16 +37,12 @@ describe('SearchFactory', function () {
 		});
 	}]));
 
-	it('should set the resource on the scope', function () {
-		expect($scope.resource).toBe(resource);
-	});
-
 	it('should eventify the resource\'s change', function () {
-		expect(eventifyChange).toHaveBeenCalledWith($scope, $scope.resource);
+		expect(eventifyChange).toHaveBeenCalledWith($scope, resource);
 	});
 
 	it('should eventify the resource\'s search', function () {
-		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'search');
+		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'search');
 		expect($scope.search).toBe(eventifiedAction);
 	});
 

@@ -22,12 +22,8 @@ describe('ReadFactory', function () {
 		});
 	}]));
 
-	it('should set the resource on the scope', function () {
-		expect($scope.resource).toBe(resource);
-	});
-
 	it('should eventify the resource\'s read', function () {
-		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'read');
+		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'read');
 		expect($scope.read).toBe(eventifiedAction);
 	});
 

@@ -25,16 +25,12 @@ describe('CreateFactory', function () {
 		});
 	}]));
 
-	it('should set the resource on the scope', function () {
-		expect($scope.resource).toBe(resource);
-	});
-
 	it('should eventify the resource\'s validation', function () {
-		expect(eventifyValidation).toHaveBeenCalledWith($scope, $scope.resource);
+		expect(eventifyValidation).toHaveBeenCalledWith($scope, resource);
 	});
 
 	it('should eventify the resource\'s create', function () {
-		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'create');
+		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'create');
 		expect($scope.create).toBe(eventifiedAction);
 	});
 

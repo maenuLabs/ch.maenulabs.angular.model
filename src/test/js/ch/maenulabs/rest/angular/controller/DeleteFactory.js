@@ -22,12 +22,8 @@ describe('DeleteFactory', function () {
 		});
 	}]));
 
-	it('should set the resource on the scope', function () {
-		expect($scope.resource).toBe(resource);
-	});
-
 	it('should eventify the resource\'s delete', function () {
-		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'delete');
+		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'delete');
 		expect($scope.delete).toBe(eventifiedAction);
 	});
 
