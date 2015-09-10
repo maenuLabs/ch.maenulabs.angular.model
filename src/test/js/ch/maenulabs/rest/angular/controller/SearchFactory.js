@@ -2,18 +2,20 @@
 describe('SearchFactory', function () {
 
 	var $scope;
+	var eventifiedSchedule;
+	var eventifiedAction;
 	var eventifySchedule;
 	var eventifyChange;
 	var eventifyAction;
-	var eventifiedAction;
 	var delay;
 	var changeables;
 	var resource;
 	var Search;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
+		eventifiedSchedule = jasmine.createSpy();
 		eventifiedAction = jasmine.createSpy();
-		eventifySchedule = jasmine.createSpy();
+		eventifySchedule = jasmine.createSpy().and.returnValue(eventifiedSchedule);
 		eventifyChange = jasmine.createSpy();
 		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);
 		$provide.value('ch.maenulabs.rest.angular.service.eventifySchedule', eventifySchedule);
@@ -30,26 +32,13 @@ describe('SearchFactory', function () {
 		$scope = _$rootScope_.$new();
 		Search = _$controller_(_SearchFactory_, {
 			'$scope': $scope,
-			'resource': resource
+			'resource': resource,
+			'delay': delay
 		});
 	}]));
 
 	it('should set the resource on the scope', function () {
 		expect($scope.resource).toBe(resource);
-	});
-
-	it('should eventify the schedule on the resource\'s change', function () {
-		expect(eventifySchedule).not.toHaveBeenCalled();
-		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
-		$scope.$digest();
-		expect(eventifySchedule).toHaveBeenCalledWith($scope, delay);
-	});
-
-	it('should search when schedule is done', function () {
-		expect(eventifiedAction).not.toHaveBeenCalled();
-		$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Done');
-		$scope.$digest();
-		expect(eventifiedAction).toHaveBeenCalled();
 	});
 
 	it('should eventify the resource\'s change', function () {
@@ -59,6 +48,46 @@ describe('SearchFactory', function () {
 	it('should eventify the resource\'s search', function () {
 		expect(eventifyAction).toHaveBeenCalledWith($scope, $scope.resource, 'search');
 		expect($scope.search).toBe(eventifiedAction);
+	});
+
+	it('should search when schedule is done', function () {
+		expect(eventifiedAction).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Done');
+		$scope.$digest();
+		expect(eventifiedAction).toHaveBeenCalled();
+	});
+
+	it('should eventify the schedule on the resource\'s change', function () {
+		expect(eventifySchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
+		$scope.$digest();
+		expect(eventifySchedule).toHaveBeenCalledWith($scope, delay);
+	});
+
+	it('should cancel the old schedule on multiple changes', function () {
+		expect(eventifiedSchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
+		$scope.$digest();
+		expect(eventifiedSchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
+		$scope.$digest();
+		expect(eventifiedSchedule).toHaveBeenCalled();
+	});
+
+	it('should not cancel the old schedule on done', function () {
+		expect(eventifiedSchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
+		$scope.$digest();
+		expect(eventifiedSchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Done');
+		$scope.$digest();
+		expect(eventifiedSchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
+		$scope.$digest();
+		expect(eventifiedSchedule).not.toHaveBeenCalled();
+		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
+		$scope.$digest();
+		expect(eventifiedSchedule).toHaveBeenCalled();
 	});
 
 });
