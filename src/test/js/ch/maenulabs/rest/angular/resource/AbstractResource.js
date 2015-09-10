@@ -182,20 +182,21 @@ describe('AbstractResource', function () {
 	});
 
 	describe('crud', function () {
-
+		
+		var success;
+		var error;
 		var baseUri;
-		var searchUri;
 		var simplification;
 
 		beforeEach(function () {
+			success = jasmine.createSpy();
+			error = jasmine.createSpy();
 			baseUri = '/resource';
-			searchUri = '/resource?message=hello';
 			simplification = {
 				uri: '/resource/1',
 				message: 'hello'
 			};
 			resource.getBaseUri = jasmine.createSpy().and.returnValue(baseUri);
-			resource.getSearchUri = jasmine.createSpy().and.returnValue(searchUri);
 			resource.desimplify = function (simplification) {
 				this.uri = simplification.uri;
 				this.message = simplification.message;
@@ -218,16 +219,20 @@ describe('AbstractResource', function () {
 				$httpBackend.expect('POST', baseUri).respond(201, '', {
 					'location': '/resource/1'
 				});
-				resource.create();
+				resource.create().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).toHaveBeenCalled();
+				expect(error).not.toHaveBeenCalled();
 				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should create with error', function () {
 				$httpBackend.expect('POST', baseUri).respond(403, '');
-				resource.create();
+				resource.create().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).not.toHaveBeenCalled();
+				expect(error).toHaveBeenCalled();
 				expect(resource.uri).not.toBeDefined();
 				expect(resource.message).toEqual(simplification.message);
 			});
@@ -245,16 +250,20 @@ describe('AbstractResource', function () {
 					uri: simplification.uri,
 					message: simplification.message
 				});
-				resource.read();
+				resource.read().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).toHaveBeenCalled();
+				expect(error).not.toHaveBeenCalled();
 				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should read with error', function () {
 				$httpBackend.expect('GET', resource.uri).respond(404, '');
-				resource.read();
+				resource.read().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).not.toHaveBeenCalled();
+				expect(error).toHaveBeenCalled();
 				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).not.toBeDefined();
 			});
@@ -273,16 +282,20 @@ describe('AbstractResource', function () {
 
 			it('should update with success', function () {
 				$httpBackend.expect('PUT', resource.uri).respond(202, '');
-				resource.update();
+				resource.update().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).toHaveBeenCalled();
+				expect(error).not.toHaveBeenCalled();
 				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).toEqual(message);
 			});
 
 			it('should update with error', function () {
 				$httpBackend.expect('PUT', simplification.uri).respond(403, '');
-				resource.update();
+				resource.update().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).not.toHaveBeenCalled();
+				expect(error).toHaveBeenCalled();
 				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).toEqual(message);
 			});
@@ -297,15 +310,19 @@ describe('AbstractResource', function () {
 
 			it('should delete with success', function () {
 				$httpBackend.expect('DELETE', resource.uri).respond(202, '');
-				resource.delete();
+				resource.delete().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).toHaveBeenCalled();
+				expect(error).not.toHaveBeenCalled();
 				expect(resource.uri).toBeNull();
 			});
 
 			it('should delete with error', function () {
 				$httpBackend.expect('DELETE', resource.uri).respond(404, '');
-				resource.delete();
+				resource.delete().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).not.toHaveBeenCalled();
+				expect(error).toHaveBeenCalled();
 				expect(resource.uri).toEqual(simplification.uri);
 				expect(resource.message).not.toBeDefined();
 			});
@@ -313,8 +330,12 @@ describe('AbstractResource', function () {
 		});
 
 		describe('search', function () {
+			
+			var searchUri;
 
 			beforeEach(function () {
+				searchUri = '/resource?message=hello';
+				resource.getSearchUri = jasmine.createSpy().and.returnValue(searchUri);
 				AbstractResource.prototype.desimplify = function (simplification) {
 					this.uri = simplification.uri;
 				};
@@ -324,11 +345,11 @@ describe('AbstractResource', function () {
 				$httpBackend.expect('GET', searchUri).respond(200, [{
 					uri: '/resource/1'
 				}]);
-				var results = null;
-				resource.search().then(function (response) {
-					results = response.results;
-				});
+				resource.search().then(success).catch(error);
 				$httpBackend.flush();
+				expect(success).toHaveBeenCalled();
+				expect(error).not.toHaveBeenCalled();
+				var results = success.calls.mostRecent().args[0].results;
 				expect(results.length).toEqual(1);
 				expect(results[0] instanceof AbstractResource).toBeTruthy();
 				expect(results[0].uri).toEqual('/resource/1');
@@ -336,12 +357,10 @@ describe('AbstractResource', function () {
 
 			it('should search with error', function () {
 				$httpBackend.expect('GET', searchUri).respond(403, '');
-				var results = null;
-				resource.search().then(function (response) {
-					results = response.results;
-				});
+				resource.search().then(success).catch(error);
 				$httpBackend.flush();
-				expect(results).toBeNull();
+				expect(success).not.toHaveBeenCalled();
+				expect(error).toHaveBeenCalled();
 			});
 
 		});

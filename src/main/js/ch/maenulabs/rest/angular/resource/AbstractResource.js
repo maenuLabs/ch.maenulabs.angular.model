@@ -102,7 +102,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				});
 			},
 			'delete': function () {
-				$http({
+				return $http({
 					url: this.uri,
 					method: 'DELETE'
 				}).then(angular.bind(this, function (response) {
