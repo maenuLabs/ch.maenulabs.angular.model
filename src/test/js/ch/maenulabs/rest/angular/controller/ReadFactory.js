@@ -5,7 +5,7 @@ describe('ReadFactory', function () {
 	var eventifyAction;
 	var eventifiedAction;
 	var resource;
-	var Read;
+	var controller;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
@@ -16,7 +16,7 @@ describe('ReadFactory', function () {
 	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.ReadFactory', function (_$controller_, _$rootScope_, _ReadFactory_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		Read = _$controller_(_ReadFactory_, {
+		controller = _$controller_(_ReadFactory_, {
 			'$scope': $scope,
 			'resource': resource
 		});
@@ -24,7 +24,7 @@ describe('ReadFactory', function () {
 
 	it('should eventify the resource\'s read', function () {
 		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'read');
-		expect($scope.read).toBe(eventifiedAction);
+		expect(controller.read).toBe(eventifiedAction);
 	});
 
 });

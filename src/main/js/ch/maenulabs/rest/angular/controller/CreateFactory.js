@@ -14,7 +14,7 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'resource',
 			function ($scope, resource) {
 				eventifyValidation($scope, resource);
-				$scope.create = eventifyAction($scope, resource, 'create');
+				this.create = eventifyAction($scope, resource, 'create');
 			}
 		];
 	}

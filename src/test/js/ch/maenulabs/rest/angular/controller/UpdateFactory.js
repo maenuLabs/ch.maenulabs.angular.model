@@ -8,7 +8,7 @@ describe('UpdateFactory', function () {
 	var eventifiedAction;
 	var changeables;
 	var resource;
-	var Update;
+	var controller;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
@@ -26,7 +26,7 @@ describe('UpdateFactory', function () {
 			getChangeables: jasmine.createSpy().and.returnValue(changeables)
 		};
 		$scope = _$rootScope_.$new();
-		Update = _$controller_(_UpdateFactory_, {
+		controller = _$controller_(_UpdateFactory_, {
 			'$scope': $scope,
 			'resource': resource
 		});
@@ -42,7 +42,7 @@ describe('UpdateFactory', function () {
 
 	it('should eventify the resource\'s update', function () {
 		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'update');
-		expect($scope.update).toBe(eventifiedAction);
+		expect(controller.update).toBe(eventifiedAction);
 	});
 
 });

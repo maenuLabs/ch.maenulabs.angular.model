@@ -6,7 +6,7 @@ describe('CreateFactory', function () {
 	var eventifyAction;
 	var eventifiedAction;
 	var resource;
-	var Create;
+	var controller;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
@@ -19,7 +19,7 @@ describe('CreateFactory', function () {
 	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.CreateFactory', function (_$controller_, _$rootScope_, _CreateFactory_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		Create = _$controller_(_CreateFactory_, {
+		controller = _$controller_(_CreateFactory_, {
 			'$scope': $scope,
 			'resource': resource
 		});
@@ -31,7 +31,7 @@ describe('CreateFactory', function () {
 
 	it('should eventify the resource\'s create', function () {
 		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'create');
-		expect($scope.create).toBe(eventifiedAction);
+		expect(controller.create).toBe(eventifiedAction);
 	});
 
 });

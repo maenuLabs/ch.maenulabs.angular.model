@@ -10,7 +10,7 @@ describe('SearchFactory', function () {
 	var delay;
 	var changeables;
 	var resource;
-	var Search;
+	var controller;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedSchedule = jasmine.createSpy();
@@ -30,7 +30,7 @@ describe('SearchFactory', function () {
 			getChangeables: jasmine.createSpy().and.returnValue(changeables)
 		};
 		$scope = _$rootScope_.$new();
-		Search = _$controller_(_SearchFactory_, {
+		controller = _$controller_(_SearchFactory_, {
 			'$scope': $scope,
 			'resource': resource,
 			'delay': delay
@@ -43,7 +43,7 @@ describe('SearchFactory', function () {
 
 	it('should eventify the resource\'s search', function () {
 		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'search');
-		expect($scope.search).toBe(eventifiedAction);
+		expect(controller.search).toBe(eventifiedAction);
 	});
 
 	it('should search when schedule is done', function () {

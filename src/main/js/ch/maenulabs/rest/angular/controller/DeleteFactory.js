@@ -12,7 +12,7 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				$scope.delete = eventifyAction($scope, resource, 'delete');
+				this.delete = eventifyAction($scope, resource, 'delete');
 			}
 		];
 	}

@@ -5,7 +5,7 @@ describe('DeleteFactory', function () {
 	var eventifyAction;
 	var eventifiedAction;
 	var resource;
-	var Delete;
+	var controller;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
@@ -16,7 +16,7 @@ describe('DeleteFactory', function () {
 	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.DeleteFactory', function (_$controller_, _$rootScope_, _DeleteFactory_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		Delete = _$controller_(_DeleteFactory_, {
+		controller = _$controller_(_DeleteFactory_, {
 			'$scope': $scope,
 			'resource': resource
 		});
@@ -24,7 +24,7 @@ describe('DeleteFactory', function () {
 
 	it('should eventify the resource\'s delete', function () {
 		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'delete');
-		expect($scope.delete).toBe(eventifiedAction);
+		expect(controller.delete).toBe(eventifiedAction);
 	});
 
 });
