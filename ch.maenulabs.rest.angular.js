@@ -49,9 +49,8 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				$scope.resource = resource;
-				eventifyValidation($scope, $scope.resource);
-				$scope.create = eventifyAction($scope, $scope.resource, 'create');
+				eventifyValidation($scope, resource);
+				this.create = eventifyAction($scope, resource, 'create');
 			}
 		];
 	}
@@ -71,8 +70,7 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				$scope.resource = resource;
-				$scope.delete = eventifyAction($scope, $scope.resource, 'delete');
+				this.delete = eventifyAction($scope, resource, 'delete');
 			}
 		];
 	}
@@ -92,8 +90,7 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				$scope.resource = resource;
-				$scope.read = eventifyAction($scope, $scope.resource, 'read');
+				this.read = eventifyAction($scope, resource, 'read');
 			}
 		];
 	}
@@ -111,20 +108,22 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 	'ch.maenulabs.rest.angular.service.eventifyChange',
 	'ch.maenulabs.rest.angular.service.eventifySchedule',
 	function (eventifyAction, eventifyChange, eventifySchedule) {
-		var DELAY = 300;
 		return [
 			'$scope',
 			'resource',
-			function ($scope, resource) {
-				$scope.resource = resource;
-				$scope.search = eventifyAction($scope, $scope.resource, 'search');
+			'delay',
+			function ($scope, resource, delay) {
+				var cancel = angular.noop;
+				this.search = eventifyAction($scope, resource, 'search');
 				$scope.$on('ch.maenulabs.rest.angular.resource.Changed', function () {
-					eventifySchedule($scope, DELAY);
+					cancel();
+					cancel = eventifySchedule($scope, delay);
 				});
-				$scope.$on('ch.maenulabs.rest.angular.service.schedule.Done', function () {
-					$scope.search();
-				});
-				eventifyChange($scope, $scope.resource);
+				$scope.$on('ch.maenulabs.rest.angular.service.schedule.Done', angular.bind(this, function () {
+					cancel = angular.noop;
+					this.search();
+				}));
+				eventifyChange($scope, resource);
 			}
 		];
 	}
@@ -146,10 +145,9 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				$scope.resource = resource;
-				eventifyChange($scope, $scope.resource);
-				eventifyValidation($scope, $scope.resource);
-				$scope.update = eventifyAction($scope, $scope.resource, 'update');
+				eventifyChange($scope, resource);
+				eventifyValidation($scope, resource);
+				this.update = eventifyAction($scope, resource, 'update');
 			}
 		];
 }]);
@@ -258,7 +256,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				});
 			},
 			'delete': function () {
-				$http({
+				return $http({
 					url: this.uri,
 					method: 'DELETE'
 				}).then(angular.bind(this, function (response) {
