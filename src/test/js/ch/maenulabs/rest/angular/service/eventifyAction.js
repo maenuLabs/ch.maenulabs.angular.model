@@ -19,6 +19,25 @@ describe('eventifyAction', function () {
 		eventifiedAction = _eventifyAction_($scope, $scope.resource, action);
 	}]));
 	
+	describe('arguments', function () {
+		
+		var argument1;
+		var argument2;
+		var argument3;
+		
+		beforeEach(function () {
+			argument1 = {};
+			argument2 = 1;
+			argument3 = '';
+			eventifiedAction(argument1, argument2, argument3);
+		});
+		
+		it('should call action with arguments', function () {
+			expect($scope.resource[action]).toHaveBeenCalledWith(argument1, argument2, argument3);
+		});
+		
+	});
+	
 	describe('events', function () {
 		
 		var pending;

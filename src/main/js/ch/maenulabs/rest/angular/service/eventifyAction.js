@@ -16,11 +16,12 @@ angular.module('ch.maenulabs.rest.angular.service').factory('ch.maenulabs.rest.a
 	 * @param {String} action The action name to perform
 	 * 
 	 * @return {Function} Returns a promise, resolved on success or rejected on error.
+	 *     Arguments are passed on to the wrapped function.
 	 */
 	return function ($scope, resource, action) {
 		return function () {
 			$scope.$emit('ch.maenulabs.rest.angular.resource.' + action + '.Pending', resource);
-			return resource[action]().then(function (response) {
+			return resource[action].apply(resource, arguments).then(function (response) {
 				$scope.$emit('ch.maenulabs.rest.angular.resource.' + action + '.Success', resource, response);
 				return response;
 			}).catch(function (response) {
