@@ -16,7 +16,8 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'delay',
 			function ($scope, resource, delay) {
 				var cancel = angular.noop;
-				this.search = eventifyAction($scope, resource, 'search');
+				this.resource = resource;
+				this.search = eventifyAction($scope, this.resource, 'search');
 				$scope.$on('ch.maenulabs.rest.angular.resource.Changed', function () {
 					cancel();
 					cancel = eventifySchedule($scope, delay);
@@ -25,7 +26,7 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 					cancel = angular.noop;
 					this.search();
 				}));
-				eventifyChange($scope, resource);
+				eventifyChange($scope, this.resource);
 			}
 		];
 	}

@@ -12,7 +12,8 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				this.delete = eventifyAction($scope, resource, 'delete');
+				this.resource = resource;
+				this.delete = eventifyAction($scope, this.resource, 'delete');
 			}
 		];
 	}

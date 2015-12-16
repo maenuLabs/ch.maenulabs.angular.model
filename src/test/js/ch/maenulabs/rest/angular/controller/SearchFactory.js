@@ -37,6 +37,10 @@ describe('SearchFactory', function () {
 		});
 	}]));
 
+	it('should set the resource on the controller', function () {
+		expect(controller.resource).toBe(resource);
+	});
+
 	it('should eventify the resource\'s change', function () {
 		expect(eventifyChange).toHaveBeenCalledWith($scope, resource);
 	});

@@ -14,9 +14,10 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				eventifyChange($scope, resource);
-				eventifyValidation($scope, resource);
-				this.update = eventifyAction($scope, resource, 'update');
+				this.resource = resource;
+				eventifyChange($scope, this.resource);
+				eventifyValidation($scope, this.resource);
+				this.update = eventifyAction($scope, this.resource, 'update');
 			}
 		];
 }]);

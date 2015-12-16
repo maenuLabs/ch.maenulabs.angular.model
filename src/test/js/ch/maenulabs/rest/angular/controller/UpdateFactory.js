@@ -32,6 +32,10 @@ describe('UpdateFactory', function () {
 		});
 	}]));
 
+	it('should set the resource on the controller', function () {
+		expect(controller.resource).toBe(resource);
+	});
+
 	it('should eventify the resource\'s validation', function () {
 		expect(eventifyValidation).toHaveBeenCalledWith($scope, resource);
 	});

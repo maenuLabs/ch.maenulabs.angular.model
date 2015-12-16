@@ -12,7 +12,8 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'$scope',
 			'resource',
 			function ($scope, resource) {
-				this.read = eventifyAction($scope, resource, 'read');
+				this.resource = resource;
+				this.read = eventifyAction($scope, this.resource, 'read');
 			}
 		];
 	}
