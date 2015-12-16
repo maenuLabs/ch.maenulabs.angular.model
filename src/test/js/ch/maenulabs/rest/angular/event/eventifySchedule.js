@@ -7,9 +7,9 @@ describe('eventifySchedule', function () {
 	var eventifySchedule;
 	var eventifyedSchedule;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.service'));
+	beforeEach(module('ch.maenulabs.rest.angular.event'));
 
-	beforeEach(inject(['$timeout', '$rootScope', 'ch.maenulabs.rest.angular.service.eventifySchedule', function (_$timeout_, _$rootScope_, _eventifySchedule_) {
+	beforeEach(inject(['$timeout', '$rootScope', 'ch.maenulabs.rest.angular.event.eventifySchedule', function (_$timeout_, _$rootScope_, _eventifySchedule_) {
 		$timeout = _$timeout_;
 		$scope = _$rootScope_.$new();
 		delay = 1000;
@@ -26,9 +26,9 @@ describe('eventifySchedule', function () {
 			scheduled = jasmine.createSpy();
 			cancelled = jasmine.createSpy();
 			done = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.service.schedule.Scheduled', scheduled);
-			$scope.$on('ch.maenulabs.rest.angular.service.schedule.Cancelled', cancelled);
-			$scope.$on('ch.maenulabs.rest.angular.service.schedule.Done', done);
+			$scope.$on('ch.maenulabs.rest.angular.event.schedule.Scheduled', scheduled);
+			$scope.$on('ch.maenulabs.rest.angular.event.schedule.Cancelled', cancelled);
+			$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', done);
 			eventifyedSchedule = eventifySchedule($scope, delay);
 			$scope.$digest();
 		});

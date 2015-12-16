@@ -2,10 +2,10 @@
 /**
  * Installs a watcher on a resource's validation.
  *
- * @module ch.maenulabs.rest.angular.service
+ * @module ch.maenulabs.rest.angular.event
  * @class eventifyValidation
  */
-angular.module('ch.maenulabs.rest.angular.service').factory('ch.maenulabs.rest.angular.service.eventifyValidation', function () {
+angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifyValidation', function () {
 	/**
 	 * Installs an eventifyer on the specified resource's validation in the specified scope.
 	 * 

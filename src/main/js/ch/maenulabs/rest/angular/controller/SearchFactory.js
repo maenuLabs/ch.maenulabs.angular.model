@@ -6,9 +6,9 @@
  * @class SearchFactory
  */
 angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.SearchFactory', [
-	'ch.maenulabs.rest.angular.service.eventifyAction',
-	'ch.maenulabs.rest.angular.service.eventifyChange',
-	'ch.maenulabs.rest.angular.service.eventifySchedule',
+	'ch.maenulabs.rest.angular.event.eventifyAction',
+	'ch.maenulabs.rest.angular.event.eventifyChange',
+	'ch.maenulabs.rest.angular.event.eventifySchedule',
 	function (eventifyAction, eventifyChange, eventifySchedule) {
 		return [
 			'$scope',
@@ -22,7 +22,7 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 					cancel();
 					cancel = eventifySchedule($scope, delay);
 				});
-				$scope.$on('ch.maenulabs.rest.angular.service.schedule.Done', angular.bind(this, function () {
+				$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', angular.bind(this, function () {
 					cancel = angular.noop;
 					this.search();
 				}));

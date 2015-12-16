@@ -5,9 +5,9 @@ describe('eventifyChange', function () {
 	var changedables;
 	var eventifyedChange;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.service'));
+	beforeEach(module('ch.maenulabs.rest.angular.event'));
 
-	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.service.eventifyChange', function (_$rootScope_, _eventifyChange_) {
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.event.eventifyChange', function (_$rootScope_, _eventifyChange_) {
 		$scope = _$rootScope_.$new();
 		changedables = ['key'];
 		$scope.resource = {

@@ -2,10 +2,10 @@
 /**
  * Installs an eventifyer on a scheduled action.
  *
- * @module ch.maenulabs.rest.angular.service
+ * @module ch.maenulabs.rest.angular.event
  * @class eventifySchedule
  */
-angular.module('ch.maenulabs.rest.angular.service').factory('ch.maenulabs.rest.angular.service.eventifySchedule', [
+angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifySchedule', [
 	'$timeout',
 	function ($timeout) {
 		/**
@@ -23,12 +23,12 @@ angular.module('ch.maenulabs.rest.angular.service').factory('ch.maenulabs.rest.a
 			var cancel = function () {
 				return $timeout.cancel(promise);
 			};
-			$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Scheduled', cancel);
+			$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Scheduled', cancel);
 			promise.then(function (response) {
-				$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Done', cancel);
+				$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Done', cancel);
 				return response;
 			}).catch(function (response) {
-				$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Cancelled', cancel);
+				$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Cancelled', cancel);
 				return response;
 			});
 			return cancel;

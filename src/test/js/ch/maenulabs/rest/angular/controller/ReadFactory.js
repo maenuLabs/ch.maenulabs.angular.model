@@ -10,7 +10,7 @@ describe('ReadFactory', function () {
 	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
 		eventifiedAction = jasmine.createSpy();
 		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);
-		$provide.value('ch.maenulabs.rest.angular.service.eventifyAction', eventifyAction);
+		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
 	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.ReadFactory', function (_$controller_, _$rootScope_, _ReadFactory_) {

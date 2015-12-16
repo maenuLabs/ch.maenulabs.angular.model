@@ -18,9 +18,9 @@ describe('SearchFactory', function () {
 		eventifySchedule = jasmine.createSpy().and.returnValue(eventifiedSchedule);
 		eventifyChange = jasmine.createSpy();
 		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);
-		$provide.value('ch.maenulabs.rest.angular.service.eventifySchedule', eventifySchedule);
-		$provide.value('ch.maenulabs.rest.angular.service.eventifyChange', eventifyChange);
-		$provide.value('ch.maenulabs.rest.angular.service.eventifyAction', eventifyAction);
+		$provide.value('ch.maenulabs.rest.angular.event.eventifySchedule', eventifySchedule);
+		$provide.value('ch.maenulabs.rest.angular.event.eventifyChange', eventifyChange);
+		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
 	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.SearchFactory', function (_$controller_, _$rootScope_, _SearchFactory_) {
@@ -52,7 +52,7 @@ describe('SearchFactory', function () {
 
 	it('should search when schedule is done', function () {
 		expect(eventifiedAction).not.toHaveBeenCalled();
-		$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Done');
+		$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Done');
 		$scope.$digest();
 		expect(eventifiedAction).toHaveBeenCalled();
 	});
@@ -79,7 +79,7 @@ describe('SearchFactory', function () {
 		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');
 		$scope.$digest();
 		expect(eventifiedSchedule).not.toHaveBeenCalled();
-		$scope.$emit('ch.maenulabs.rest.angular.service.schedule.Done');
+		$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Done');
 		$scope.$digest();
 		expect(eventifiedSchedule).not.toHaveBeenCalled();
 		$scope.$emit('ch.maenulabs.rest.angular.resource.Changed');

@@ -12,8 +12,8 @@ describe('CreateFactory', function () {
 		eventifiedAction = jasmine.createSpy();
 		eventifyValidation = jasmine.createSpy();
 		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);
-		$provide.value('ch.maenulabs.rest.angular.service.eventifyValidation', eventifyValidation);
-		$provide.value('ch.maenulabs.rest.angular.service.eventifyAction', eventifyAction);
+		$provide.value('ch.maenulabs.rest.angular.event.eventifyValidation', eventifyValidation);
+		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
 	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.CreateFactory', function (_$controller_, _$rootScope_, _CreateFactory_) {

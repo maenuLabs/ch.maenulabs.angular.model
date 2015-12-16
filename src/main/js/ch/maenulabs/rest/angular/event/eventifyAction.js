@@ -2,10 +2,10 @@
 /**
  * Wraps a resource action to emit events.
  *
- * @module ch.maenulabs.rest.angular.service
+ * @module ch.maenulabs.rest.angular.event
  * @class eventifyAction
  */
-angular.module('ch.maenulabs.rest.angular.service').factory('ch.maenulabs.rest.angular.service.eventifyAction', function () {
+angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifyAction', function () {
 	/**
 	 * Installs an eventifyer on the action on the specified resource in the specified scope to emit events on pending, success and error.
 	 * 

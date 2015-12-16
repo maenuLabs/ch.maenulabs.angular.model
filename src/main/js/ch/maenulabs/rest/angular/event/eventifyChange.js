@@ -2,10 +2,10 @@
 /**
  * Installs a watcher on a resource's changes.
  *
- * @module ch.maenulabs.rest.angular.service
+ * @module ch.maenulabs.rest.angular.event
  * @class eventifyChange
  */
-angular.module('ch.maenulabs.rest.angular.service').factory('ch.maenulabs.rest.angular.service.eventifyChange', function () {
+angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifyChange', function () {
 	/**
 	 * Installs an eventifyer on the specified resource's change in the specified scope.
 	 * 

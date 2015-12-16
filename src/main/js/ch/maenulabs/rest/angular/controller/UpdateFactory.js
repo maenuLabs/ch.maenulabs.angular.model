@@ -6,9 +6,9 @@
  * @class UpdateFactory
  */
 angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.UpdateFactory', [
-	'ch.maenulabs.rest.angular.service.eventifyAction',
-	'ch.maenulabs.rest.angular.service.eventifyValidation',
-	'ch.maenulabs.rest.angular.service.eventifyChange',
+	'ch.maenulabs.rest.angular.event.eventifyAction',
+	'ch.maenulabs.rest.angular.event.eventifyValidation',
+	'ch.maenulabs.rest.angular.event.eventifyChange',
 	function (eventifyAction, eventifyValidation, eventifyChange) {
 		return [
 			'$scope',
