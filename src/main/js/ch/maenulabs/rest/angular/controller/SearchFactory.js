@@ -22,10 +22,10 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 					cancel();
 					cancel = eventifySchedule($scope, delay);
 				});
-				$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', angular.bind(this, function () {
+				$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', (function () {
 					cancel = angular.noop;
 					this.search();
-				}));
+				}).bind(this));
 				eventifyChange($scope, this.resource);
 			}
 		];

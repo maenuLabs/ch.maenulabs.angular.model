@@ -80,19 +80,19 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 					url: this.getBaseUri(),
 					method: 'POST',
 					data: this.serialize()
-				}).then(angular.bind(this, function (response) {
+				}).then((function (response) {
 					this.uri = response.headers('location');
 					return response;
-				}));
+				}).bind(this));
 			},
 			read: function () {
 				return $http({
 					url: this.uri,
 					method: 'GET'
-				}).then(angular.bind(this, function (response) {
+				}).then((function (response) {
 					this.deserialize(response.data);
 					return response;
-				}));
+				}).bind(this));
 			},
 			update: function () {
 				return $http({
@@ -105,24 +105,23 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				return $http({
 					url: this.uri,
 					method: 'DELETE'
-				}).then(angular.bind(this, function (response) {
+				}).then((function (response) {
 					this.uri = null;
 					return response;
-				}));
+				}).bind(this));
 			},
 			search: function () {
-				var promise = $http({
+				return $http({
 					url: this.getSearchUri(),
 					method: 'GET'
-				});
-				return promise.then(angular.bind(this, function (response) {
+				}).then((function (response) {
 					var simplifications = angular.fromJson(response.data);
 					response.results = [];
 					for (var i = 0; i < simplifications.length; i = i + 1) {
 						response.results.push(this.type.desimplify(simplifications[i]));
 					}
 					return response;
-				}));
+				}).bind(this));
 			},
 			serialize: function () {
 				return angular.toJson(this.simplify());
