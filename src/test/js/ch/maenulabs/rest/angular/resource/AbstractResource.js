@@ -32,6 +32,12 @@ describe('AbstractResource', function () {
 
 	});
 
+	it('should not implement getBaseName', function () {
+		expect(function () {
+			resource.getBaseName();
+		}).toThrow(new Error('not implemented'));
+	});
+
 	it('should not implement getChangeables', function () {
 		expect(function () {
 			resource.getChangeables();

@@ -137,6 +137,9 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			desimplify: function (simplification) {
 				this.uri = simplification.uri;
 			},
+			getBaseName: function () {
+				throw new Error('not implemented');
+			},
 			/**
 			 * Gets the base URI to make request to, without an ending slash. Must
 			 * be overwritten in subclass.

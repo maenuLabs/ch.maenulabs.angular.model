@@ -122,3 +122,11 @@
  * @param {Object} simplification A simple object with the properties:
  *     uri, a String, the URI
  */
+/**
+ * Get the base name of the resource.
+ * 
+ * @public
+ * @method getBaseName
+ * 
+ * @return String The name
+ */
