@@ -59,6 +59,7 @@ module.exports = function(grunt) {
 				specs: '<%= meta.src.test %>/js/**/*.js',
 				vendor: [
 					'node_modules/angular/angular.js',
+					'node_modules/angular-route/angular-route.js',
 					'node_modules/angular-mocks/angular-mocks.js',
 					'node_modules/ch.maenulabs.type/ch.maenulabs.type.js',
 					'node_modules/ch.maenulabs.validation/ch.maenulabs.validation.js'
