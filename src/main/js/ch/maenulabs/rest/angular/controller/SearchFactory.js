@@ -15,15 +15,21 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
 			'resource',
 			'delay',
 			function ($scope, resource, delay) {
-				var cancel = angular.noop;
+				this.cancel = function () {};
 				this.resource = resource;
 				this.search = eventifyAction($scope, this.resource, 'search');
-				$scope.$on('ch.maenulabs.rest.angular.resource.Changed', function () {
-					cancel();
-					cancel = eventifySchedule($scope, delay);
-				});
-				$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', (function () {
-					cancel = angular.noop;
+				$scope.$on('ch.maenulabs.rest.angular.resource.Changed', (function ($event, resource) {
+					if (resource != this.resource) {
+						return;
+					}
+					this.cancel();
+					this.cancel = eventifySchedule($scope, delay);
+				}).bind(this));
+				$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', (function ($event, cancel) {
+					if (cancel != this.cancel) {
+						return;
+					}
+					this.cancel = function () {};
 					this.search();
 				}).bind(this));
 				eventifyChange($scope, this.resource);
