@@ -2,31 +2,29 @@
 /**
  * Decorator for $controller that instantiates generic controllers.
  * Set controller like 'Create'.
- * Requires $resolve.resource on the scope and sets it on the controller.
+ * Requires resource on the scope and injects it into the controller.
  *
  * @module ch.maenulabs.rest.angular.controller.decorator
  * @class decorator
  */
-angular.module('ch.maenulabs.rest.angular.controller.decorator').decorator('$controller', ['$injector', '$delegate', function ($injector, $delegate) {
-	return function () {
+angular.module('ch.maenulabs.rest.angular.controller.decorator').decorator('$controller', ['$injector', '$parse', '$delegate', function ($injector, $parse, $delegate) {
+	var CONTROLLER_REGEX = /^([^\(\s]+)(\(([^\)]*)\))?(\s+as\s+(\w+))?$/;
+	return function (expression, locals, later, identifier) {
 		try {
 			return $delegate.apply(this, arguments);
 		} catch (error) {
-			var controller = arguments[0];
-			var locals = arguments[1];
-			var parts = controller.split(' ');
-			var controllerParts = parts[0].split('.');
+			var match = expression.match(CONTROLLER_REGEX);
+			// get controller factory
+			var controllerParts = match[1].split('.');
 			var actionName = controllerParts[controllerParts.length - 1];
-			controller = $injector.get('ch.maenulabs.rest.angular.controller.' + actionName + 'Factory');
-			locals.resource = locals.$scope.$resolve.resource;
-			arguments = Array.prototype.slice.apply(arguments);
-			arguments[0] = controller;
-			arguments[1] = locals;
-			// set controller as
-			if (parts.length == 3 && !arguments[3]) {
-				arguments[3] = parts[2];
+			expression = $injector.get('ch.maenulabs.rest.angular.controller.' + actionName + 'Factory');
+			// get resource
+			locals.resource = $parse(match[3])(locals.$scope);
+			// get identifier
+			if (match[5] && !identifier) {
+				identifier = match[5];
 			}
-			return $delegate.apply(this, arguments);
+			return $delegate.apply(this, [expression, locals, later, identifier]);
 		}
 	};
 }]);
