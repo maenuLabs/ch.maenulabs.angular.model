@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach, expect, jasmine, module, inject */
+/* global ch, fail, describe, it, beforeEach, afterEach, expect, module, inject */
 describe('router', function () {
 	
 	var routerProvider;
@@ -16,7 +16,7 @@ describe('router', function () {
 		routerProvider.addRoute('test', 'Test', 'create', {
 			resolve: {
 				thing: function () {
-					return "thang";
+					return 'thang';
 				}
 			}
 		});
@@ -67,7 +67,7 @@ describe('router', function () {
 	
 	it('should get the URI with properties', function () {
 		var resource = new Test({
-			thing: "thang"
+			thing: 'thang'
 		});
 		expect(router.getUri(resource, 'read')).toEqual('/test/read/{"thing":"thang"}');
 	});
@@ -79,7 +79,7 @@ describe('router', function () {
 		});
 		$rootScope.$on('$routeChangeSuccess', function ($event, current) {
 			expect(current.locals.resource).toBeDefined();
-			expect(current.locals.resource.thing).toEqual("thang");
+			expect(current.locals.resource.thing).toEqual('thang');
 		});
 		$rootScope.$on('$routeChangeError', function () {
 			fail();
@@ -96,14 +96,14 @@ describe('router', function () {
 		});
 		$rootScope.$on('$routeChangeSuccess', function ($event, current) {
 			expect(current.locals.resource).toBeDefined();
-			expect(current.locals.resource.thing).toEqual("thang");
+			expect(current.locals.resource.thing).toEqual('thang');
 		});
 		$rootScope.$on('$routeChangeError', function () {
 			fail();
 		});
 		var uri = '/test/1';
 		$httpBackend.expect('GET', uri).respond(200, {
-			thing: "thang"
+			thing: 'thang'
 		});
 		$location.path('/test/read/{"uri":"' + uri + '"}');
 		$rootScope.$digest();
@@ -118,7 +118,7 @@ describe('router', function () {
 		});
 		$rootScope.$on('$routeChangeSuccess', function ($event, current) {
 			expect(current.locals.resource).toBeDefined();
-			expect(current.locals.thing).toEqual("thang");
+			expect(current.locals.thing).toEqual('thang');
 		});
 		$rootScope.$on('$routeChangeError', function () {
 			fail();

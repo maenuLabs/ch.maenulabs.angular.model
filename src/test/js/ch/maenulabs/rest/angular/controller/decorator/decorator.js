@@ -28,14 +28,14 @@ describe('decorator', function () {
 	}]));
 
 	it('should instantiate controller', function () {
-		controller = $controller('Controller', {
+		$controller('Controller', {
 			'$scope': $scope
 		});
 		expect(Controller).toHaveBeenCalledWith($scope);
 	});
 
 	it('should instantiate factory controller without name', function () {
-		controller = $controller('Test(resource)', {
+		$controller('Test(resource)', {
 			'$scope': $scope
 		});
 		expect(Test).toHaveBeenCalledWith($scope, resource);
@@ -43,7 +43,7 @@ describe('decorator', function () {
 	});
 
 	it('should instantiate factory controller with name', function () {
-		controller = $controller('Test(resource) as test', {
+		var controller = $controller('Test(resource) as test', {
 			'$scope': $scope
 		});
 		expect(Test).toHaveBeenCalledWith($scope, resource);
