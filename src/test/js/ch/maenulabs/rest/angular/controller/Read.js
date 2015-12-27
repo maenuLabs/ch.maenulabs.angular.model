@@ -13,10 +13,10 @@ describe('Read', function () {
 		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.Read', function (_$controller_, _$rootScope_, _Read_) {
+	beforeEach(inject(['$controller', '$rootScope', function (_$controller_, _$rootScope_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_(_Read_, {
+		controller = _$controller_('ch.maenulabs.rest.angular.controller.Read', {
 			'$scope': $scope,
 			'resource': resource
 		});

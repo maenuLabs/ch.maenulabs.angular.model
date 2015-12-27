@@ -5,16 +5,12 @@
  * @module ch.maenulabs.rest.angular.controller
  * @class Read
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Read', [
+angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Read', [
+	'$scope',
 	'ch.maenulabs.rest.angular.event.eventifyAction',
-	function (eventifyAction) {
-		return [
-			'$scope',
-			'resource',
-			function ($scope, resource) {
-				this.resource = resource;
-				this.read = eventifyAction($scope, this.resource, 'read');
-			}
-		];
+	'resource',
+	function ($scope, eventifyAction, resource) {
+		this.resource = resource;
+		this.read = eventifyAction($scope, this.resource, 'read');
 	}
 ]);

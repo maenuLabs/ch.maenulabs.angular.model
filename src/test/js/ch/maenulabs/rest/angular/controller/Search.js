@@ -23,14 +23,14 @@ describe('Search', function () {
 		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.Search', function (_$controller_, _$rootScope_, _Search_) {
+	beforeEach(inject(['$controller', '$rootScope', function (_$controller_, _$rootScope_) {
 		delay = 300;
 		changeables = [];
 		resource = {
 			getChangeables: jasmine.createSpy().and.returnValue(changeables)
 		};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_(_Search_, {
+		controller = _$controller_('ch.maenulabs.rest.angular.controller.Search', {
 			'$scope': $scope,
 			'resource': resource,
 			'delay': delay

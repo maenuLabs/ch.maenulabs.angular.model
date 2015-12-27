@@ -16,10 +16,10 @@ describe('Create', function () {
 		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.Create', function (_$controller_, _$rootScope_, _Create_) {
+	beforeEach(inject(['$controller', '$rootScope', function (_$controller_, _$rootScope_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_(_Create_, {
+		controller = _$controller_('ch.maenulabs.rest.angular.controller.Create', {
 			'$scope': $scope,
 			'resource': resource
 		});

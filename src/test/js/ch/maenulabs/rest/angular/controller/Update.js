@@ -20,13 +20,13 @@ describe('Update', function () {
 		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.Update', function (_$controller_, _$rootScope_, _Update_) {
+	beforeEach(inject(['$controller', '$rootScope', function (_$controller_, _$rootScope_) {
 		changeables = [];
 		resource = {
 			getChangeables: jasmine.createSpy().and.returnValue(changeables)
 		};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_(_Update_, {
+		controller = _$controller_('ch.maenulabs.rest.angular.controller.Update', {
 			'$scope': $scope,
 			'resource': resource
 		});

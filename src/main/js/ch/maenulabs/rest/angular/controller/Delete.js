@@ -5,16 +5,12 @@
  * @module ch.maenulabs.rest.angular.controller
  * @class Delete
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Delete', [
+angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Delete', [
+	'$scope',
 	'ch.maenulabs.rest.angular.event.eventifyAction',
-	function (eventifyAction) {
-		return [
-			'$scope',
-			'resource',
-			function ($scope, resource) {
-				this.resource = resource;
-				this.delete = eventifyAction($scope, this.resource, 'delete');
-			}
-		];
+	'resource',
+	function ($scope, eventifyAction, resource) {
+		this.resource = resource;
+		this.delete = eventifyAction($scope, this.resource, 'delete');
 	}
 ]);
