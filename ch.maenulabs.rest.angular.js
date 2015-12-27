@@ -63,9 +63,9 @@ angular.module('ch.maenulabs.rest.angular.router', [
  * Controls the resource create.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class CreateFactory
+ * @class Create
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.CreateFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Create', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyValidation',
 	function (eventifyAction, eventifyValidation) {
@@ -86,9 +86,9 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * Controls the resource delete.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class DeleteFactory
+ * @class Delete
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.DeleteFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Delete', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	function (eventifyAction) {
 		return [
@@ -107,9 +107,9 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * Controls the resource read.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class ReadFactory
+ * @class Read
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.ReadFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Read', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	function (eventifyAction) {
 		return [
@@ -128,9 +128,9 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * Controls the resource search.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class SearchFactory
+ * @class Search
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.SearchFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Search', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyChange',
 	'ch.maenulabs.rest.angular.event.eventifySchedule',
@@ -168,9 +168,9 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * Controls the resource update.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class UpdateFactory
+ * @class Update
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.UpdateFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Update', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyValidation',
 	'ch.maenulabs.rest.angular.event.eventifyChange',
@@ -203,17 +203,19 @@ angular.module('ch.maenulabs.rest.angular.controller.decorator').decorator('$con
 			return $delegate.apply(this, arguments);
 		} catch (error) {
 			var match = expression.match(CONTROLLER_REGEX);
-			// get controller factory
+			// get controller
 			var controllerParts = match[1].split('.');
 			var actionName = controllerParts[controllerParts.length - 1];
-			expression = $injector.get('ch.maenulabs.rest.angular.controller.' + actionName + 'Factory');
-			// get resource
-			locals.resource = $parse(match[3])(locals.$scope);
+			var controller = $injector.get('ch.maenulabs.rest.angular.controller.' + actionName);
+			// get locals.resource
+			if (match[3]) {
+				locals.resource = $parse(match[3])(locals.$scope);
+			}
 			// get identifier
 			if (match[5] && !identifier) {
 				identifier = match[5];
 			}
-			return $delegate.apply(this, [expression, locals, later, identifier]);
+			return $delegate.apply(this, [controller, locals, later, identifier]);
 		}
 	};
 }]);
