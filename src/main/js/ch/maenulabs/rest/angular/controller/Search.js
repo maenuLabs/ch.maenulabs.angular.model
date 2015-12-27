@@ -3,9 +3,9 @@
  * Controls the resource search.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class SearchFactory
+ * @class Search
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.SearchFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Search', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyChange',
 	'ch.maenulabs.rest.angular.event.eventifySchedule',

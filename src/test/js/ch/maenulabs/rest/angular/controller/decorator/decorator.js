@@ -11,7 +11,7 @@ describe('decorator', function () {
 		Controller = jasmine.createSpy();
 		$controllerProvider.register('Controller', ['$scope', Controller]);
 		Test = jasmine.createSpy();
-		$provide.factory('ch.maenulabs.rest.angular.controller.TestFactory', function () {
+		$provide.factory('ch.maenulabs.rest.angular.controller.Test', function () {
 			return [
 				'$scope',
 				'resource',
@@ -34,7 +34,25 @@ describe('decorator', function () {
 		expect(Controller).toHaveBeenCalledWith($scope);
 	});
 
-	it('should instantiate factory controller without name', function () {
+	it('should instantiate factory controller without resource and without identifier', function () {
+		$controller('Test', {
+			'$scope': $scope,
+			'resource': resource
+		});
+		expect(Test).toHaveBeenCalledWith($scope, resource);
+		expect($scope.test).not.toBeDefined();
+	});
+
+	it('should instantiate factory controller without resource and with identifier', function () {
+		var controller = $controller('Test as test', {
+			'$scope': $scope,
+			'resource': resource
+		});
+		expect(Test).toHaveBeenCalledWith($scope, resource);
+		expect($scope.test).toBe(controller);
+	});
+
+	it('should instantiate factory controller with resource and without identifier', function () {
 		$controller('Test(resource)', {
 			'$scope': $scope
 		});
@@ -42,7 +60,7 @@ describe('decorator', function () {
 		expect($scope.test).not.toBeDefined();
 	});
 
-	it('should instantiate factory controller with name', function () {
+	it('should instantiate factory controller with resource and with identifier', function () {
 		var controller = $controller('Test(resource) as test', {
 			'$scope': $scope
 		});

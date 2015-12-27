@@ -1,5 +1,5 @@
 /* global describe, it, beforeEach, expect, jasmine, module, inject */
-describe('CreateFactory', function () {
+describe('Create', function () {
 
 	var $scope;
 	var eventifyValidation;
@@ -16,10 +16,10 @@ describe('CreateFactory', function () {
 		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.CreateFactory', function (_$controller_, _$rootScope_, _CreateFactory_) {
+	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.Create', function (_$controller_, _$rootScope_, _Create_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_(_CreateFactory_, {
+		controller = _$controller_(_Create_, {
 			'$scope': $scope,
 			'resource': resource
 		});

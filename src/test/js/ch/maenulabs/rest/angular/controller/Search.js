@@ -1,5 +1,5 @@
 /* global describe, it, beforeEach, expect, jasmine, module, inject */
-describe('SearchFactory', function () {
+describe('Search', function () {
 
 	var $scope;
 	var eventifiedSchedule;
@@ -23,14 +23,14 @@ describe('SearchFactory', function () {
 		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.SearchFactory', function (_$controller_, _$rootScope_, _SearchFactory_) {
+	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.Search', function (_$controller_, _$rootScope_, _Search_) {
 		delay = 300;
 		changeables = [];
 		resource = {
 			getChangeables: jasmine.createSpy().and.returnValue(changeables)
 		};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_(_SearchFactory_, {
+		controller = _$controller_(_Search_, {
 			'$scope': $scope,
 			'resource': resource,
 			'delay': delay

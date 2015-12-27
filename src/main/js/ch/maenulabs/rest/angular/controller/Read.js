@@ -3,9 +3,9 @@
  * Controls the resource read.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class ReadFactory
+ * @class Read
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.ReadFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Read', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	function (eventifyAction) {
 		return [

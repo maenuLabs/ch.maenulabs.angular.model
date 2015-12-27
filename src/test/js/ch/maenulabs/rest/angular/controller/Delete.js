@@ -1,5 +1,5 @@
 /* global describe, it, beforeEach, expect, jasmine, module, inject */
-describe('ReadFactory', function () {
+describe('Delete', function () {
 
 	var $scope;
 	var eventifyAction;
@@ -13,10 +13,10 @@ describe('ReadFactory', function () {
 		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.ReadFactory', function (_$controller_, _$rootScope_, _ReadFactory_) {
+	beforeEach(inject(['$controller', '$rootScope', 'ch.maenulabs.rest.angular.controller.Delete', function (_$controller_, _$rootScope_, _Delete_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_(_ReadFactory_, {
+		controller = _$controller_(_Delete_, {
 			'$scope': $scope,
 			'resource': resource
 		});
@@ -26,9 +26,9 @@ describe('ReadFactory', function () {
 		expect(controller.resource).toBe(resource);
 	});
 
-	it('should eventify the resource\'s read', function () {
-		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'read');
-		expect(controller.read).toBe(eventifiedAction);
+	it('should eventify the resource\'s delete', function () {
+		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'delete');
+		expect(controller.delete).toBe(eventifiedAction);
 	});
 
 });

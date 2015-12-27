@@ -3,9 +3,9 @@
  * Controls the resource update.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class UpdateFactory
+ * @class Update
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.UpdateFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Update', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyValidation',
 	'ch.maenulabs.rest.angular.event.eventifyChange',

@@ -3,9 +3,9 @@
  * Controls the resource delete.
  *
  * @module ch.maenulabs.rest.angular.controller
- * @class DeleteFactory
+ * @class Delete
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.DeleteFactory', [
+angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Delete', [
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	function (eventifyAction) {
 		return [
