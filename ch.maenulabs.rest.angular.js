@@ -65,19 +65,15 @@ angular.module('ch.maenulabs.rest.angular.router', [
  * @module ch.maenulabs.rest.angular.controller
  * @class Create
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Create', [
+angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Create', [
+	'$scope',
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyValidation',
-	function (eventifyAction, eventifyValidation) {
-		return [
-			'$scope',
-			'resource',
-			function ($scope, resource) {
-				this.resource = resource;
-				eventifyValidation($scope, this.resource);
-				this.create = eventifyAction($scope, this.resource, 'create');
-			}
-		];
+	'resource',
+	function ($scope, eventifyAction, eventifyValidation, resource) {
+		this.resource = resource;
+		eventifyValidation($scope, this.resource);
+		this.create = eventifyAction($scope, this.resource, 'create');
 	}
 ]);
 
@@ -88,17 +84,13 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * @module ch.maenulabs.rest.angular.controller
  * @class Delete
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Delete', [
+angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Delete', [
+	'$scope',
 	'ch.maenulabs.rest.angular.event.eventifyAction',
-	function (eventifyAction) {
-		return [
-			'$scope',
-			'resource',
-			function ($scope, resource) {
-				this.resource = resource;
-				this.delete = eventifyAction($scope, this.resource, 'delete');
-			}
-		];
+	'resource',
+	function ($scope, eventifyAction, resource) {
+		this.resource = resource;
+		this.delete = eventifyAction($scope, this.resource, 'delete');
 	}
 ]);
 
@@ -109,17 +101,13 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * @module ch.maenulabs.rest.angular.controller
  * @class Read
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Read', [
+angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Read', [
+	'$scope',
 	'ch.maenulabs.rest.angular.event.eventifyAction',
-	function (eventifyAction) {
-		return [
-			'$scope',
-			'resource',
-			function ($scope, resource) {
-				this.resource = resource;
-				this.read = eventifyAction($scope, this.resource, 'read');
-			}
-		];
+	'resource',
+	function ($scope, eventifyAction, resource) {
+		this.resource = resource;
+		this.read = eventifyAction($scope, this.resource, 'read');
 	}
 ]);
 
@@ -130,36 +118,32 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * @module ch.maenulabs.rest.angular.controller
  * @class Search
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Search', [
+angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Search', [
+	'$scope',
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyChange',
 	'ch.maenulabs.rest.angular.event.eventifySchedule',
-	function (eventifyAction, eventifyChange, eventifySchedule) {
-		return [
-			'$scope',
-			'resource',
-			'delay',
-			function ($scope, resource, delay) {
-				this.cancel = function () {};
-				this.resource = resource;
-				this.search = eventifyAction($scope, this.resource, 'search');
-				$scope.$on('ch.maenulabs.rest.angular.resource.Changed', (function ($event, resource) {
-					if (resource != this.resource) {
-						return;
-					}
-					this.cancel();
-					this.cancel = eventifySchedule($scope, delay);
-				}).bind(this));
-				$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', (function ($event, cancel) {
-					if (cancel != this.cancel) {
-						return;
-					}
-					this.cancel = function () {};
-					this.search();
-				}).bind(this));
-				eventifyChange($scope, this.resource);
+	'resource',
+	'delay',
+	function ($scope, eventifyAction, eventifyChange, eventifySchedule, resource, delay) {
+		this.cancel = function () {};
+		this.resource = resource;
+		this.search = eventifyAction($scope, this.resource, 'search');
+		$scope.$on('ch.maenulabs.rest.angular.resource.Changed', (function ($event, resource) {
+			if (resource != this.resource) {
+				return;
 			}
-		];
+			this.cancel();
+			this.cancel = eventifySchedule($scope, delay);
+		}).bind(this));
+		$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', (function ($event, cancel) {
+			if (cancel != this.cancel) {
+				return;
+			}
+			this.cancel = function () {};
+			this.search();
+		}).bind(this));
+		eventifyChange($scope, this.resource);
 	}
 ]);
 
@@ -170,22 +154,19 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * @module ch.maenulabs.rest.angular.controller
  * @class Update
  */
-angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.rest.angular.controller.Update', [
+angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Update', [
+	'$scope',
 	'ch.maenulabs.rest.angular.event.eventifyAction',
 	'ch.maenulabs.rest.angular.event.eventifyValidation',
 	'ch.maenulabs.rest.angular.event.eventifyChange',
-	function (eventifyAction, eventifyValidation, eventifyChange) {
-		return [
-			'$scope',
-			'resource',
-			function ($scope, resource) {
-				this.resource = resource;
-				eventifyChange($scope, this.resource);
-				eventifyValidation($scope, this.resource);
-				this.update = eventifyAction($scope, this.resource, 'update');
-			}
-		];
-}]);
+	'resource',
+	function ($scope, eventifyAction, eventifyValidation, eventifyChange, resource) {
+		this.resource = resource;
+		eventifyChange($scope, this.resource);
+		eventifyValidation($scope, this.resource);
+		this.update = eventifyAction($scope, this.resource, 'update');
+	}
+]);
 
 /* globals angular */
 /**
@@ -196,27 +177,25 @@ angular.module('ch.maenulabs.rest.angular.controller').factory('ch.maenulabs.res
  * @module ch.maenulabs.rest.angular.controller.decorator
  * @class decorator
  */
-angular.module('ch.maenulabs.rest.angular.controller.decorator').decorator('$controller', ['$injector', '$parse', '$delegate', function ($injector, $parse, $delegate) {
+angular.module('ch.maenulabs.rest.angular.controller.decorator').decorator('$controller', ['$parse', '$delegate', function ($parse, $delegate) {
 	var CONTROLLER_REGEX = /^([^\(\s]+)(\(([^\)]*)\))?(\s+as\s+(\w+))?$/;
+	var $controllerMinErr = angular.$$minErr('ch.maenulabs.rest.angular.controller.decorator.$controller');
 	return function (expression, locals, later, identifier) {
-		try {
-			return $delegate.apply(this, arguments);
-		} catch (error) {
-			var match = expression.match(CONTROLLER_REGEX);
-			// get controller
-			var controllerParts = match[1].split('.');
-			var actionName = controllerParts[controllerParts.length - 1];
-			var controller = $injector.get('ch.maenulabs.rest.angular.controller.' + actionName);
-			// get locals.resource
-			if (match[3]) {
-				locals.resource = $parse(match[3])(locals.$scope);
-			}
-			// get identifier
-			if (match[5] && !identifier) {
-				identifier = match[5];
-			}
-			return $delegate.apply(this, [controller, locals, later, identifier]);
+		var match = expression.match(CONTROLLER_REGEX);
+		if (!match) {
+			throw $controllerMinErr('ctrlfmt', "Badly formed controller string '{0}'. Must match `__name__ as __id__` or `__name__` or `__name__(__expression__) as __id__` or `__name__(__expression__)`.", expression);
 		}
+		// get name
+		var name = match[1];
+		// get locals.resource
+		if (match[3]) {
+			locals.resource = $parse(match[3])(locals.$scope);
+		}
+		// get identifier
+		if (match[5] && !identifier) {
+			identifier = match[5];
+		}
+		return $delegate.apply(this, [name, locals, later, identifier]);
 	};
 }]);
 
