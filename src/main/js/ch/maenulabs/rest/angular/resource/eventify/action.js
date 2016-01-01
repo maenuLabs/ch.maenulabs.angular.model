@@ -23,15 +23,15 @@ angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenul
 		return function ($scope, resource, action) {
 			return function () {
 				var deferred = $q.defer();
-				$scope.$emit('ch.maenulabs.rest.angular.resource.action.Pending', action, $scope[resource]);
+				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Pending', action, $scope[resource]);
 				$scope[resource][action].apply(resource, arguments).then(function (response) {
-					$scope.$emit('ch.maenulabs.rest.angular.resource.action.Resolved', action, $scope[resource], response);
+					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Resolved', action, $scope[resource], response);
 					deferred.resolve(response);
 				}, function (response) {
-					$scope.$emit('ch.maenulabs.rest.angular.resource.action.Rejected', action, $scope[resource], response);
+					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Rejected', action, $scope[resource], response);
 					deferred.reject(response);
 				}, function (response) {
-					$scope.$emit('ch.maenulabs.rest.angular.resource.action.Notified', action, $scope[resource], response);
+					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Notified', action, $scope[resource], response);
 					deferred.notify(response);
 				});
 				return deferred.promise;

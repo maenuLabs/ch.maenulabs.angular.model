@@ -32,7 +32,7 @@ angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenul
 					return resource + '.' + changeable;
 				});
 				unwatchChangeables = $scope.$watchGroup(changeables, function () {
-					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.Changed', $scope[resource]);
+					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.change.Changed', $scope[resource]);
 				});
 			} else {
 				unwatchChangeables = angular.noop;

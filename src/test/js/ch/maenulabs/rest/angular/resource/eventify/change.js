@@ -22,7 +22,7 @@ describe('change', function () {
 		
 		beforeEach(function () {
 			changed = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.Changed', changed);
+			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.change.Changed', changed);
 		});
 		
 		describe('emission', function () {

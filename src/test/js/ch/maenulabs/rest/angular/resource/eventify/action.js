@@ -99,10 +99,10 @@ describe('action', function () {
 			resolved = jasmine.createSpy();
 			rejected = jasmine.createSpy();
 			notified = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.resource.action.Pending', pending);
-			$scope.$on('ch.maenulabs.rest.angular.resource.action.Resolved', resolved);
-			$scope.$on('ch.maenulabs.rest.angular.resource.action.Rejected', rejected);
-			$scope.$on('ch.maenulabs.rest.angular.resource.action.Notified', notified);
+			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Pending', pending);
+			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Resolved', resolved);
+			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Rejected', rejected);
+			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Notified', notified);
 		});
 		
 		it('should call action', function () {
