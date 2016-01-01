@@ -12,6 +12,7 @@ angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenula
 	function ($timeout, action, change) {
 		return function ($scope, resource, delay) {
 			return function () {
+				var scheduled = undefined;
 				var unwatchChange = angular.noop;
 				var unwatchChanged = angular.noop;
 				var unwatch = function () {
@@ -21,10 +22,9 @@ angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenula
 					unwatchChanged = angular.noop;
 				};
 				var search = action($scope, resource, 'search');
-				var scheduled = undefined;
 				unwatchChange = change($scope, resource);
 				unwatchChanged = $scope.$on('ch.maenulabs.rest.angular.resource.eventify.change.Changed', function ($event, candidate) {
-					if (candidate != resource) {
+					if (candidate != $scope[resource]) {
 						return;
 					}
 					if (scheduled) {
