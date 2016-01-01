@@ -124,6 +124,13 @@ describe('change', function () {
 				expect(changed.calls.count()).toEqual(1);
 				expect(changed.calls.mostRecent().args[1]).toBe(newResource);
 			});
+			
+			it('should watch changeables on undefined resource', function () {
+				changed.calls.reset();
+				$scope.resource = undefined;
+				$scope.$digest();
+				expect(changed).not.toHaveBeenCalled();
+			});
 		
 		});
 		
