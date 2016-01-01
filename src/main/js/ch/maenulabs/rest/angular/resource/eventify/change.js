@@ -27,16 +27,12 @@ angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenul
 			if (newValue != oldValue) {
 				unwatchChangeables();
 			}
-			if (newValue) {
-				var changeables = newValue.getChangeables().map(function (changeable) {
-					return resource + '.' + changeable;
-				});
-				unwatchChangeables = $scope.$watchGroup(changeables, function () {
-					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.change.Changed', $scope[resource]);
-				});
-			} else {
-				unwatchChangeables = angular.noop;
-			}
+			var changeables = newValue.getChangeables().map(function (changeable) {
+				return resource + '.' + changeable;
+			});
+			unwatchChangeables = $scope.$watchGroup(changeables, function () {
+				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.change.Changed', $scope[resource]);
+			});
 		});
 		return unwatch;
 	};
