@@ -1,43 +1,18 @@
 /* globals angular */
 /**
- * The controller decorator.
- *
- * @module ch.maenulabs.rest.angular.controller.decorator
- * @requires ch.maenulabs.rest.angular.controller
- */
-angular.module('ch.maenulabs.rest.angular.controller.decorator', [
-	'ch.maenulabs.rest.angular.controller'
-]);
-
-/* globals angular */
-/**
- * The controller.
- *
- * @module ch.maenulabs.rest.angular.controller
- * @requires ch.maenulabs.rest.angular.event
- */
-angular.module('ch.maenulabs.rest.angular.controller', [
-	'ch.maenulabs.rest.angular.event'
-]);
-
-/* globals angular */
-/**
- * The event module.
- *
- * @module ch.maenulabs.rest.angular.event
- * @requires ch.maenulabs.rest.angular.resource
- */
-angular.module('ch.maenulabs.rest.angular.event', [
-	'ch.maenulabs.rest.angular.resource'
-]);
-
-/* globals angular */
-/**
  * The model.
  *
  * @module ch.maenulabs.rest.angular
  */
 angular.module('ch.maenulabs.rest.angular', []);
+
+/* globals angular */
+/**
+ * The event module.
+ *
+ * @module ch.maenulabs.rest.angular.resource.eventify
+ */
+angular.module('ch.maenulabs.rest.angular.resource.eventify', []);
 
 /* globals angular */
 /**
@@ -49,279 +24,14 @@ angular.module('ch.maenulabs.rest.angular.resource', []);
 
 /* globals angular */
 /**
- * The router.
+ * The patterns.
  *
- * @module ch.maenulabs.rest.angular.router
+ * @module ch.maenulabs.rest.angular.resource.pattern
+ * @requires ch.maenulabs.rest.angular.resource.eventify
  */
-angular.module('ch.maenulabs.rest.angular.router', [
-	'ngRoute',
-	'ch.maenulabs.rest.angular.resource'
+angular.module('ch.maenulabs.rest.angular.resource.pattern', [
+	'ch.maenulabs.rest.angular.resource.eventify'
 ]);
-
-/* globals angular */
-/**
- * Controls the resource create.
- *
- * @module ch.maenulabs.rest.angular.controller
- * @class Create
- */
-angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Create', [
-	'$scope',
-	'ch.maenulabs.rest.angular.event.eventifyAction',
-	'ch.maenulabs.rest.angular.event.eventifyValidation',
-	'resource',
-	function ($scope, eventifyAction, eventifyValidation, resource) {
-		this.resource = resource;
-		eventifyValidation($scope, this.resource);
-		this.create = eventifyAction($scope, this.resource, 'create');
-	}
-]);
-
-/* globals angular */
-/**
- * Controls the resource delete.
- *
- * @module ch.maenulabs.rest.angular.controller
- * @class Delete
- */
-angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Delete', [
-	'$scope',
-	'ch.maenulabs.rest.angular.event.eventifyAction',
-	'resource',
-	function ($scope, eventifyAction, resource) {
-		this.resource = resource;
-		this.delete = eventifyAction($scope, this.resource, 'delete');
-	}
-]);
-
-/* globals angular */
-/**
- * Controls the resource read.
- *
- * @module ch.maenulabs.rest.angular.controller
- * @class Read
- */
-angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Read', [
-	'$scope',
-	'ch.maenulabs.rest.angular.event.eventifyAction',
-	'resource',
-	function ($scope, eventifyAction, resource) {
-		this.resource = resource;
-		this.read = eventifyAction($scope, this.resource, 'read');
-	}
-]);
-
-/* globals angular */
-/**
- * Controls the resource search.
- *
- * @module ch.maenulabs.rest.angular.controller
- * @class Search
- */
-angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Search', [
-	'$scope',
-	'ch.maenulabs.rest.angular.event.eventifyAction',
-	'ch.maenulabs.rest.angular.event.eventifyChange',
-	'ch.maenulabs.rest.angular.event.eventifySchedule',
-	'resource',
-	'delay',
-	function ($scope, eventifyAction, eventifyChange, eventifySchedule, resource, delay) {
-		this.cancel = function () {};
-		this.resource = resource;
-		this.search = eventifyAction($scope, this.resource, 'search');
-		$scope.$on('ch.maenulabs.rest.angular.resource.Changed', (function ($event, resource) {
-			if (resource != this.resource) {
-				return;
-			}
-			this.cancel();
-			this.cancel = eventifySchedule($scope, delay);
-		}).bind(this));
-		$scope.$on('ch.maenulabs.rest.angular.event.schedule.Done', (function ($event, cancel) {
-			if (cancel != this.cancel) {
-				return;
-			}
-			this.cancel = function () {};
-			this.search();
-		}).bind(this));
-		eventifyChange($scope, this.resource);
-	}
-]);
-
-/* globals angular */
-/**
- * Controls the resource update.
- *
- * @module ch.maenulabs.rest.angular.controller
- * @class Update
- */
-angular.module('ch.maenulabs.rest.angular.controller').controller('ch.maenulabs.rest.angular.controller.Update', [
-	'$scope',
-	'ch.maenulabs.rest.angular.event.eventifyAction',
-	'ch.maenulabs.rest.angular.event.eventifyValidation',
-	'ch.maenulabs.rest.angular.event.eventifyChange',
-	'resource',
-	function ($scope, eventifyAction, eventifyValidation, eventifyChange, resource) {
-		this.resource = resource;
-		eventifyChange($scope, this.resource);
-		eventifyValidation($scope, this.resource);
-		this.update = eventifyAction($scope, this.resource, 'update');
-	}
-]);
-
-/* globals angular */
-/**
- * Decorator for $controller that instantiates generic controllers.
- * Set controller like 'Create'.
- * Requires resource on the scope and injects it into the controller.
- *
- * @module ch.maenulabs.rest.angular.controller.decorator
- * @class decorator
- */
-angular.module('ch.maenulabs.rest.angular.controller.decorator').decorator('$controller', ['$parse', '$delegate', function ($parse, $delegate) {
-	var CONTROLLER_REGEX = /^([^\(\s]+)(\(([^\)]*)\))?(\s+as\s+(\w+))?$/;
-	var $controllerMinErr = angular.$$minErr('ch.maenulabs.rest.angular.controller.decorator.$controller');
-	return function (expression, locals, later, identifier) {
-		var match = expression.match(CONTROLLER_REGEX);
-		if (!match) {
-			throw $controllerMinErr('ctrlfmt', "Badly formed controller string '{0}'. Must match `__name__ as __id__` or `__name__` or `__name__(__expression__) as __id__` or `__name__(__expression__)`.", expression);
-		}
-		// get name
-		var name = match[1];
-		// get locals.resource
-		if (match[3]) {
-			locals.resource = $parse(match[3])(locals.$scope);
-		}
-		// get identifier
-		if (match[5] && !identifier) {
-			identifier = match[5];
-		}
-		return $delegate.apply(this, [name, locals, later, identifier]);
-	};
-}]);
-
-/* globals angular */
-/**
- * Wraps a resource action to emit events.
- *
- * @module ch.maenulabs.rest.angular.event
- * @class eventifyAction
- */
-angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifyAction', function () {
-	/**
-	 * Installs an eventifyer on the action on the specified resource in the specified scope to emit events on pending, success and error.
-	 * 
-	 * @method eventifyAction
-	 * 
-	 * @param {Scope} $scope The scope
-	 * @param {IResource} resource The resource
-	 * @param {String} action The action name to perform
-	 * 
-	 * @return {Function} Returns a promise, resolved on success or rejected on error.
-	 *     Arguments are passed on to the wrapped function.
-	 */
-	return function ($scope, resource, action) {
-		return function () {
-			$scope.$emit('ch.maenulabs.rest.angular.resource.' + action + '.Pending', resource);
-			return resource[action].apply(resource, arguments).then(function (response) {
-				$scope.$emit('ch.maenulabs.rest.angular.resource.' + action + '.Success', resource, response);
-				return response;
-			}).catch(function (response) {
-				$scope.$emit('ch.maenulabs.rest.angular.resource.' + action + '.Error', resource, response);
-				return response;
-			});
-		};
-	};
-});
-
-/* globals angular */
-/**
- * Installs a watcher on a resource's changes.
- *
- * @module ch.maenulabs.rest.angular.event
- * @class eventifyChange
- */
-angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifyChange', function () {
-	/**
-	 * Installs an eventifyer on the specified resource's change in the specified scope.
-	 * 
-	 * @method eventifyChange
-	 * 
-	 * @param {Scope} $scope The scope
-	 * @param {IResource} resource The resource property name
-	 */
-	return function ($scope, resource) {
-		return $scope.$watchGroup(resource.getChangeables(), function () {
-			$scope.$emit('ch.maenulabs.rest.angular.resource.Changed', resource);
-		});
-	};
-});
-
-/* globals angular */
-/**
- * Installs an eventifyer on a scheduled action.
- *
- * @module ch.maenulabs.rest.angular.event
- * @class eventifySchedule
- */
-angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifySchedule', [
-	'$timeout',
-	function ($timeout) {
-		/**
-		 * Installs an eventifyer on a scheduled action in the specified scope.
-		 * 
-		 * @method eventifySchedule
-		 * 
-		 * @param {Scope} $scope The scope
-		 * @param {Number} delay The delay in milliseconds
-		 * 
-		 * @return {Function} Cancels the promise
-		 */
-		return function ($scope, delay) {
-			var promise = $timeout(angular.noop, delay);
-			var cancel = function () {
-				return $timeout.cancel(promise);
-			};
-			$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Scheduled', cancel);
-			promise.then(function (response) {
-				$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Done', cancel);
-				return response;
-			}).catch(function (response) {
-				$scope.$emit('ch.maenulabs.rest.angular.event.schedule.Cancelled', cancel);
-				return response;
-			});
-			return cancel;
-		};
-	}
-]);
-
-/* globals angular */
-/**
- * Installs a watcher on a resource's validation.
- *
- * @module ch.maenulabs.rest.angular.event
- * @class eventifyValidation
- */
-angular.module('ch.maenulabs.rest.angular.event').factory('ch.maenulabs.rest.angular.event.eventifyValidation', function () {
-	/**
-	 * Installs an eventifyer on the specified resource's validation in the specified scope.
-	 * 
-	 * @method eventifyValidation
-	 * 
-	 * @param {Scope} $scope The scope
-	 * @param {IResource} resource The resource property name
-	 */
-	return function ($scope, resource) {
-		return $scope.$watch(function () {
-			return resource.hasErrors();
-		}, function (hasErrors) {
-			if (hasErrors) {
-				$scope.$emit('ch.maenulabs.rest.angular.resource.validation.Error', resource);
-			} else {
-				$scope.$emit('ch.maenulabs.rest.angular.resource.validation.Success', resource);
-			}
-		});
-	};
-});
 
 /* globals angular, ch */
 /**
@@ -684,60 +394,224 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 
 /* globals angular */
 /**
- * Routes client URIs.
+ * Wraps a resource action to emit events.
  *
- * @module ch.maenulabs.rest.angular.router
- * @class router
+ * @module ch.maenulabs.rest.angular.resource.eventify
+ * @class action
  */
-angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.angular.router.router', ['$routeProvider', function ($routeProvider) {
-	var SERIALIZATION_KEY = 'serialization';
-	var SERIALIZATION_PLACEHOLDER = ':' + SERIALIZATION_KEY + '*';
-	var templates = {};
-	var getUriTemplateKey = function (resourceBaseName, action) {
-		return resourceBaseName + '/' + action;
-	};
-	var setUriTemplate = function (resourceBaseName, action) {
-		templates[getUriTemplateKey(resourceBaseName, action)] = '/' + resourceBaseName + '/' + action + '/' + SERIALIZATION_PLACEHOLDER;
-	};
-	var getUriTemplate = function (resourceBaseName, action) {
-		return templates[getUriTemplateKey(resourceBaseName, action)];
-	};
-	/**
-	 * Adds the route configuration. Reads the resource if URI exists.
-	 * 
-	 * @public
-	 * @method addRoute
-	 * 
-	 * @param {String} resourceBaseName The resource base name
-	 * @param {String} resourceTypeName The resource type name
-	 * @param {String} action The action name
-	 * @param {Object} configuration The basic route configuration
-	 */
-	this.addRoute = function (resourceBaseName, resourceTypeName, action, configuration) {
-		if (!configuration.resolve) {
-			configuration.resolve = {};
-		}
-		configuration.resolve.resource = ['$route', resourceTypeName, function ($route, resourceType) {
-			var serialization = $route.current.params[SERIALIZATION_KEY];
-			if (!serialization) {
-				serialization = {};
-			}
-			var resource = resourceType.deserialize(serialization);
-			if (!resource.uri) {
-				return resource;
-			}
-			return resource.read().then(function () {
-				return resource;
-			});
-		}];
-		setUriTemplate(resourceBaseName, action);
-		$routeProvider.when(getUriTemplate(resourceBaseName, action), configuration);
-	};
-	this.$get = function () {
-		return {
-			getUri: function (resource, action) {
-				return getUriTemplate(resource.getBaseName(), action).replace(SERIALIZATION_PLACEHOLDER, resource.serialize());
-			}
+angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenulabs.rest.angular.resource.eventify.action', [
+	'$q',
+	function ($q) {
+		/**
+		 * Installs an eventifyer on the action on the specified resource in the specified scope to emit events on pending, success and error.
+		 * 
+		 * @method action
+		 * 
+		 * @param {Scope} $scope The scope
+		 * @param {String} resource The resource property name
+		 * @param {String} action The action name to perform
+		 * 
+		 * @return {Function} Returns a promise, resolved on success or rejected on error.
+		 *     Arguments are passed on to the wrapped function.
+		 */
+		return function ($scope, resource, action) {
+			return function () {
+				var deferred = $q.defer();
+				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Pending', action, $scope[resource]);
+				$scope[resource][action].apply(resource, arguments).then(function (response) {
+					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Resolved', action, $scope[resource], response);
+					deferred.resolve(response);
+				}, function (response) {
+					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Rejected', action, $scope[resource], response);
+					deferred.reject(response);
+				}, function (response) {
+					$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.action.Notified', action, $scope[resource], response);
+					deferred.notify(response);
+				});
+				return deferred.promise;
+			};
 		};
+	}
+]);
+
+/* globals angular */
+/**
+ * Installs a watcher on a resource's changes.
+ *
+ * @module ch.maenulabs.rest.angular.resource.eventify
+ * @class change
+ */
+angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenulabs.rest.angular.resource.eventify.change', function () {
+	/**
+	 * Installs an eventifyer on the specified resource's change in the specified scope.
+	 * 
+	 * @method change
+	 * 
+	 * @param {Scope} $scope The scope
+	 * @param {String} resource The resource property name
+	 */
+	return function ($scope, resource) {
+		var unwatchResource = angular.noop;
+		var unwatchChangeables = angular.noop;
+		var unwatch = function () {
+			unwatchResource();
+			unwatchChangeables();
+			unwatchResource = angular.noop;
+			unwatchChangeables = angular.noop;
+		};
+		unwatchResource = $scope.$watch(resource, function (newValue, oldValue) {
+			if (newValue != oldValue) {
+				unwatchChangeables();
+			}
+			var changeables = newValue.getChangeables().map(function (changeable) {
+				return resource + '.' + changeable;
+			});
+			unwatchChangeables = $scope.$watchGroup(changeables, function () {
+				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.change.Changed', $scope[resource]);
+			});
+		});
+		return unwatch;
 	};
-}]);
+});
+
+/* globals angular */
+/**
+ * Installs a watcher on a resource's validation.
+ *
+ * @module ch.maenulabs.rest.angular.resource.eventify
+ * @class validation
+ */
+angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenulabs.rest.angular.resource.eventify.validation', function () {
+	/**
+	 * Installs an eventifyer on the specified resource's validation in the specified scope.
+	 * 
+	 * @method validation
+	 * 
+	 * @param {Scope} $scope The scope
+	 * @param {String} resource The resource property name
+	 */
+	return function ($scope, resource) {
+		return $scope.$watch(resource + '.hasErrors()', function (hasErrors) {
+			if (hasErrors) {
+				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.validation.Error', $scope[resource]);
+			} else {
+				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.validation.Success', $scope[resource]);
+			}
+		});
+	};
+});
+
+/* globals angular */
+/**
+ * Controls the resource create.
+ *
+ * @module ch.maenulabs.rest.angular.resource.pattern
+ * @class create
+ */
+angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenulabs.rest.angular.resource.pattern.create', [
+	'ch.maenulabs.rest.angular.resource.eventify.action',
+	'ch.maenulabs.rest.angular.resource.eventify.validation',
+	function (action, validation) {
+		return function ($scope, resource) {
+			validation($scope, resource);
+			return action($scope, resource, 'create');
+		};
+	}
+]);
+
+/* globals angular */
+/**
+ * Controls the resource delete.
+ *
+ * @module ch.maenulabs.rest.angular.resource.pattern
+ * @class delete
+ */
+angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenulabs.rest.angular.resource.pattern.delete', [
+	'ch.maenulabs.rest.angular.resource.eventify.action',
+	function (action) {
+		return function ($scope, resource) {
+			return action($scope, resource, 'delete');
+		};
+	}
+]);
+
+/* globals angular */
+/**
+ * Controls the resource read.
+ *
+ * @module ch.maenulabs.rest.angular.resource.pattern
+ * @class read
+ */
+angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenulabs.rest.angular.resource.pattern.read', [
+	'ch.maenulabs.rest.angular.resource.eventify.action',
+	function (action) {
+		return function ($scope, resource) {
+			return action($scope, resource, 'read');
+		};
+	}
+]);
+
+/* globals angular */
+/**
+ * Controls the resource search.
+ *
+ * @module ch.maenulabs.rest.angular.resource.pattern
+ * @class search
+ */
+angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenulabs.rest.angular.resource.pattern.search', [
+	'$timeout',
+	'ch.maenulabs.rest.angular.resource.eventify.action',
+	'ch.maenulabs.rest.angular.resource.eventify.change',
+	function ($timeout, action, change) {
+		return function ($scope, resource, delay) {
+			return function () {
+				var scheduled = undefined;
+				var unwatchChange = angular.noop;
+				var unwatchChanged = angular.noop;
+				var unwatch = function () {
+					unwatchChange();
+					unwatchChanged();
+					unwatchChange = angular.noop;
+					unwatchChanged = angular.noop;
+				};
+				var search = action($scope, resource, 'search');
+				unwatchChange = change($scope, resource);
+				unwatchChanged = $scope.$on('ch.maenulabs.rest.angular.resource.eventify.change.Changed', function ($event, candidate) {
+					if (candidate != $scope[resource]) {
+						return;
+					}
+					if (scheduled) {
+						$timeout.cancel(scheduled);
+					}
+					scheduled = $timeout(delay);
+					scheduled.then(function () {
+						scheduled = undefined;
+						unwatch();
+						search();
+					});
+				});
+				return unwatch;
+			};
+		};
+	}
+]);
+
+/* globals angular */
+/**
+ * Controls the resource update.
+ *
+ * @module ch.maenulabs.rest.angular.resource.pattern
+ * @class update
+ */
+angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenulabs.rest.angular.resource.pattern.update', [
+	'ch.maenulabs.rest.angular.resource.eventify.action',
+	'ch.maenulabs.rest.angular.resource.eventify.validation',
+	'ch.maenulabs.rest.angular.resource.eventify.change',
+	function (action, validation, change) {
+		return function ($scope, resource) {
+			change($scope, resource);
+			validation($scope, resource);
+			return action($scope, resource, 'update');
+		};
+	}
+]);

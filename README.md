@@ -1,3 +1,3 @@
 # ch.maenulabs.rest.angular
 
-Model for AngularJS.
+REST resource model for AngularJS.
