@@ -11,7 +11,7 @@ angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenula
 	function (action, validation) {
 		return function ($scope, resource) {
 			validation($scope, resource);
-			return action($scope, this.resource, 'create');
+			return action($scope, resource, 'create');
 		};
 	}
 ]);

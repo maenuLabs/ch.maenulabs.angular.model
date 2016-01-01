@@ -1,52 +1,39 @@
 /* global describe, it, beforeEach, expect, jasmine, module, inject */
-describe('Update', function () {
+describe('update', function () {
 
 	var $scope;
+	var actionReturnValue;
 	var validation;
-	var change;
 	var action;
-	var eventifiedAction;
-	var changeables;
-	var resource;
-	var controller;
+	var change;
+	var updateReturnValue;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.resource.pattern', function($provide) {
-		eventifiedAction = jasmine.createSpy();
+		actionReturnValue = jasmine.createSpy();
 		validation = jasmine.createSpy();
+		action = jasmine.createSpy().and.returnValue(actionReturnValue);
 		change = jasmine.createSpy();
-		action = jasmine.createSpy().and.returnValue(eventifiedAction);
 		$provide.value('ch.maenulabs.rest.angular.resource.eventify.validation', validation);
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.change', change);
 		$provide.value('ch.maenulabs.rest.angular.resource.eventify.action', action);
+		$provide.value('ch.maenulabs.rest.angular.resource.eventify.change', change);
     }));
 
-	beforeEach(inject(['$controller', '$rootScope', function (_$controller_, _$rootScope_) {
-		changeables = [];
-		resource = {
-			getChangeables: jasmine.createSpy().and.returnValue(changeables)
-		};
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.resource.pattern.update', function (_$rootScope_, _update_) {
 		$scope = _$rootScope_.$new();
-		controller = _$controller_('ch.maenulabs.rest.angular.resource.pattern.Update', {
-			'$scope': $scope,
-			'resource': resource
-		});
+		updateReturnValue = _update_($scope, 'resource');
 	}]));
 
-	it('should set the resource on the controller', function () {
-		expect(controller.resource).toBe(resource);
+	it('should eventify the resource\'s change', function () {
+		expect(change).toHaveBeenCalledWith($scope, 'resource');
 	});
 
 	it('should eventify the resource\'s validation', function () {
-		expect(validation).toHaveBeenCalledWith($scope, resource);
-	});
-
-	it('should eventify the resource\'s change', function () {
-		expect(change).toHaveBeenCalledWith($scope, resource);
+		expect(validation).toHaveBeenCalledWith($scope, 'resource');
 	});
 
 	it('should eventify the resource\'s update', function () {
-		expect(action).toHaveBeenCalledWith($scope, resource, 'update');
-		expect(controller.update).toBe(eventifiedAction);
+		expect(action).toHaveBeenCalledWith($scope, 'resource', 'update');
+		expect(updateReturnValue).toBe(actionReturnValue);
 	});
 
 });
