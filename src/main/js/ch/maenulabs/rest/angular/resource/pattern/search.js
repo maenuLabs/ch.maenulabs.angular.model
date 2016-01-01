@@ -33,7 +33,6 @@ angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenula
 					scheduled = $timeout(delay);
 					scheduled.then(function () {
 						scheduled = undefined;
-						unwatch();
 						search();
 					});
 				});

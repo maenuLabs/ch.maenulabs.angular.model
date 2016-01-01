@@ -48,7 +48,7 @@ describe('search', function () {
 			expect(actionReturnValue).toHaveBeenCalled();
 		});
 
-		it('should not search again after second change and timeout', function () {
+		it('should search after second change and timeout', function () {
 			expect(actionReturnValue).not.toHaveBeenCalled();
 			$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.change.Changed', $scope.resource);
 			$timeout.flush(delay);
@@ -58,7 +58,7 @@ describe('search', function () {
 			$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.change.Changed', $scope.resource);
 			$timeout.flush(delay);
 			$scope.$digest();
-			expect(actionReturnValue).not.toHaveBeenCalled();
+			expect(actionReturnValue).toHaveBeenCalled();
 		});
 
 		it('should not search after other resource changes and timeout', function () {
