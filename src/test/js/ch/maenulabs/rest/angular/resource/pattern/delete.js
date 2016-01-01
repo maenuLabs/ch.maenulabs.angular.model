@@ -2,21 +2,21 @@
 describe('Delete', function () {
 
 	var $scope;
-	var eventifyAction;
+	var action;
 	var eventifiedAction;
 	var resource;
 	var controller;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.controller', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.resource.pattern', function($provide) {
 		eventifiedAction = jasmine.createSpy();
-		eventifyAction = jasmine.createSpy().and.returnValue(eventifiedAction);
-		$provide.value('ch.maenulabs.rest.angular.event.eventifyAction', eventifyAction);
+		action = jasmine.createSpy().and.returnValue(eventifiedAction);
+		$provide.value('ch.maenulabs.rest.angular.resource.eventify.action', action);
     }));
 
 	beforeEach(inject(['$controller', '$rootScope', function (_$controller_, _$rootScope_) {
 		resource = {};
 		$scope = _$rootScope_.$new();
-		controller = _$controller_('ch.maenulabs.rest.angular.controller.Delete', {
+		controller = _$controller_('ch.maenulabs.rest.angular.resource.pattern.Delete', {
 			'$scope': $scope,
 			'resource': resource
 		});
@@ -27,7 +27,7 @@ describe('Delete', function () {
 	});
 
 	it('should eventify the resource\'s delete', function () {
-		expect(eventifyAction).toHaveBeenCalledWith($scope, resource, 'delete');
+		expect(action).toHaveBeenCalledWith($scope, resource, 'delete');
 		expect(controller.delete).toBe(eventifiedAction);
 	});
 
