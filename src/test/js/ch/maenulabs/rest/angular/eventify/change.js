@@ -4,9 +4,9 @@ describe('change', function () {
 	var $scope;
 	var unwatch;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.resource.eventify'));
+	beforeEach(module('ch.maenulabs.rest.angular.eventify'));
 
-	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.resource.eventify.change', function (_$rootScope_, _change_) {
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.eventify.change', function (_$rootScope_, _change_) {
 		$scope = _$rootScope_.$new();
 		$scope.resource = {
 			getChangeables: function () {
@@ -22,7 +22,7 @@ describe('change', function () {
 		
 		beforeEach(function () {
 			changed = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.change.Changed', changed);
+			$scope.$on('ch.maenulabs.rest.angular.eventify.change.Changed', changed);
 		});
 		
 		describe('emission', function () {

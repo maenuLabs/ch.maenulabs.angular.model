@@ -6,13 +6,13 @@ describe('delete', function () {
 	var action;
 	var deleteReturnValue;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.resource.pattern', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.pattern', function($provide) {
 		actionReturnValue = jasmine.createSpy();
 		action = jasmine.createSpy().and.returnValue(actionReturnValue);
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.action', action);
+		$provide.value('ch.maenulabs.rest.angular.eventify.action', action);
     }));
 
-	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.resource.pattern.delete', function (_$rootScope_, _delete_) {
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.pattern.delete', function (_$rootScope_, _delete_) {
 		$scope = _$rootScope_.$new();
 		deleteReturnValue = _delete_($scope, 'resource');
 	}]));

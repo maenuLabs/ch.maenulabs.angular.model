@@ -4,9 +4,9 @@ describe('validation', function () {
 	var $scope;
 	var unwatch;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.resource.eventify'));
+	beforeEach(module('ch.maenulabs.rest.angular.eventify'));
 
-	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.resource.eventify.validation', function (_$rootScope_, _validation_) {
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.eventify.validation', function (_$rootScope_, _validation_) {
 		$scope = _$rootScope_.$new();
 		$scope.resource = {
 			hasErrors: function () {
@@ -24,8 +24,8 @@ describe('validation', function () {
 		beforeEach(function () {
 			success = jasmine.createSpy();
 			error = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.validation.Success', success);
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.validation.Error', error);
+			$scope.$on('ch.maenulabs.rest.angular.eventify.validation.Success', success);
+			$scope.$on('ch.maenulabs.rest.angular.eventify.validation.Error', error);
 		});
 		
 		describe('emission', function () {

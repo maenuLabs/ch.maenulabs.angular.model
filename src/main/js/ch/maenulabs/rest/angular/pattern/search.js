@@ -2,13 +2,13 @@
 /**
  * Controls the resource search.
  *
- * @module ch.maenulabs.rest.angular.resource.pattern
+ * @module ch.maenulabs.rest.angular.pattern
  * @class search
  */
-angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenulabs.rest.angular.resource.pattern.search', [
+angular.module('ch.maenulabs.rest.angular.pattern').factory('ch.maenulabs.rest.angular.pattern.search', [
 	'$timeout',
-	'ch.maenulabs.rest.angular.resource.eventify.action',
-	'ch.maenulabs.rest.angular.resource.eventify.change',
+	'ch.maenulabs.rest.angular.eventify.action',
+	'ch.maenulabs.rest.angular.eventify.change',
 	function ($timeout, action, change) {
 		return function ($scope, resource, delay) {
 			return function () {
@@ -23,7 +23,7 @@ angular.module('ch.maenulabs.rest.angular.resource.pattern').factory('ch.maenula
 				};
 				var search = action($scope, resource, 'search');
 				unwatchChange = change($scope, resource);
-				unwatchChanged = $scope.$on('ch.maenulabs.rest.angular.resource.eventify.change.Changed', function ($event, candidate) {
+				unwatchChanged = $scope.$on('ch.maenulabs.rest.angular.eventify.change.Changed', function ($event, candidate) {
 					if (candidate != $scope[resource]) {
 						return;
 					}

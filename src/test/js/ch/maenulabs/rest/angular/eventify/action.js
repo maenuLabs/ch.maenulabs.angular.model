@@ -8,9 +8,9 @@ describe('action', function () {
 	var deferred;
 	var eventifiedAction;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.resource.eventify'));
+	beforeEach(module('ch.maenulabs.rest.angular.eventify'));
 
-	beforeEach(inject(['$q', '$rootScope', 'ch.maenulabs.rest.angular.resource.eventify.action', function (_$q_, _$rootScope_, _action_) {
+	beforeEach(inject(['$q', '$rootScope', 'ch.maenulabs.rest.angular.eventify.action', function (_$q_, _$rootScope_, _action_) {
 		$q = _$q_;
 		$scope = _$rootScope_.$new();
 		response = {};
@@ -99,10 +99,10 @@ describe('action', function () {
 			resolved = jasmine.createSpy();
 			rejected = jasmine.createSpy();
 			notified = jasmine.createSpy();
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Pending', pending);
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Resolved', resolved);
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Rejected', rejected);
-			$scope.$on('ch.maenulabs.rest.angular.resource.eventify.action.Notified', notified);
+			$scope.$on('ch.maenulabs.rest.angular.eventify.action.Pending', pending);
+			$scope.$on('ch.maenulabs.rest.angular.eventify.action.Resolved', resolved);
+			$scope.$on('ch.maenulabs.rest.angular.eventify.action.Rejected', rejected);
+			$scope.$on('ch.maenulabs.rest.angular.eventify.action.Notified', notified);
 		});
 		
 		it('should call action', function () {

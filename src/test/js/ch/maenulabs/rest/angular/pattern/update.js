@@ -8,17 +8,17 @@ describe('update', function () {
 	var change;
 	var updateReturnValue;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.resource.pattern', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.pattern', function($provide) {
 		actionReturnValue = jasmine.createSpy();
 		validation = jasmine.createSpy();
 		action = jasmine.createSpy().and.returnValue(actionReturnValue);
 		change = jasmine.createSpy();
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.validation', validation);
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.action', action);
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.change', change);
+		$provide.value('ch.maenulabs.rest.angular.eventify.validation', validation);
+		$provide.value('ch.maenulabs.rest.angular.eventify.action', action);
+		$provide.value('ch.maenulabs.rest.angular.eventify.change', change);
     }));
 
-	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.resource.pattern.update', function (_$rootScope_, _update_) {
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.pattern.update', function (_$rootScope_, _update_) {
 		$scope = _$rootScope_.$new();
 		updateReturnValue = _update_($scope, 'resource');
 	}]));

@@ -6,13 +6,13 @@ describe('read', function () {
 	var action;
 	var readReturnValue;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.resource.pattern', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.pattern', function($provide) {
 		actionReturnValue = jasmine.createSpy();
 		action = jasmine.createSpy().and.returnValue(actionReturnValue);
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.action', action);
+		$provide.value('ch.maenulabs.rest.angular.eventify.action', action);
     }));
 
-	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.resource.pattern.read', function (_$rootScope_, _read_) {
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.pattern.read', function (_$rootScope_, _read_) {
 		$scope = _$rootScope_.$new();
 		readReturnValue = _read_($scope, 'resource');
 	}]));

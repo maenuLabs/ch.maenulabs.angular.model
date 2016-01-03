@@ -2,37 +2,15 @@
 /**
  * A basic RESTful resource with CRUD methods.
  *
- * @module ch.maenulabs.rest.angular.resource
- * @class AbstractResource
- * @extends ch.maenulabs.rest.angular.resource.IResource
+ * @module ch.maenulabs.rest.angular
+ * @class Resource
+ * @extends ch.maenulabs.rest.angular.IResource
  */
-angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.angular.resource.AbstractResource', [
+angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.Resource', [
 	'$http',
 	function ($http) {
-		var flatten = function (object) {
-			var flattened = {};
-			for (var key in object) {
-				/* istanbul ignore if */
-				if (!object.hasOwnProperty(key)) {
-					continue;
-				}
-				var value = object[key];
-				if (!(value instanceof Object)) {
-					flattened[key] = value;
-					continue;
-				}
-				value = flatten(value);
-				for (var subKey in value) {
-					/* istanbul ignore if */
-					if (!value.hasOwnProperty(subKey)) {
-						continue;
-					}
-					flattened[key + '.' + subKey] = value[subKey];
-				}
-			}
-			return flattened;
-		};
 		var Validation = ch.maenulabs.validation.Validation;
+		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 		return new ch.maenulabs.type.Type(Object, {
 			/**
 			 * The URI.
@@ -44,7 +22,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			/**
 			 * The validation.
 			 *
-			 * @public
+			 * @protected
 			 * @property validation
 			 * @type Validation
 			 */
@@ -58,6 +36,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			initialize: function (values) {
 				angular.extend(this, values || {});
 				this.validation = this.validation || new Validation();
+				this.validation.add(new ExistenceCheck('uri'));
 			},
 			hasErrors: function () {
 				return this.validation.hasErrors(this);
@@ -65,19 +44,25 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			getErrors: function () {
 				return this.validation.getErrors(this);
 			},
-			hasError: function (property) {
-				var errors = this.validation.getErrors(this);
-				return errors[property] && errors[property].length > 0;
+			hasError: function (path) {
+				return this.getError(path).length > 0;
 			},
-			getError: function (property) {
-				return this.validation.getErrors(this)[property] || [];
-			},
-			getChangeables: function () {
-				throw new Error('not implemented');
+			getError: function (path) {
+				var errors = [this.getErrors()];
+				var properties = path.split('.');
+				while (properties.length > 0) {
+					var property = properties.shift();
+					errors = errors.filter(function (error) {
+						return error[property];
+					}).reduce(function (errors, error) {
+						return errors.concat(error[property]);
+					}, []);
+				}
+				return errors;
 			},
 			create: function () {
 				return $http({
-					url: this.getBaseUri(),
+					url: this.uri,
 					method: 'POST',
 					data: this.serialize()
 				}).then((function (response) {
@@ -110,19 +95,6 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 					return response;
 				}).bind(this));
 			},
-			search: function () {
-				return $http({
-					url: this.getSearchUri(),
-					method: 'GET'
-				}).then((function (response) {
-					var simplifications = angular.fromJson(response.data);
-					response.results = [];
-					for (var i = 0; i < simplifications.length; i = i + 1) {
-						response.results.push(this.type.desimplify(simplifications[i]));
-					}
-					return response;
-				}).bind(this));
-			},
 			serialize: function () {
 				return angular.toJson(this.simplify());
 			},
@@ -136,53 +108,6 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			},
 			desimplify: function (simplification) {
 				this.uri = simplification.uri;
-			},
-			getBaseName: function () {
-				throw new Error('not implemented');
-			},
-			/**
-			 * Gets the base URI to make request to, without an ending slash. Must
-			 * be overwritten in subclass.
-			 *
-			 * @public
-			 * @method getBaseUri
-			 *
-			 * @return String The base URI
-			 */
-			getBaseUri: function () {
-				throw new Error('not implemented');
-			},
-			/**
-			 * Gets the search URI to make request to, without an ending slash.
-			 *
-			 * @public
-			 * @method getSearchUri
-			 *
-			 * @return String The search URI
-			 */
-			getSearchUri: function () {
-				return this.getBaseUri() + '?' + this.toSearchParameters();
-			},
-			/**
-			 * Encodes itself as search parameters.
-			 *
-			 * @protected
-			 * @method toSearchParameters
-			 *
-			 * @return String The search parameters
-			 */
-			toSearchParameters: function () {
-				var items = [];
-				var flattened = flatten(this.simplify());
-				for (var key in flattened) {
-					var value = flattened[key];
-					if (value == null) {
-						continue;
-					}
-					var item = encodeURIComponent(key) + '=' + encodeURIComponent(value);
-					items.push(item);
-				}
-				return items.join('&');
 			}
 		}, {
 			/**

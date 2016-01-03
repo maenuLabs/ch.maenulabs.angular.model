@@ -1,7 +1,7 @@
 /**
  * A basic RESTful resource with CRUD methods.
  *
- * @module ch.maenulabs.rest.angular.resource
+ * @module ch.maenulabs.rest.angular
  * @class IResource
  */
 /**
@@ -41,14 +41,6 @@
  * @return Array The error messages
  */
 /**
- * Gets the names of the properties that can change.
- *
- * @public
- * @method getChangeables
- *
- * @return Array The property names
- */
-/**
  * Creates it. After that, it will have an URI.
  *
  * @public
@@ -79,14 +71,6 @@
  * @method delete
  *
  * @return Promise The request promise
- */
-/**
- * Searches for similar resources.
- *
- * @public
- * @method search
- *
- * @return Promise The request promise with a results array on it
  */
 /**
  * Serializes it to a serialization.
@@ -121,12 +105,4 @@
  *
  * @param {Object} simplification A simple object with the properties:
  *     uri, a String, the URI
- */
-/**
- * Get the base name of the resource.
- * 
- * @public
- * @method getBaseName
- * 
- * @return String The name
  */

@@ -2,10 +2,10 @@
 /**
  * Installs a watcher on a resource's validation.
  *
- * @module ch.maenulabs.rest.angular.resource.eventify
+ * @module ch.maenulabs.rest.angular.eventify
  * @class validation
  */
-angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenulabs.rest.angular.resource.eventify.validation', function () {
+angular.module('ch.maenulabs.rest.angular.eventify').factory('ch.maenulabs.rest.angular.eventify.validation', function () {
 	/**
 	 * Installs an eventifyer on the specified resource's validation in the specified scope.
 	 * 
@@ -17,9 +17,9 @@ angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenul
 	return function ($scope, resource) {
 		return $scope.$watch(resource + '.hasErrors()', function (hasErrors) {
 			if (hasErrors) {
-				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.validation.Error', $scope[resource]);
+				$scope.$emit('ch.maenulabs.rest.angular.eventify.validation.Error', $scope[resource]);
 			} else {
-				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.validation.Success', $scope[resource]);
+				$scope.$emit('ch.maenulabs.rest.angular.eventify.validation.Success', $scope[resource]);
 			}
 		});
 	};

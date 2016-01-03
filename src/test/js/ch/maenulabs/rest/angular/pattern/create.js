@@ -7,15 +7,15 @@ describe('create', function () {
 	var action;
 	var createReturnValue;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.resource.pattern', function($provide) {
+	beforeEach(module('ch.maenulabs.rest.angular.pattern', function($provide) {
 		actionReturnValue = jasmine.createSpy();
 		validation = jasmine.createSpy();
 		action = jasmine.createSpy().and.returnValue(actionReturnValue);
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.validation', validation);
-		$provide.value('ch.maenulabs.rest.angular.resource.eventify.action', action);
+		$provide.value('ch.maenulabs.rest.angular.eventify.validation', validation);
+		$provide.value('ch.maenulabs.rest.angular.eventify.action', action);
     }));
 
-	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.resource.pattern.create', function (_$rootScope_, _create_) {
+	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.pattern.create', function (_$rootScope_, _create_) {
 		$scope = _$rootScope_.$new();
 		createReturnValue = _create_($scope, 'resource');
 	}]));

@@ -2,10 +2,10 @@
 /**
  * Installs a watcher on a resource's changes.
  *
- * @module ch.maenulabs.rest.angular.resource.eventify
+ * @module ch.maenulabs.rest.angular.eventify
  * @class change
  */
-angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenulabs.rest.angular.resource.eventify.change', function () {
+angular.module('ch.maenulabs.rest.angular.eventify').factory('ch.maenulabs.rest.angular.eventify.change', function () {
 	/**
 	 * Installs an eventifyer on the specified resource's change in the specified scope.
 	 * 
@@ -31,7 +31,7 @@ angular.module('ch.maenulabs.rest.angular.resource.eventify').factory('ch.maenul
 				return resource + '.' + changeable;
 			});
 			unwatchChangeables = $scope.$watchGroup(changeables, function () {
-				$scope.$emit('ch.maenulabs.rest.angular.resource.eventify.change.Changed', $scope[resource]);
+				$scope.$emit('ch.maenulabs.rest.angular.eventify.change.Changed', $scope[resource]);
 			});
 		});
 		return unwatch;
