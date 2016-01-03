@@ -13,27 +13,14 @@ angular.module('ch.maenulabs.rest.angular.eventify').factory('ch.maenulabs.rest.
 	 * 
 	 * @param {Scope} $scope The scope
 	 * @param {String} resource The resource property name
+	 * @param {Array<String>} changeables The changeable properties
 	 */
-	return function ($scope, resource) {
-		var unwatchResource = angular.noop;
-		var unwatchChangeables = angular.noop;
-		var unwatch = function () {
-			unwatchResource();
-			unwatchChangeables();
-			unwatchResource = angular.noop;
-			unwatchChangeables = angular.noop;
-		};
-		unwatchResource = $scope.$watch(resource, function (newValue, oldValue) {
-			if (newValue != oldValue) {
-				unwatchChangeables();
-			}
-			var changeables = newValue.getChangeables().map(function (changeable) {
-				return resource + '.' + changeable;
-			});
-			unwatchChangeables = $scope.$watchGroup(changeables, function () {
-				$scope.$emit('ch.maenulabs.rest.angular.eventify.change.Changed', $scope[resource]);
-			});
+	return function ($scope, resource, changeables) {
+		changeables = changeables.map(function (changeable) {
+			return resource + '.' + changeable;
 		});
-		return unwatch;
+		return $scope.$watchGroup(changeables, function () {
+			$scope.$emit('ch.maenulabs.rest.angular.eventify.change.Changed', $scope[resource]);
+		});
 	};
 });
