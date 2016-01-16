@@ -21,7 +21,7 @@ angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.a
 		return templates[uriTemplateBase];
 	};
 	/**
-	 * Adds the route configuration. Reads the resource if URI exists.
+	 * Adds the route configuration. Reads the resource if self link exists.
 	 * 
 	 * @public
 	 * @method addRoute

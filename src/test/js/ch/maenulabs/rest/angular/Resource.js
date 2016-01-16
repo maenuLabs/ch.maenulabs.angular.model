@@ -18,47 +18,38 @@ describe('Resource', function () {
 
 		it('should create statically with desimplify', function () {
 			resource = Resource.desimplify({
-				uri: '/resource/1'
+				links: [{
+					rel: ['self'],
+					href: '/resource/1'
+				}]
 			});
 			expect(resource instanceof Resource).toBeTruthy();
-			expect(resource.uri).toEqual('/resource/1');
+			expect(resource.getLink('self')).toEqual('/resource/1');
 		});
 
 		it('should create statically with deserialize', function () {
-			resource = Resource.deserialize('{"uri":"/resource/1"}');
+			resource = Resource.deserialize('{'
+				+ '"links": [{'
+					+ '"rel": ["self"],'
+					+ '"href": "/resource/1"'
+				+ '}]'
+			+ '}');
 			expect(resource instanceof Resource).toBeTruthy();
-			expect(resource.uri).toEqual('/resource/1');
-		});
-
-	});
-
-	it('should have a validation and a nulled uri', function () {
-		expect(resource.uri).not.toBeDefined();
-		expect(resource.validation).toBeDefined();
-	});
-
-	describe('simplification', function () {
-
-		it('should implement simplify', function () {
-			var uri = '/resource/1';
-			resource.uri = uri;
-			var simplification = resource.simplify();
-			expect(simplification.uri).toEqual(uri);
-		});
-
-		it('should implement desimplify', function () {
-			var simplification = {
-				uri: '/resource/1'
-			};
-			resource.desimplify(simplification);
-			expect(resource.uri).toEqual(simplification.uri);
+			expect(resource.getLink('self')).toEqual('/resource/1');
 		});
 
 	});
 
 	describe('constructor', function () {
 
-		it('should use the intial values', function () {
+		it('should have a validation and a empty links', function () {
+			resource = new Resource();
+			expect(resource.validation).toBeDefined();
+			expect(resource.links).toBeDefined();
+			expect(resource.links.length).toEqual(0);
+		});
+
+		it('should use the given values', function () {
 			var values = {
 				a: 1,
 				b: 2
@@ -68,15 +59,44 @@ describe('Resource', function () {
 			expect(resource.b).toEqual(2);
 		});
 
-		it('should override the intial values', function () {
+		it('should override initial values with given values', function () {
+			var links = [{
+				rel: ['self'],
+				href: '/resource/1'
+			}];
 			var validation = new ch.maenulabs.validation.Validation();
 			var values = {
-				uri: '/resource/1',
+				links: links,
 				validation: validation
 			};
 			resource = new Resource(values);
-			expect(resource.uri).toEqual('/resource/1');
+			expect(resource.links).toBe(links);
 			expect(resource.validation).toBe(validation);
+		});
+
+	});
+
+	describe('simplification', function () {
+
+		it('should implement simplify', function () {
+			var links = [{
+				rel: ['self'],
+				href: '/resource/1'
+			}];
+			resource.links = links;
+			var simplification = resource.simplify();
+			expect(simplification.links).toEqual(links);
+		});
+
+		it('should implement desimplify', function () {
+			var simplification = {
+				links: [{
+					rel: ['self'],
+					href: '/resource/1'
+				}]
+			};
+			resource.desimplify(simplification);
+			expect(resource.links).toEqual(simplification.links);
 		});
 
 	});
@@ -87,7 +107,6 @@ describe('Resource', function () {
 		
 		beforeEach(function () {
 			ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
-			resource.uri = '/resource/1';
 		});
 		
 		it('should have no errors', function () {
@@ -95,24 +114,6 @@ describe('Resource', function () {
 			expect(resource.getErrors()).toEqual({});
 			expect(resource.hasError('a')).toBeFalsy();
 			expect(resource.getError('a')).toEqual([]);
-		});
-
-		it('should require the URI', function () {
-			resource.uri = undefined;
-			var message = 'message';
-			i18n = {
-				'ch/maenulabs/validation/ExistenceCheck': {
-					message: function () {
-						return message;
-					}
-				}
-			};
-			expect(resource.hasErrors()).toBeTruthy();
-			expect(resource.getErrors()).toEqual({
-				uri: [message]
-			});
-			expect(resource.hasError('uri')).toBeTruthy();
-			expect(resource.getError('uri')).toEqual([message]);
 		});
 
 		it('should allow to add checks', function () {
@@ -168,53 +169,63 @@ describe('Resource', function () {
 		
 		var success;
 		var error;
+		var selfLink;
 		var simplification;
 
 		beforeEach(function () {
 			success = jasmine.createSpy();
 			error = jasmine.createSpy();
+			selfLink = '/resource/1';
 			simplification = {
-				uri: '/resource/1',
+				links: [{
+					rel: ['self'],
+					href: selfLink
+				}],
 				message: 'hello'
 			};
-			resource.desimplify = function (simplification) {
-				this.uri = simplification.uri;
-				this.message = simplification.message;
-			};
-			resource.simplify = function () {
-				return {
-					uri: this.uri,
-					message: this.message
-				};
-			};
+			var CrudResource = new ch.maenulabs.type.Type(Resource, {
+				desimplify: function (simplification) {
+					this.base('desimplify')(simplification);
+					this.message = simplification.message;
+				},
+				simplify: function () {
+					var simplification = this.base('simplify')();
+					simplification.message = this.message;
+					return simplification;
+				}
+			});
+			resource = CrudResource.desimplify(simplification);
 		});
 
 		describe('create', function () {
-
+			
+			var createLink;
+			
 			beforeEach(function () {
-				resource.uri = '/resource';
-				resource.message = simplification.message;
+				createLink = '/resource';
+				resource.links = [{
+					rel: ['self'],
+					href: createLink
+				}];
 			});
 
 			it('should create with success', function () {
-				$httpBackend.expect('POST', resource.uri).respond(201, '', {
-					'location': '/resource/1'
-				});
+				$httpBackend.expect('POST', resource.getLink('self')).respond(201, simplification);
 				resource.create().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.getLink('self')).toEqual(selfLink);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should create with error', function () {
-				$httpBackend.expect('POST', resource.uri).respond(403, '');
+				$httpBackend.expect('POST', resource.getLink('self')).respond(403, '');
 				resource.create().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.uri).toEqual('/resource');
+				expect(resource.getLink('self')).toEqual(createLink);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
@@ -223,29 +234,28 @@ describe('Resource', function () {
 		describe('read', function () {
 
 			beforeEach(function () {
-				resource.uri = simplification.uri;
+				resource.desimplify({
+					links: simplification.links
+				});
 			});
 
 			it('should read with success', function () {
-				$httpBackend.expect('GET', resource.uri).respond(200, {
-					uri: simplification.uri,
-					message: simplification.message
-				});
+				$httpBackend.expect('GET', resource.getLink('self')).respond(200, simplification);
 				resource.read().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.getLink('self')).toEqual(selfLink);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should read with error', function () {
-				$httpBackend.expect('GET', resource.uri).respond(404, '');
+				$httpBackend.expect('GET', resource.getLink('self')).respond(404, '');
 				resource.read().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.getLink('self')).toEqual(selfLink);
 				expect(resource.message).not.toBeDefined();
 			});
 
@@ -257,27 +267,26 @@ describe('Resource', function () {
 
 			beforeEach(function () {
 				message = 'hello hello';
-				resource.uri = simplification.uri;
 				resource.message = message;
 			});
 
 			it('should update with success', function () {
-				$httpBackend.expect('PUT', resource.uri).respond(202, '');
+				$httpBackend.expect('PUT', resource.getLink('self')).respond(202, '');
 				resource.update().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.getLink('self')).toEqual(selfLink);
 				expect(resource.message).toEqual(message);
 			});
 
 			it('should update with error', function () {
-				$httpBackend.expect('PUT', simplification.uri).respond(403, '');
+				$httpBackend.expect('PUT', resource.getLink('self')).respond(403, '');
 				resource.update().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.uri).toEqual(simplification.uri);
+				expect(resource.getLink('self')).toEqual(selfLink);
 				expect(resource.message).toEqual(message);
 			});
 
@@ -285,27 +294,34 @@ describe('Resource', function () {
 
 		describe('delete', function () {
 
+			var message;
+
 			beforeEach(function () {
-				resource.uri = simplification.uri;
+				message = 'hello hello';
+				resource.message = message;
 			});
 
 			it('should delete with success', function () {
-				$httpBackend.expect('DELETE', resource.uri).respond(202, '');
+				$httpBackend.expect('DELETE', resource.getLink('self')).respond(202, '');
 				resource.delete().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.uri).toBeNull();
+				expect(resource.links.length).toEqual(0);
+				expect(function () {
+					resource.getLink('self');
+				}).toThrow();
+				expect(resource.message).toEqual(message);
 			});
 
 			it('should delete with error', function () {
-				$httpBackend.expect('DELETE', resource.uri).respond(404, '');
+				$httpBackend.expect('DELETE', resource.getLink('self')).respond(404, '');
 				resource.delete().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.uri).toEqual(simplification.uri);
-				expect(resource.message).not.toBeDefined();
+				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource.message).toEqual(message);
 			});
 
 		});

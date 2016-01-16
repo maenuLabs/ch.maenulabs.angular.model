@@ -1,24 +1,17 @@
 /* globals angular, ch */
 /**
- * A basic RESTful resource page with CRUD methods.
+ * A basic RESTful resource collection with CRUD methods.
  *
  * @module ch.maenulabs.rest.angular
- * @class ResourcePage
+ * @class ResourceCollection
  * @extends ch.maenulabs.rest.angular.Resource
  */
-angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.ResourcePage', [
+angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.ResourceCollection', [
 	'ch.maenulabs.rest.angular.Resource',
 	function (Resource) {
 		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 		var PropertiesCheck = ch.maenulabs.validation.PropertiesCheck;
 		return new ch.maenulabs.type.Type(Resource, {
-			/**
-			 * The URI.
-			 *
-			 * @public
-			 * @property uri
-			 * @type String
-			 */
 			/**
 			 * The resource type.
 			 *
@@ -34,7 +27,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 			 * @type Array<ch.maenulabs.rest.angular.IResource>
 			 */
 			/**
-			 * Creates a resource page.
+			 * Creates a resource collection.
 			 *
 			 * @constructor
 			 *

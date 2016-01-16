@@ -10,14 +10,13 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 	'$http',
 	function ($http) {
 		var Validation = ch.maenulabs.validation.Validation;
-		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 		return new ch.maenulabs.type.Type(Object, {
 			/**
-			 * The URI.
+			 * The links mapped by their name.
 			 *
 			 * @public
-			 * @property uri
-			 * @type String
+			 * @property links
+			 * @type Object
 			 */
 			/**
 			 * The validation.
@@ -35,8 +34,8 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 			 */
 			initialize: function (values) {
 				angular.extend(this, values || {});
+				this.links = this.links || [];
 				this.validation = this.validation || new Validation();
-				this.validation.add(new ExistenceCheck('uri'));
 			},
 			hasErrors: function () {
 				return this.validation.hasErrors(this);
@@ -60,19 +59,24 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 				}
 				return errors;
 			},
+			getLink: function (rel) {
+				return this.links.filter(function (link) {
+					return link.rel.indexOf(rel) > -1;
+				})[0].href;
+			},
 			create: function () {
 				return $http({
-					url: this.uri,
+					url: this.getLink('self'),
 					method: 'POST',
 					data: this.serialize()
 				}).then((function (response) {
-					this.uri = response.headers('location');
+					this.deserialize(response.data);
 					return response;
 				}).bind(this));
 			},
 			read: function () {
 				return $http({
-					url: this.uri,
+					url: this.getLink('self'),
 					method: 'GET'
 				}).then((function (response) {
 					this.deserialize(response.data);
@@ -81,17 +85,17 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 			},
 			update: function () {
 				return $http({
-					url: this.uri,
+					url: this.getLink('self'),
 					method: 'PUT',
 					data: this.serialize()
 				});
 			},
 			'delete': function () {
 				return $http({
-					url: this.uri,
+					url: this.getLink('self'),
 					method: 'DELETE'
 				}).then((function (response) {
-					this.uri = null;
+					this.links = [];
 					return response;
 				}).bind(this));
 			},
@@ -102,12 +106,12 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 				this.desimplify(angular.fromJson(serialization));
 			},
 			simplify: function () {
-				return {
-					uri: this.uri
-				};
+				var simplification = {};
+				simplification.links = this.links;
+				return simplification;
 			},
 			desimplify: function (simplification) {
-				this.uri = simplification.uri;
+				this.links = simplification.links
 			}
 		}, {
 			/**

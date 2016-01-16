@@ -8,44 +8,27 @@ describe('router', function () {
 	var $rootScope;
 	var $route;
 	var router;
-	var Test;
+	var Resource;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.router', ['ch.maenulabs.rest.angular.router.routerProvider', '$provide', function(_routerProvider_, _$provide_) {
 		routerProvider = _routerProvider_;
-		routerProvider.addRoute('test', 'read', 'Test', {});
-		routerProvider.addRoute('test', 'create', 'Test', {
+		routerProvider.addRoute('resource', 'read', 'ch.maenulabs.rest.angular.Resource', {});
+		routerProvider.addRoute('resource', 'create', 'ch.maenulabs.rest.angular.Resource', {
 			resolve: {
-				uri: function () {
-					return '/api/test/1';
+				a: function () {
+					return 1;
 				}
 			}
 		});
-		_$provide_.factory('Test', ['ch.maenulabs.rest.angular.Resource', function (Resource) {
-			return new ch.maenulabs.type.Type(Resource, {
-				simplify: function () {
-					var simplification = this.base('simplify')();
-					if (this.uri) {
-						simplification.uri = this.uri;
-					}
-					return simplification;
-				},
-				desimplify: function (simplification) {
-					this.base('desimplify')(simplification);
-					if (simplification.uri) {
-						this.uri = simplification.uri;
-					}
-				}
-			});
-		}]);
     }]));
 
-	beforeEach(inject(['$httpBackend', '$location', '$rootScope', '$compile', '$route', 'ch.maenulabs.rest.angular.router.router', 'Test', function (_$httpBackend_, _$location_, _$rootScope_, _$compile_, _$route_, _router_, _Test_) {
+	beforeEach(inject(['$httpBackend', '$location', '$rootScope', '$compile', '$route', 'ch.maenulabs.rest.angular.router.router', 'ch.maenulabs.rest.angular.Resource', function (_$httpBackend_, _$location_, _$rootScope_, _$compile_, _$route_, _router_, _Resource_) {
 		$httpBackend = _$httpBackend_;
 		$location = _$location_;
 		$rootScope = _$rootScope_;
 		$route = _$route_;
 		router = _router_;
-		Test = _Test_;
+		Resource = _Resource_;
 		// NOTE ngRoute needs ngView
 		element = _$compile_('<div><div ng-view></div></div>')($rootScope);
 	}]));
@@ -55,15 +38,18 @@ describe('router', function () {
 	});
 	
 	it('should get the URI without any properties', function () {
-		var resource = new Test();
-		expect(router.getUri('test', 'read', resource)).toEqual('/test/read/{}');
+		var resource = new Resource();
+		expect(router.getUri('resource', 'read', resource)).toEqual('/resource/read/{"links":[]}');
 	});
 	
 	it('should get the URI with properties', function () {
-		var resource = new Test({
-			uri: '/api/test/1'
+		var resource = new Resource({
+			links: [{
+				rel: ['self'],
+				href: '/api/resource/1'
+			}]
 		});
-		expect(router.getUri('test', 'read', resource)).toEqual('/test/read/{"uri":"/api/test/1"}');
+		expect(router.getUri('resource', 'read', resource)).toEqual('/resource/read/{"links":[{"rel":["self"],"href":"/api/resource/1"}]}');
 	});
 
 	it('should deserialize the resource from an URI with serialization', function () {
@@ -73,12 +59,12 @@ describe('router', function () {
 		});
 		$rootScope.$on('$routeChangeSuccess', function ($event, current) {
 			expect(current.locals.resource).toBeDefined();
-			expect(current.locals.resource.uri).toEqual('/api/test/1');
+			expect(current.locals.resource.getLink('self')).toEqual('/api/resource/1');
 		});
 		$rootScope.$on('$routeChangeError', function () {
 			fail();
 		});
-		$location.path('/test/read/{"uri":"/api/test/1"}');
+		$location.path('/resource/read/{"links":[{"rel":["self"],"href":"/api/resource/1"}]}');
 		$rootScope.$digest();
 		expect(changed).toBeTruthy();
 	});
@@ -90,12 +76,14 @@ describe('router', function () {
 		});
 		$rootScope.$on('$routeChangeSuccess', function ($event, current) {
 			expect(current.locals.resource).toBeDefined();
-			expect(current.locals.resource.uri).not.toBeDefined();
+			expect(function () {
+				current.locals.resource.getLink('self');
+			}).toThrow();
 		});
 		$rootScope.$on('$routeChangeError', function () {
 			fail();
 		});
-		$location.path('/test/read');
+		$location.path('/resource/read');
 		$rootScope.$digest();
 		expect(changed).toBeTruthy();
 	});
@@ -107,12 +95,12 @@ describe('router', function () {
 		});
 		$rootScope.$on('$routeChangeSuccess', function ($event, current) {
 			expect(current.locals.resource).toBeDefined();
-			expect(current.locals.uri).toEqual('/api/test/1');
+			expect(current.locals.a).toEqual(1);
 		});
 		$rootScope.$on('$routeChangeError', function () {
 			fail();
 		});
-		$location.path('/test/create/{}');
+		$location.path('/resource/create/{}');
 		$rootScope.$digest();
 		expect(changed).toBeTruthy();
 	});
