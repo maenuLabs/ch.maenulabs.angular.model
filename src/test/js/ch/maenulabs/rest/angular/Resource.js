@@ -18,24 +18,16 @@ describe('Resource', function () {
 
 		it('should create statically with desimplify', function () {
 			resource = Resource.desimplify({
-				links: [{
-					rel: ['self'],
-					href: '/resource/1'
-				}]
+				links: []
 			});
 			expect(resource instanceof Resource).toBeTruthy();
-			expect(resource.getLink('self')).toEqual('/resource/1');
 		});
 
 		it('should create statically with deserialize', function () {
 			resource = Resource.deserialize('{'
-				+ '"links": [{'
-					+ '"rel": ["self"],'
-					+ '"href": "/resource/1"'
-				+ '}]'
+				+ '"links": []'
 			+ '}');
 			expect(resource instanceof Resource).toBeTruthy();
-			expect(resource.getLink('self')).toEqual('/resource/1');
 		});
 
 	});
@@ -74,6 +66,36 @@ describe('Resource', function () {
 			expect(resource.validation).toBe(validation);
 		});
 
+	});
+	
+	describe('links', function () {
+		
+		beforeEach(function () {
+			resource = Resource.deserialize('{'
+				+ '"links": [{'
+					+ '"rel": ["self"],'
+					+ '"href": "/resource/1"'
+				+ '},{'
+					+ '"rel": ["related"],'
+					+ '"href": "/resource/2"'
+				+ '}]'
+			+ '}');
+		});
+
+		it('should have links', function () {
+			expect(resource.hasLink('self')).toBeTruthy();
+			expect(resource.hasLink('related')).toBeTruthy();
+			expect(resource.hasLink('unrelated')).toBeFalsy();
+		});
+
+		it('should get links', function () {
+			expect(resource.getLink('self')).toEqual('/resource/1');
+			expect(resource.getLink('related')).toEqual('/resource/2');
+			expect(function () {
+				resource.getLink('unrelated');
+			}).toThrow();
+		});
+		
 	});
 
 	describe('simplification', function () {

@@ -47,7 +47,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 						return resource.hasErrors();
 					});
 				}, function (resources) {
-					return resources.map(function (resource, i) {
+					return resources.map(function (resource) {
 						return resource.getErrors();
 					});
 				}));

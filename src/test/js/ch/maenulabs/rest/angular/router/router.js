@@ -1,4 +1,4 @@
-/* global ch, fail, describe, it, beforeEach, afterEach, expect, module, inject */
+/* global fail, describe, it, beforeEach, afterEach, expect, module, inject */
 describe('router', function () {
 	
 	var routerProvider;
@@ -10,7 +10,7 @@ describe('router', function () {
 	var router;
 	var Resource;
 	
-	beforeEach(module('ch.maenulabs.rest.angular.router', ['ch.maenulabs.rest.angular.router.routerProvider', '$provide', function(_routerProvider_, _$provide_) {
+	beforeEach(module('ch.maenulabs.rest.angular.router', ['ch.maenulabs.rest.angular.router.routerProvider', function(_routerProvider_) {
 		routerProvider = _routerProvider_;
 		routerProvider.addRoute('resource', 'read', 'ch.maenulabs.rest.angular.Resource', {});
 		routerProvider.addRoute('resource', 'create', 'ch.maenulabs.rest.angular.Resource', {

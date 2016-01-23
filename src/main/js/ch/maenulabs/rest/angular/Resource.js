@@ -59,6 +59,11 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 				}
 				return errors;
 			},
+			hasLink: function (rel) {
+				return this.links.some(function (link) {
+					return link.rel.indexOf(rel) > -1;
+				});
+			},
 			getLink: function (rel) {
 				return this.links.filter(function (link) {
 					return link.rel.indexOf(rel) > -1;
@@ -111,7 +116,7 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 				return simplification;
 			},
 			desimplify: function (simplification) {
-				this.links = simplification.links
+				this.links = simplification.links;
 			}
 		}, {
 			/**

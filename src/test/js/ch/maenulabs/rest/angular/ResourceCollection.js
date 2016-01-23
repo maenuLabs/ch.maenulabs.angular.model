@@ -1,4 +1,4 @@
-/* global ch, angular, i18n:true, describe, it, beforeEach, expect, jasmine, module, inject */
+/* global ch, i18n:true, describe, it, beforeEach, expect, module, inject */
 describe('ResourceCollection', function () {
 
 	var ResourceCollection;
