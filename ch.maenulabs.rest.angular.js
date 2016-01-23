@@ -36,115 +36,6 @@ angular.module('ch.maenulabs.rest.angular.router', [
 	'ch.maenulabs.rest.angular'
 ]);
 
-/**
- * A basic RESTful resource with CRUD methods.
- *
- * @module ch.maenulabs.rest.angular
- * @class IResource
- */
-/**
- * Checks whether it has errors or not.
- *
- * @public
- * @method hasErrors
- *
- * @return Boolean true if it has, false otherwise
- */
-/**
- * Gets the validation errors.
- *
- * @public
- * @method getErrors
- *
- * @return Object The errors object
- */
-/**
- * Checks whether or not there is an error with the specified property.
- *
- * @public
- * @method hasError
- *
- * @param {String} property The property to check
- *
- * @return Boolean true if it has, false otherwise
- */
-/**
- * Gets the validation error for the specified property.
- *
- * @public
- * @method getError
- *
- * @param {String} property The property to check
- *
- * @return Array The error messages
- */
-/**
- * Creates it. After that, it will have an URI.
- *
- * @public
- * @method create
- *
- * @return Promise The request promise
- */
-/**
- * Reads it. Only the URI needs to be set and the rest will be populated.
- *
- * @public
- * @method read
- *
- * @return Promise The request promise
- */
-/**
- * Updates it.
- *
- * @public
- * @method update
- *
- * @return Promise The request promise
- */
-/**
- * Deletes it.
- *
- * @public
- * @method delete
- *
- * @return Promise The request promise
- */
-/**
- * Serializes it to a serialization.
- *
- * @public
- * @method serialize
- *
- * @return String A serialization
- */
-/**
- * Deserializes it from a serialization.
- *
- * @public
- * @method deserialize
- *
- * @param {String} serialization A serialization
- */
-/**
- * Simplifies it to a simple object.
- *
- * @public
- * @method simplify
- *
- * @return Object A simple object with the properties:
- *     uri, a String, the URI
- */
-/**
- * Desimplifies it from a simple object.
- *
- * @public
- * @method desimplify
- *
- * @param {Object} simplification A simple object with the properties:
- *     uri, a String, the URI
- */
-
 /* globals angular, ch */
 /**
  * A basic RESTful resource with CRUD methods.
@@ -184,15 +75,51 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 				this.links = this.links || [];
 				this.validation = this.validation || new Validation();
 			},
+			/**
+			 * Checks whether it has errors or not.
+			 *
+			 * @public
+			 * @method hasErrors
+			 *
+			 * @return Boolean true if it has, false otherwise
+			 */
 			hasErrors: function () {
 				return this.validation.hasErrors(this);
 			},
+			/**
+			 * Gets the validation errors.
+			 *
+			 * @public
+			 * @method getErrors
+			 *
+			 * @return Object The errors object
+			 */
 			getErrors: function () {
 				return this.validation.getErrors(this);
 			},
+			/**
+			 * Checks whether or not there is an error with the specified property.
+			 *
+			 * @public
+			 * @method hasError
+			 *
+			 * @param {String} property The property to check
+			 *
+			 * @return Boolean true if it has, false otherwise
+			 */
 			hasError: function (path) {
 				return this.getError(path).length > 0;
 			},
+			/**
+			 * Gets the validation error for the specified property.
+			 *
+			 * @public
+			 * @method getError
+			 *
+			 * @param {String} property The property to check
+			 *
+			 * @return Array The error messages
+			 */
 			getError: function (path) {
 				var errors = [this.getErrors()];
 				var properties = path.split('.');
@@ -206,16 +133,44 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 				}
 				return errors;
 			},
+			/**
+			 * Checks whether or not there is a link for the specififed relation.
+			 *
+			 * @public
+			 * @method hasLink
+			 *
+			 * @param {String} rel The relation to check
+			 *
+			 * @return Boolean true if it has, false otherwise
+			 */
 			hasLink: function (rel) {
 				return this.links.some(function (link) {
 					return link.rel.indexOf(rel) > -1;
 				});
 			},
+			/**
+			 * Gets the link for the specififed relation.
+			 *
+			 * @public
+			 * @method getLink
+			 *
+			 * @param {String} rel The relation to check
+			 *
+			 * @return String The link
+			 */
 			getLink: function (rel) {
 				return this.links.filter(function (link) {
 					return link.rel.indexOf(rel) > -1;
 				})[0].href;
 			},
+			/**
+			 * Creates it. After that, it will have an URI.
+			 *
+			 * @public
+			 * @method create
+			 *
+			 * @return Promise The request promise
+			 */
 			create: function () {
 				return $http({
 					url: this.getLink('self'),
@@ -226,6 +181,15 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 					return response;
 				}).bind(this));
 			},
+
+			/**
+			 * Reads it. Only the URI needs to be set and the rest will be populated.
+			 *
+			 * @public
+			 * @method read
+			 *
+			 * @return Promise The request promise
+			 */
 			read: function () {
 				return $http({
 					url: this.getLink('self'),
@@ -235,6 +199,14 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 					return response;
 				}).bind(this));
 			},
+			/**
+			 * Updates it.
+			 *
+			 * @public
+			 * @method update
+			 *
+			 * @return Promise The request promise
+			 */
 			update: function () {
 				return $http({
 					url: this.getLink('self'),
@@ -242,6 +214,14 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 					data: this.serialize()
 				});
 			},
+			/**
+			 * Deletes it.
+			 *
+			 * @public
+			 * @method delete
+			 *
+			 * @return Promise The request promise
+			 */
 			'delete': function () {
 				return $http({
 					url: this.getLink('self'),
@@ -251,17 +231,51 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 					return response;
 				}).bind(this));
 			},
+			/**
+			 * Serializes it to a serialization.
+			 *
+			 * @public
+			 * @method serialize
+			 *
+			 * @return String A serialization
+			 */
 			serialize: function () {
 				return angular.toJson(this.simplify());
 			},
+			/**
+			 * Deserializes it from a serialization.
+			 *
+			 * @public
+			 * @method deserialize
+			 *
+			 * @param {String} serialization A serialization
+			 */
 			deserialize: function (serialization) {
 				this.desimplify(angular.fromJson(serialization));
 			},
+			/**
+			 * Simplifies it to a simple object.
+			 *
+			 * @public
+			 * @method simplify
+			 *
+			 * @return Object A simple object with the properties:
+			 *     uri, a String, the URI
+			 */
 			simplify: function () {
 				var simplification = {};
 				simplification.links = this.links;
 				return simplification;
 			},
+			/**
+			 * Desimplifies it from a simple object.
+			 *
+			 * @public
+			 * @method desimplify
+			 *
+			 * @param {Object} simplification A simple object with the properties:
+			 *     uri, a String, the URI
+			 */
 			desimplify: function (simplification) {
 				this.links = simplification.links;
 			}
