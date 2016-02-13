@@ -12,8 +12,8 @@ describe('router', function () {
 	
 	beforeEach(module('ch.maenulabs.rest.angular.router', ['ch.maenulabs.rest.angular.router.routerProvider', function(_routerProvider_) {
 		routerProvider = _routerProvider_;
-		routerProvider.addRoute('resource', 'read', 'ch.maenulabs.rest.angular.Resource', {});
-		routerProvider.addRoute('resource', 'create', 'ch.maenulabs.rest.angular.Resource', {
+		routerProvider.addRoute('resource', 'read', 'ch.maenulabs.rest.angular.resource.Resource', {});
+		routerProvider.addRoute('resource', 'create', 'ch.maenulabs.rest.angular.resource.Resource', {
 			resolve: {
 				a: function () {
 					return 1;
@@ -22,7 +22,7 @@ describe('router', function () {
 		});
     }]));
 
-	beforeEach(inject(['$httpBackend', '$location', '$rootScope', '$compile', '$route', 'ch.maenulabs.rest.angular.router.router', 'ch.maenulabs.rest.angular.Resource', function (_$httpBackend_, _$location_, _$rootScope_, _$compile_, _$route_, _router_, _Resource_) {
+	beforeEach(inject(['$httpBackend', '$location', '$rootScope', '$compile', '$route', 'ch.maenulabs.rest.angular.router.router', 'ch.maenulabs.rest.angular.resource.Resource', function (_$httpBackend_, _$location_, _$rootScope_, _$compile_, _$route_, _router_, _Resource_) {
 		$httpBackend = _$httpBackend_;
 		$location = _$location_;
 		$rootScope = _$rootScope_;

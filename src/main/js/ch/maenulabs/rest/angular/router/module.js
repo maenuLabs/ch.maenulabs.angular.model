@@ -6,5 +6,5 @@
  */
 angular.module('ch.maenulabs.rest.angular.router', [
 	'ngRoute',
-	'ch.maenulabs.rest.angular'
+	'ch.maenulabs.rest.angular.resource'
 ]);

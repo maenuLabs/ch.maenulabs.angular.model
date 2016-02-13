@@ -2,11 +2,11 @@
 /**
  * A basic RESTful resource with CRUD methods.
  *
- * @module ch.maenulabs.rest.angular
+ * @module ch.maenulabs.rest.angular.resource
  * @class Resource
- * @extends ch.maenulabs.rest.angular.IResource
+ * @extends ch.maenulabs.rest.angular.resource.IResource
  */
-angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.Resource', [
+angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.angular.resource.Resource', [
 	'$http',
 	function ($http) {
 		var Validation = ch.maenulabs.validation.Validation;

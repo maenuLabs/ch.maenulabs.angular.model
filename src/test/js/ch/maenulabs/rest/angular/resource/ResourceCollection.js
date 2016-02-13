@@ -5,9 +5,9 @@ describe('ResourceCollection', function () {
 	var $httpBackend;
 	var resource;
 	
-	beforeEach(module('ch.maenulabs.rest.angular'));
+	beforeEach(module('ch.maenulabs.rest.angular.resource'));
 
-	beforeEach(inject(['$httpBackend', 'ch.maenulabs.rest.angular.ResourceCollection', function (_$httpBackend_, _ResourceCollection_) {
+	beforeEach(inject(['$httpBackend', 'ch.maenulabs.rest.angular.resource.ResourceCollection', function (_$httpBackend_, _ResourceCollection_) {
 		ResourceCollection = _ResourceCollection_;
 		$httpBackend = _$httpBackend_;
 		resource = new ResourceCollection();
@@ -42,7 +42,7 @@ describe('ResourceCollection', function () {
 			var selfLink;
 			var resource0SelfLink;
 			
-			beforeEach(inject(['ch.maenulabs.rest.angular.Resource', function (_Resource_) {
+			beforeEach(inject(['ch.maenulabs.rest.angular.resource.Resource', function (_Resource_) {
 				Resource = _Resource_;
 				selfLink = '/resource?a=b';
 				resource0SelfLink = '/resource/1';
@@ -106,7 +106,7 @@ describe('ResourceCollection', function () {
 			var Resource;
 			var message;
 			
-			beforeEach(inject(['ch.maenulabs.rest.angular.Resource', function (_Resource_) {
+			beforeEach(inject(['ch.maenulabs.rest.angular.resource.Resource', function (_Resource_) {
 				Resource = _Resource_;
 				message = 'message';
 				i18n = {

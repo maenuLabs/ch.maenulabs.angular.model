@@ -5,9 +5,9 @@ describe('Resource', function () {
 	var $httpBackend;
 	var resource;
 	
-	beforeEach(module('ch.maenulabs.rest.angular'));
+	beforeEach(module('ch.maenulabs.rest.angular.resource'));
 
-	beforeEach(inject(['$httpBackend', 'ch.maenulabs.rest.angular.Resource', function (_$httpBackend_, _Resource_) {
+	beforeEach(inject(['$httpBackend', 'ch.maenulabs.rest.angular.resource.Resource', function (_$httpBackend_, _Resource_) {
 		Resource = _Resource_;
 		$httpBackend = _$httpBackend_;
 		resource = new Resource();

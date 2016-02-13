@@ -2,12 +2,12 @@
 /**
  * A basic RESTful resource collection with CRUD methods.
  *
- * @module ch.maenulabs.rest.angular
+ * @module ch.maenulabs.rest.angular.resource
  * @class ResourceCollection
- * @extends ch.maenulabs.rest.angular.Resource
+ * @extends ch.maenulabs.rest.angular.resource.Resource
  */
-angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.ResourceCollection', [
-	'ch.maenulabs.rest.angular.Resource',
+angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.angular.resource.ResourceCollection', [
+	'ch.maenulabs.rest.angular.resource.Resource',
 	function (Resource) {
 		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 		var PropertiesCheck = ch.maenulabs.validation.PropertiesCheck;
@@ -17,14 +17,14 @@ angular.module('ch.maenulabs.rest.angular').factory('ch.maenulabs.rest.angular.R
 			 *
 			 * @public
 			 * @property resourceType
-			 * @type ch.maenulabs.type.Type<ch.maenulabs.rest.angular.IResource>
+			 * @type ch.maenulabs.type.Type<ch.maenulabs.rest.angular.resource.Resource>
 			 */
 			/**
 			 * The resources.
 			 *
 			 * @public
 			 * @property resources
-			 * @type Array<ch.maenulabs.rest.angular.IResource>
+			 * @type Array<ch.maenulabs.rest.angular.resource.Resource>
 			 */
 			/**
 			 * Creates a resource collection.
