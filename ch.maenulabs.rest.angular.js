@@ -214,6 +214,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 	'$http',
 	function ($http) {
 		var Validation = ch.maenulabs.validation.Validation;
+		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 		return new ch.maenulabs.type.Type(Object, {
 			/**
 			 * The self URI.
@@ -238,8 +239,8 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 */
 			initialize: function (values) {
 				angular.extend(this, values || {});
-				this['@self'] = this['@self'] || '';
 				this.validation = this.validation || new Validation();
+				this.validation.add(new ExistenceCheck('@self'));
 			},
 			/**
 			 * Checks whether it has errors or not.
@@ -570,10 +571,10 @@ angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.a
 	};
 	/**
 	 * Adds the route configuration. Reads the resource if self URI exists.
-	 * 
+	 *
 	 * @public
 	 * @method addRoute
-	 * 
+	 *
 	 * @param {String} resourceBaseName The resource base name
 	 * @param {String} action The action name
 	 * @param {String} resourceTypeName The resource type name
@@ -585,12 +586,10 @@ angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.a
 		}
 		configuration.resolve.resource = ['$route', resourceTypeName, function ($route, resourceType) {
 			var serialization = $route.current.params[SERIALIZATION_KEY];
-			if (serialization) {
-				return resourceType.deserialize(serialization);
+			if (!serialization) {
+				serialization = '{}';
 			}
-			return resourceType.desimplify({
-				'@self': ''
-			});
+			return resourceType.deserialize(serialization);
 		}];
 		setUriTemplate(resourceBaseName, action);
 		$routeProvider.when(getUriTemplateBase(resourceBaseName, action), configuration);

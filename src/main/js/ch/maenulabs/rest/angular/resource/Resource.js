@@ -10,6 +10,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 	'$http',
 	function ($http) {
 		var Validation = ch.maenulabs.validation.Validation;
+		var ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 		return new ch.maenulabs.type.Type(Object, {
 			/**
 			 * The self URI.
@@ -34,8 +35,8 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 */
 			initialize: function (values) {
 				angular.extend(this, values || {});
-				this['@self'] = this['@self'] || '';
 				this.validation = this.validation || new Validation();
+				this.validation.add(new ExistenceCheck('@self'));
 			},
 			/**
 			 * Checks whether it has errors or not.

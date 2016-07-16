@@ -37,8 +37,7 @@ describe('Resource', function () {
 		it('should have a validation and a empty self', function () {
 			resource = new Resource();
 			expect(resource.validation).toBeDefined();
-			expect(resource['@self']).toBeDefined();
-			expect(resource['@self'].length).toEqual(0);
+			expect(resource['@self']).not.toBeDefined();
 		});
 
 		it('should use the given values', function () {
@@ -99,9 +98,19 @@ describe('Resource', function () {
 	describe('validation', function () {
 
 		var ExistenceCheck;
+		var message;
 
 		beforeEach(function () {
 			ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
+			message = 'message';
+			i18n = {
+				'ch/maenulabs/validation/ExistenceCheck': {
+					message: function () {
+						return message;
+					}
+				}
+			};
+			resource['@self'] = '/resource/1';
 		});
 
 		it('should have no errors', function () {
@@ -112,14 +121,6 @@ describe('Resource', function () {
 		});
 
 		it('should allow to add checks', function () {
-			var message = 'message';
-			i18n = {
-				'ch/maenulabs/validation/ExistenceCheck': {
-					message: function () {
-						return message;
-					}
-				}
-			};
 			resource.a = null;
 			resource.b = 1;
 			resource.validation.add(new ExistenceCheck('a'));
@@ -131,6 +132,14 @@ describe('Resource', function () {
 			expect(resource.getError('a')).toEqual([message]);
 			expect(resource.hasError('b')).toBeFalsy();
 			expect(resource.getError('b')).toEqual([]);
+		});
+
+		it('should require @self', function () {
+			resource['@self'] = null;
+			expect(resource.hasErrors()).toBeTruthy();
+			expect(resource.getErrors()).toEqual({
+				'@self': [message]
+			});
 		});
 
 	});

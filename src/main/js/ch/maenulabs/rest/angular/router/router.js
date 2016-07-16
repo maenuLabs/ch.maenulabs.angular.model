@@ -22,10 +22,10 @@ angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.a
 	};
 	/**
 	 * Adds the route configuration. Reads the resource if self URI exists.
-	 * 
+	 *
 	 * @public
 	 * @method addRoute
-	 * 
+	 *
 	 * @param {String} resourceBaseName The resource base name
 	 * @param {String} action The action name
 	 * @param {String} resourceTypeName The resource type name
@@ -37,12 +37,10 @@ angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.a
 		}
 		configuration.resolve.resource = ['$route', resourceTypeName, function ($route, resourceType) {
 			var serialization = $route.current.params[SERIALIZATION_KEY];
-			if (serialization) {
-				return resourceType.deserialize(serialization);
+			if (!serialization) {
+				serialization = '{}';
 			}
-			return resourceType.desimplify({
-				'@self': ''
-			});
+			return resourceType.deserialize(serialization);
 		}];
 		setUriTemplate(resourceBaseName, action);
 		$routeProvider.when(getUriTemplateBase(resourceBaseName, action), configuration);

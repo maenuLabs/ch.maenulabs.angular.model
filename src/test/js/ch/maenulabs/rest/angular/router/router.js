@@ -39,7 +39,7 @@ describe('router', function () {
 
 	it('should get the URI without any properties', function () {
 		var resource = new Resource();
-		expect(router.getUri('resource', 'read', resource)).toEqual('/resource/read/{"@self":""}');
+		expect(router.getUri('resource', 'read', resource)).toEqual('/resource/read/{}');
 	});
 
 	it('should get the URI with properties', function () {
@@ -73,7 +73,7 @@ describe('router', function () {
 		});
 		$rootScope.$on('$routeChangeSuccess', function ($event, current) {
 			expect(current.locals.resource).toBeDefined();
-			expect(current.locals.resource['@self']).toEqual('');
+			expect(current.locals.resource['@self']).not.toBeDefined();
 		});
 		$rootScope.$on('$routeChangeError', function () {
 			fail();
