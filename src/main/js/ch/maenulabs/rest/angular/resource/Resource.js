@@ -12,11 +12,11 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 		var Validation = ch.maenulabs.validation.Validation;
 		return new ch.maenulabs.type.Type(Object, {
 			/**
-			 * The links mapped by their name.
+			 * The self URI.
 			 *
 			 * @public
-			 * @property links
-			 * @type Object
+			 * @property @self
+			 * @type String
 			 */
 			/**
 			 * The validation.
@@ -30,11 +30,11 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 *
 			 * @constructor
 			 *
-			 * @param {Object} [values={}] A map of initial values 
+			 * @param {Object} [values={}] A map of initial values
 			 */
 			initialize: function (values) {
 				angular.extend(this, values || {});
-				this.links = this.links || [];
+				this['@self'] = this['@self'] || '';
 				this.validation = this.validation || new Validation();
 			},
 			/**
@@ -96,36 +96,6 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				return errors;
 			},
 			/**
-			 * Checks whether or not there is a link for the specififed relation.
-			 *
-			 * @public
-			 * @method hasLink
-			 *
-			 * @param {String} rel The relation to check
-			 *
-			 * @return Boolean true if it has, false otherwise
-			 */
-			hasLink: function (rel) {
-				return this.links.some(function (link) {
-					return link.rel.indexOf(rel) > -1;
-				});
-			},
-			/**
-			 * Gets the link for the specififed relation.
-			 *
-			 * @public
-			 * @method getLink
-			 *
-			 * @param {String} rel The relation to check
-			 *
-			 * @return String The link
-			 */
-			getLink: function (rel) {
-				return this.links.filter(function (link) {
-					return link.rel.indexOf(rel) > -1;
-				})[0].href;
-			},
-			/**
 			 * Creates it. After that, it will have an URI.
 			 *
 			 * @public
@@ -135,7 +105,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 */
 			create: function () {
 				return $http({
-					url: this.getLink('self'),
+					url: this['@self'],
 					method: 'POST',
 					data: this.serialize()
 				}).then((function (response) {
@@ -154,7 +124,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 */
 			read: function () {
 				return $http({
-					url: this.getLink('self'),
+					url: this['@self'],
 					method: 'GET'
 				}).then((function (response) {
 					this.deserialize(response.data);
@@ -171,7 +141,7 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 */
 			update: function () {
 				return $http({
-					url: this.getLink('self'),
+					url: this['@self'],
 					method: 'PUT',
 					data: this.serialize()
 				});
@@ -186,10 +156,10 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 */
 			'delete': function () {
 				return $http({
-					url: this.getLink('self'),
+					url: this['@self'],
 					method: 'DELETE'
 				}).then((function (response) {
-					this.links = [];
+					this['@self'] = '';
 					return response;
 				}).bind(this));
 			},
@@ -222,11 +192,11 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 * @method simplify
 			 *
 			 * @return Object A simple object with the properties:
-			 *     uri, a String, the URI
+			 *     @self, an URI to itself
 			 */
 			simplify: function () {
 				var simplification = {};
-				simplification.links = this.links;
+				simplification['@self'] = this['@self'];
 				return simplification;
 			},
 			/**
@@ -236,10 +206,10 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 			 * @method desimplify
 			 *
 			 * @param {Object} simplification A simple object with the properties:
-			 *     uri, a String, the URI
+			 *     @self, an URI to itself
 			 */
 			desimplify: function (simplification) {
-				this.links = simplification.links;
+				this['@self'] = simplification['@self'];
 			}
 		}, {
 			/**

@@ -52,6 +52,16 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 					});
 				}));
 			},
+			/**
+			 * Simplifies it to a simple object.
+			 *
+			 * @public
+			 * @method simplify
+			 *
+			 * @return Object A simple object with the properties:
+			 *     @self, an URI to itself:
+			 *     resources, an Array of simplifications of the resources
+			 */
 			simplify: function () {
 				var simplification = this.base('simplify')();
 				simplification.resources = this.resources.map(function (resource) {
@@ -59,6 +69,16 @@ angular.module('ch.maenulabs.rest.angular.resource').factory('ch.maenulabs.rest.
 				});
 				return simplification;
 			},
+			/**
+			 * Desimplifies it from a simple object.
+			 *
+			 * @public
+			 * @method desimplify
+			 *
+			 * @param {Object} simplification A simple object with the properties:
+			 *     @self, an URI to itself:
+			 *     resources, an Array of simplifications of the resources
+			 */
 			desimplify: function (simplification) {
 				this.base('desimplify')(simplification);
 				this.resources = simplification.resources.map((function (resourceSimplification) {

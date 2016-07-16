@@ -39,53 +39,41 @@ describe('ResourceCollection', function () {
 		describe('resources', function () {
 			
 			var Resource;
-			var selfLink;
-			var resource0SelfLink;
+			var self;
+			var resource0Self;
 			
 			beforeEach(inject(['ch.maenulabs.rest.angular.resource.Resource', function (_Resource_) {
 				Resource = _Resource_;
-				selfLink = '/resource?a=b';
-				resource0SelfLink = '/resource/1';
+				self = '/resource?a=b';
+				resource0Self = '/resource/1';
 			}]));
 			
 			it('should simplify resources', function () {
 				var resources = [{
-					links: [{
-						rel: ['self'],
-						href: resource0SelfLink
-					}]
+					'@self': resource0Self
 				}];
-				resource.links = [{
-					rel: ['self'],
-					href: selfLink
-				}];
+				resource['@self'] = self;
 				resource.resources = [
 					new Resource(resources[0])
 				];
 				var simplification = resource.simplify();
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(self);
 				expect(simplification.resources).toEqual(resources);
 			});
 
 			it('should desimplify resources', function () {
 				var simplification = {
-					links: [{
-						rel: ['self'],
-						href: selfLink
-					}],
+					'@self': self,
 					resources: [{
-						links: [{
-							rel: ['self'],
-							href: resource0SelfLink
-						}]
+						'@self': resource0Self
 					}]
 				};
 				resource.resourceType = Resource;
 				resource.desimplify(simplification);
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(self);
 				expect(resource.resources.length).toEqual(1);
 				expect(resource.resources[0] instanceof Resource).toBeTruthy();
-				expect(resource.resources[0].getLink('self')).toEqual(resource0SelfLink);
+				expect(resource.resources[0]['@self']).toEqual(resource0Self);
 			});
 			
 		});

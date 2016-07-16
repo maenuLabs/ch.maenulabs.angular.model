@@ -21,7 +21,7 @@ angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.a
 		return templates[uriTemplateBase];
 	};
 	/**
-	 * Adds the route configuration. Reads the resource if self link exists.
+	 * Adds the route configuration. Reads the resource if self URI exists.
 	 * 
 	 * @public
 	 * @method addRoute
@@ -37,10 +37,12 @@ angular.module('ch.maenulabs.rest.angular.router').provider('ch.maenulabs.rest.a
 		}
 		configuration.resolve.resource = ['$route', resourceTypeName, function ($route, resourceType) {
 			var serialization = $route.current.params[SERIALIZATION_KEY];
-			if (!serialization) {
-				serialization = '{}';
+			if (serialization) {
+				return resourceType.deserialize(serialization);
 			}
-			return resourceType.deserialize(serialization);
+			return resourceType.desimplify({
+				'@self': ''
+			});
 		}];
 		setUriTemplate(resourceBaseName, action);
 		$routeProvider.when(getUriTemplateBase(resourceBaseName, action), configuration);

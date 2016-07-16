@@ -6,6 +6,7 @@ describe('update', function () {
 	var validation;
 	var action;
 	var change;
+	var changeables;
 	var updateReturnValue;
 	
 	beforeEach(module('ch.maenulabs.rest.angular.pattern', function($provide) {
@@ -20,11 +21,12 @@ describe('update', function () {
 
 	beforeEach(inject(['$rootScope', 'ch.maenulabs.rest.angular.pattern.update', function (_$rootScope_, _update_) {
 		$scope = _$rootScope_.$new();
-		updateReturnValue = _update_($scope, 'resource');
+		changeables = ['key'];
+		updateReturnValue = _update_($scope, 'resource', changeables);
 	}]));
 
 	it('should eventify the resource\'s change', function () {
-		expect(change).toHaveBeenCalledWith($scope, 'resource');
+		expect(change).toHaveBeenCalledWith($scope, 'resource', changeables);
 	});
 
 	it('should eventify the resource\'s validation', function () {

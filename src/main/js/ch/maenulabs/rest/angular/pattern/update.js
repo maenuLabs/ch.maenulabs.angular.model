@@ -10,8 +10,8 @@ angular.module('ch.maenulabs.rest.angular.pattern').factory('ch.maenulabs.rest.a
 	'ch.maenulabs.rest.angular.eventify.validation',
 	'ch.maenulabs.rest.angular.eventify.change',
 	function (action, validation, change) {
-		return function ($scope, resource) {
-			change($scope, resource);
+		return function ($scope, resource, changeables) {
+			change($scope, resource, changeables);
 			validation($scope, resource);
 			return action($scope, resource, 'update');
 		};

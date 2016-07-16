@@ -4,29 +4,29 @@ describe('Resource', function () {
 	var Resource;
 	var $httpBackend;
 	var resource;
-	
+
 	beforeEach(module('ch.maenulabs.rest.angular.resource'));
 
 	beforeEach(inject(['$httpBackend', 'ch.maenulabs.rest.angular.resource.Resource', function (_$httpBackend_, _Resource_) {
 		Resource = _Resource_;
 		$httpBackend = _$httpBackend_;
 		resource = new Resource();
-		
+
 	}]));
 
 	describe('static', function () {
 
 		it('should create statically with desimplify', function () {
 			resource = Resource.desimplify({
-				links: []
+				'@self': ''
 			});
 			expect(resource instanceof Resource).toBeTruthy();
 		});
 
 		it('should create statically with deserialize', function () {
 			resource = Resource.deserialize('{'
-				+ '"links": []'
-			+ '}');
+				+ '"@self": ""'
+				+ '}');
 			expect(resource instanceof Resource).toBeTruthy();
 		});
 
@@ -34,11 +34,11 @@ describe('Resource', function () {
 
 	describe('constructor', function () {
 
-		it('should have a validation and a empty links', function () {
+		it('should have a validation and a empty self', function () {
 			resource = new Resource();
 			expect(resource.validation).toBeDefined();
-			expect(resource.links).toBeDefined();
-			expect(resource.links.length).toEqual(0);
+			expect(resource['@self']).toBeDefined();
+			expect(resource['@self'].length).toEqual(0);
 		});
 
 		it('should use the given values', function () {
@@ -52,73 +52,46 @@ describe('Resource', function () {
 		});
 
 		it('should override initial values with given values', function () {
-			var links = [{
-				rel: ['self'],
-				href: '/resource/1'
-			}];
 			var validation = new ch.maenulabs.validation.Validation();
 			var values = {
-				links: links,
+				'@self': '/resource/1',
 				validation: validation
 			};
 			resource = new Resource(values);
-			expect(resource.links).toBe(links);
+			expect(resource['@self']).toBe(values['@self']);
 			expect(resource.validation).toBe(validation);
 		});
 
 	});
-	
-	describe('links', function () {
-		
+
+	describe('@self', function () {
+
 		beforeEach(function () {
 			resource = Resource.deserialize('{'
-				+ '"links": [{'
-					+ '"rel": ["self"],'
-					+ '"href": "/resource/1"'
-				+ '},{'
-					+ '"rel": ["related"],'
-					+ '"href": "/resource/2"'
-				+ '}]'
-			+ '}');
+				+ '"@self": "/resource/1"'
+				+ '}');
 		});
 
-		it('should have links', function () {
-			expect(resource.hasLink('self')).toBeTruthy();
-			expect(resource.hasLink('related')).toBeTruthy();
-			expect(resource.hasLink('unrelated')).toBeFalsy();
+		it('should have @self', function () {
+			expect(resource['@self']).toEqual('/resource/1');
 		});
 
-		it('should get links', function () {
-			expect(resource.getLink('self')).toEqual('/resource/1');
-			expect(resource.getLink('related')).toEqual('/resource/2');
-			expect(function () {
-				resource.getLink('unrelated');
-			}).toThrow();
-		});
-		
 	});
 
 	describe('simplification', function () {
 
 		it('should implement simplify', function () {
-			var links = [{
-				rel: ['self'],
-				href: '/resource/1'
-			}];
-			resource.links = links;
+			resource['@self'] = '/resource/1';
 			var simplification = resource.simplify();
-			expect(simplification.links).toEqual(links);
+			expect(simplification['@self']).toEqual(resource['@self']);
 		});
 
 		it('should implement desimplify', function () {
 			var simplification = {
-				links: [{
-					rel: ['self'],
-					href: '/resource/1'
-				}]
+				'@self': '/resource/1'
 			};
 			resource.desimplify(simplification);
-			expect(resource.links).toEqual(simplification.links);
+			expect(resource['@self']).toEqual(simplification['@self']);
 		});
 
 	});
@@ -126,11 +99,11 @@ describe('Resource', function () {
 	describe('validation', function () {
 
 		var ExistenceCheck;
-		
+
 		beforeEach(function () {
 			ExistenceCheck = ch.maenulabs.validation.ExistenceCheck;
 		});
-		
+
 		it('should have no errors', function () {
 			expect(resource.hasErrors()).toBeFalsy();
 			expect(resource.getErrors()).toEqual({});
@@ -188,21 +161,16 @@ describe('Resource', function () {
 	});
 
 	describe('crud', function () {
-		
+
 		var success;
 		var error;
-		var selfLink;
 		var simplification;
 
 		beforeEach(function () {
 			success = jasmine.createSpy();
 			error = jasmine.createSpy();
-			selfLink = '/resource/1';
 			simplification = {
-				links: [{
-					rel: ['self'],
-					href: selfLink
-				}],
+				'@self': '/resource/1',
 				message: 'hello'
 			};
 			var CrudResource = new ch.maenulabs.type.Type(Resource, {
@@ -220,34 +188,31 @@ describe('Resource', function () {
 		});
 
 		describe('create', function () {
-			
-			var createLink;
-			
+
+			var self;
+
 			beforeEach(function () {
-				createLink = '/resource';
-				resource.links = [{
-					rel: ['self'],
-					href: createLink
-				}];
+				self = '/resource';
+				resource['@self'] = self;
 			});
 
 			it('should create with success', function () {
-				$httpBackend.expect('POST', resource.getLink('self')).respond(201, simplification);
+				$httpBackend.expect('POST', resource['@self']).respond(201, simplification);
 				resource.create().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(simplification['@self']);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should create with error', function () {
-				$httpBackend.expect('POST', resource.getLink('self')).respond(403, '');
+				$httpBackend.expect('POST', resource['@self']).respond(403, '');
 				resource.create().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.getLink('self')).toEqual(createLink);
+				expect(resource['@self']).toEqual(self);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
@@ -257,27 +222,27 @@ describe('Resource', function () {
 
 			beforeEach(function () {
 				resource.desimplify({
-					links: simplification.links
+					'@self': simplification['@self']
 				});
 			});
 
 			it('should read with success', function () {
-				$httpBackend.expect('GET', resource.getLink('self')).respond(200, simplification);
+				$httpBackend.expect('GET', resource['@self']).respond(200, simplification);
 				resource.read().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(simplification['@self']);
 				expect(resource.message).toEqual(simplification.message);
 			});
 
 			it('should read with error', function () {
-				$httpBackend.expect('GET', resource.getLink('self')).respond(404, '');
+				$httpBackend.expect('GET', resource['@self']).respond(404, '');
 				resource.read().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(simplification['@self']);
 				expect(resource.message).not.toBeDefined();
 			});
 
@@ -293,22 +258,22 @@ describe('Resource', function () {
 			});
 
 			it('should update with success', function () {
-				$httpBackend.expect('PUT', resource.getLink('self')).respond(202, '');
+				$httpBackend.expect('PUT', resource['@self']).respond(202, '');
 				resource.update().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(simplification['@self']);
 				expect(resource.message).toEqual(message);
 			});
 
 			it('should update with error', function () {
-				$httpBackend.expect('PUT', resource.getLink('self')).respond(403, '');
+				$httpBackend.expect('PUT', resource['@self']).respond(403, '');
 				resource.update().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(simplification['@self']);
 				expect(resource.message).toEqual(message);
 			});
 
@@ -324,25 +289,22 @@ describe('Resource', function () {
 			});
 
 			it('should delete with success', function () {
-				$httpBackend.expect('DELETE', resource.getLink('self')).respond(202, '');
+				$httpBackend.expect('DELETE', resource['@self']).respond(202, '');
 				resource.delete().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).toHaveBeenCalled();
 				expect(error).not.toHaveBeenCalled();
-				expect(resource.links.length).toEqual(0);
-				expect(function () {
-					resource.getLink('self');
-				}).toThrow();
+				expect(resource['@self'].length).toEqual(0);
 				expect(resource.message).toEqual(message);
 			});
 
 			it('should delete with error', function () {
-				$httpBackend.expect('DELETE', resource.getLink('self')).respond(404, '');
+				$httpBackend.expect('DELETE', resource['@self']).respond(404, '');
 				resource.delete().then(success).catch(error);
 				$httpBackend.flush();
 				expect(success).not.toHaveBeenCalled();
 				expect(error).toHaveBeenCalled();
-				expect(resource.getLink('self')).toEqual(selfLink);
+				expect(resource['@self']).toEqual(simplification['@self']);
 				expect(resource.message).toEqual(message);
 			});
 
